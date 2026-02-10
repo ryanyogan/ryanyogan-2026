@@ -117,43 +117,146 @@ export class GitHubClient {
   }
 
   /**
-   * Get key files from a repository for analysis
+   * Get ALL files from a repository for thorough analysis
+   * Recursively fetches all source code files
+   */
+  async getAllFiles(
+    owner: string,
+    repo: string,
+    maxFiles = 100,
+    maxFileSize = 100000
+  ): Promise<Record<string, string>> {
+    const allFiles: Record<string, string> = {};
+    
+    // File extensions to include (source code, configs, docs)
+    const includeExtensions = new Set([
+      // Code
+      ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
+      ".py", ".rb", ".go", ".rs", ".ex", ".exs",
+      ".java", ".kt", ".scala", ".swift", ".m",
+      ".c", ".cpp", ".h", ".hpp", ".cs",
+      ".php", ".lua", ".r", ".jl",
+      // Web
+      ".html", ".css", ".scss", ".sass", ".less",
+      ".vue", ".svelte", ".astro",
+      // Config
+      ".json", ".yaml", ".yml", ".toml", ".ini",
+      ".env.example", ".editorconfig",
+      // Docs
+      ".md", ".mdx", ".txt", ".rst",
+      // Build
+      ".dockerfile", ".sh", ".bash",
+      // Elixir/Erlang
+      ".erl", ".hrl",
+      // Other
+      ".sql", ".graphql", ".prisma",
+    ]);
+
+    // Files to always include regardless of extension
+    const alwaysInclude = new Set([
+      "Dockerfile",
+      "Makefile",
+      "Gemfile",
+      "Rakefile",
+      "Procfile",
+      "mix.exs",
+      "mix.lock",
+      "Cargo.toml",
+      "Cargo.lock",
+      "go.mod",
+      "go.sum",
+      "package.json",
+      "package-lock.json",
+      "pnpm-lock.yaml",
+      "yarn.lock",
+      "tsconfig.json",
+      "vite.config.ts",
+      "next.config.js",
+      "webpack.config.js",
+      ".gitignore",
+      "LICENSE",
+      "README.md",
+      "readme.md",
+      "README",
+    ]);
+
+    // Directories to skip
+    const skipDirs = new Set([
+      "node_modules",
+      ".git",
+      "dist",
+      "build",
+      ".next",
+      ".nuxt",
+      "coverage",
+      ".cache",
+      "__pycache__",
+      ".venv",
+      "venv",
+      "vendor",
+      "_build",
+      "deps",
+      "target",
+      ".idea",
+      ".vscode",
+      "tmp",
+      "temp",
+      "logs",
+    ]);
+
+    const fetchDir = async (path = ""): Promise<void> => {
+      if (Object.keys(allFiles).length >= maxFiles) return;
+
+      try {
+        const contents = await this.getContents(owner, repo, path);
+        
+        for (const item of contents) {
+          if (Object.keys(allFiles).length >= maxFiles) break;
+
+          if (item.type === "dir") {
+            // Skip unwanted directories
+            if (skipDirs.has(item.name)) continue;
+            // Recursively fetch directory
+            await fetchDir(item.path);
+          } else if (item.type === "file") {
+            // Check if we should include this file
+            const ext = "." + item.name.split(".").pop()?.toLowerCase();
+            const shouldInclude = 
+              alwaysInclude.has(item.name) || 
+              includeExtensions.has(ext);
+
+            if (shouldInclude) {
+              try {
+                const content = await this.getFileContent(owner, repo, item.path);
+                // Only include if not too large
+                if (content.length <= maxFileSize) {
+                  allFiles[item.path] = content;
+                }
+              } catch {
+                // Skip files that can't be fetched
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`[GitHub] Error fetching ${path}:`, error);
+      }
+    };
+
+    await fetchDir();
+    
+    console.log(`[GitHub] Fetched ${Object.keys(allFiles).length} files from ${owner}/${repo}`);
+    return allFiles;
+  }
+
+  /**
+   * Get key files from a repository for analysis (legacy, kept for compatibility)
    */
   async getKeyFiles(
     owner: string,
     repo: string
   ): Promise<Record<string, string>> {
-    const keyFiles: Record<string, string> = {};
-
-    const filesToFetch = [
-      "README.md",
-      "readme.md",
-      "package.json",
-      "mix.exs",
-      "Cargo.toml",
-      "go.mod",
-      "requirements.txt",
-      "pyproject.toml",
-    ];
-
-    try {
-      const contents = await this.getContents(owner, repo);
-      const fileNames = contents.filter((c) => c.type === "file").map((c) => c.name);
-
-      for (const file of filesToFetch) {
-        if (fileNames.includes(file)) {
-          try {
-            keyFiles[file] = await this.getFileContent(owner, repo, file);
-          } catch {
-            // Skip files that can't be fetched
-          }
-        }
-      }
-    } catch {
-      // Repository might be empty or have issues
-    }
-
-    return keyFiles;
+    return this.getAllFiles(owner, repo, 20, 50000);
   }
 
   /**

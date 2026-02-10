@@ -1,7 +1,8 @@
 /**
  * Post Generation Workflow
  *
- * A durable Cloudflare Workflow that generates blog posts for projects.
+ * A durable Cloudflare Workflow that generates EXHAUSTIVE blog posts for projects.
+ * Uses Claude Sonnet for high-quality, thorough content generation.
  * Triggered by GitHub Actions when projects.md is modified.
  */
 
@@ -21,6 +22,7 @@ interface Env {
   AI: Ai;
   VECTORIZE: VectorizeIndex;
   GITHUB_TOKEN: string;
+  ANTHROPIC_API_KEY: string;
   REPO_OWNER: string;
   REPO_NAME: string;
 }
@@ -59,22 +61,22 @@ export class PostGenerationWorkflow extends WorkflowEntrypoint<
     const results: WorkflowResult["results"] = [];
 
     console.log(
-      `[PostGenerationWorkflow] Starting for ${projectsToProcess.length} projects`
+      `[PostGenerationWorkflow] Starting EXHAUSTIVE post generation for ${projectsToProcess.length} projects`
     );
 
     for (const project of projectsToProcess) {
       console.log(`[PostGenerationWorkflow] Processing: ${project.name}`);
 
       try {
-        // Step 1: Fetch GitHub data
+        // Step 1: Fetch ALL GitHub data - comprehensive repository analysis
         const githubData = await step.do(
           `fetch-github-${project.slug}`,
           {
-            retries: { limit: 3, delay: "5 seconds", backoff: "exponential" },
-            timeout: "1 minute",
+            retries: { limit: 3, delay: "10 seconds", backoff: "exponential" },
+            timeout: "5 minutes", // Longer timeout for fetching all files
           },
           async () => {
-            console.log(`[Step] Fetching GitHub data for ${project.slug}`);
+            console.log(`[Step] Fetching ALL files from ${project.slug}...`);
             const github = new GitHubClient(this.env.GITHUB_TOKEN);
             const parsed = parseGitHubUrl(project.github);
 
@@ -82,55 +84,72 @@ export class PostGenerationWorkflow extends WorkflowEntrypoint<
               throw new Error(`Invalid GitHub URL: ${project.github}`);
             }
 
-            const [repo, readme, files] = await Promise.all([
-              github.getRepo(parsed.owner, parsed.repo),
-              github.getReadme(parsed.owner, parsed.repo),
-              github.getKeyFiles(parsed.owner, parsed.repo),
-            ]);
+            // Fetch repo metadata
+            const repo = await github.getRepo(parsed.owner, parsed.repo);
+            
+            // Fetch ALL source files (up to 100 files)
+            const allFiles = await github.getAllFiles(parsed.owner, parsed.repo, 100, 100000);
 
             console.log(
-              `[Step] Fetched: ${repo.name}, README: ${readme.length} chars, Files: ${Object.keys(files).length}`
+              `[Step] Fetched ${Object.keys(allFiles).length} files from ${repo.name}`
             );
+            console.log(`[Step] Files: ${Object.keys(allFiles).join(", ")}`);
 
-            return { repo, readme, files };
+            return { 
+              repo, 
+              allFiles,
+              metadata: {
+                description: repo.description,
+                language: repo.language,
+                topics: repo.topics,
+                stars: repo.stargazers_count,
+                forks: repo.forks_count,
+              }
+            };
           }
         );
 
-        // Step 2: Analyze project with AI
+        // Step 2: Deep analysis with Claude Sonnet
         const analysis = await step.do(
           `analyze-${project.slug}`,
           {
-            retries: { limit: 2, delay: "10 seconds" },
-            timeout: "2 minutes",
+            retries: { limit: 2, delay: "30 seconds" },
+            timeout: "5 minutes", // Claude analysis can take time
           },
           async () => {
-            console.log(`[Step] Analyzing project ${project.slug} with AI`);
+            console.log(`[Step] Deep analysis of ${project.slug} with Claude Sonnet...`);
+            
             const result = await analyzeProject(
-              this.env.AI,
+              this.env.ANTHROPIC_API_KEY,
               githubData.repo.name,
-              githubData.readme,
-              githubData.files
+              githubData.allFiles,
+              githubData.metadata
             );
-            console.log(`[Step] Analysis complete: ${result.title}`);
+            
+            console.log(`[Step] Analysis complete: "${result.title}"`);
+            console.log(`[Step] Tech stack: ${result.techStack.join(", ")}`);
+            console.log(`[Step] Key features: ${result.keyFeatures.length}`);
+            console.log(`[Step] Code highlights: ${result.codeHighlights.length}`);
+            
             return result;
           }
         );
 
-        // Step 3: Generate blog content
+        // Step 3: Generate EXHAUSTIVE blog content with Claude
         const mdxContent = await step.do(
           `generate-content-${project.slug}`,
           {
-            retries: { limit: 2, delay: "15 seconds" },
-            timeout: "5 minutes",
+            retries: { limit: 2, delay: "30 seconds" },
+            timeout: "10 minutes", // Allow plenty of time for thorough content
           },
           async () => {
-            console.log(`[Step] Generating blog content for ${project.slug}`);
+            console.log(`[Step] Generating EXHAUSTIVE blog post for ${project.slug}...`);
+            
             const content = await generateBlogContent(
-              this.env.AI,
+              this.env.ANTHROPIC_API_KEY,
               analysis,
               project.github,
-              githubData.readme,
-              githubData.files
+              githubData.allFiles
             );
 
             // Add frontmatter
@@ -140,22 +159,25 @@ title: "${analysis.title.replace(/"/g, '\\"')}"
 date: "${date}"
 description: "${analysis.description.replace(/"/g, '\\"')}"
 featured: true
+github: "${project.github}"
+tech:
+${analysis.techStack.map(t => `  - "${t}"`).join("\n")}
 ---
 
 `;
             console.log(
-              `[Step] Generated content: ${content.length} chars`
+              `[Step] Generated exhaustive content: ${content.length} chars (~${Math.round(content.split(/\s+/).length)} words)`
             );
             return frontmatter + content;
           }
         );
 
-        // Step 4: Create PR
+        // Step 4: Create PR with the comprehensive blog post
         const pr = await step.do(
           `create-pr-${project.slug}`,
           {
             retries: { limit: 3, delay: "5 seconds" },
-            timeout: "1 minute",
+            timeout: "2 minutes",
           },
           async () => {
             console.log(`[Step] Creating PR for ${project.slug}`);
@@ -178,34 +200,49 @@ featured: true
               this.env.REPO_NAME,
               filePath,
               {
-                message: `Add blog post: ${project.name}`,
+                message: `Add comprehensive blog post: ${project.name}`,
                 content: mdxContent,
                 branch: branchName,
               }
             );
 
             // Create PR
+            const wordCount = mdxContent.split(/\s+/).length;
             const prResult = await github.createPullRequest(
               this.env.REPO_OWNER,
               this.env.REPO_NAME,
               {
-                title: `[Auto] Add blog post for ${project.name}`,
-                body: `## Auto-generated blog post
+                title: `[Auto] Deep-dive blog post: ${project.name}`,
+                body: `## 🤖 AI-Generated Comprehensive Blog Post
 
-This PR was automatically generated by the post generation workflow.
+This PR contains an **exhaustive technical deep-dive** into the ${project.name} project, automatically generated using Claude Sonnet.
 
-**Project:** ${project.name}  
-**GitHub:** ${project.github}  
-**Generated:** ${new Date().toISOString()}
+### 📊 Stats
+- **Word Count:** ~${wordCount} words
+- **Files Analyzed:** ${Object.keys(githubData.allFiles).length}
+- **Generated:** ${new Date().toISOString()}
 
-### Please review:
-- [ ] Content accuracy
-- [ ] Code examples are correct
-- [ ] Tone and style match other posts
-- [ ] No sensitive information included
+### 📁 Project
+- **Name:** ${project.name}
+- **GitHub:** ${project.github}
+- **Tech Stack:** ${analysis.techStack.join(", ")}
+
+### 🔍 What Was Analyzed
+\`\`\`
+${Object.keys(githubData.allFiles).slice(0, 20).join("\n")}
+${Object.keys(githubData.allFiles).length > 20 ? `... and ${Object.keys(githubData.allFiles).length - 20} more files` : ""}
+\`\`\`
+
+### ✅ Review Checklist
+- [ ] Content is accurate and reflects the actual codebase
+- [ ] Code examples are correct and well-explained
+- [ ] Technical decisions and tradeoffs are properly described
+- [ ] No sensitive information (API keys, secrets) is included
+- [ ] Tone matches Ryan's writing style
+- [ ] Links work correctly
 
 ---
-*Generated by PostGenerationWorkflow*`,
+*Generated by PostGenerationWorkflow using Claude Sonnet*`,
                 head: branchName,
                 base: "master",
               }
@@ -216,7 +253,7 @@ This PR was automatically generated by the post generation workflow.
           }
         );
 
-        // Step 5: Seed Vectorize
+        // Step 5: Seed Vectorize with embeddings
         await step.do(
           `seed-vectorize-${project.slug}`,
           {
@@ -225,9 +262,19 @@ This PR was automatically generated by the post generation workflow.
           },
           async () => {
             console.log(`[Step] Seeding Vectorize for ${project.slug}`);
+            
+            // Create a rich text for embedding
+            const embeddingText = `
+              ${analysis.title}. 
+              ${analysis.description}. 
+              ${analysis.mainPurpose}. 
+              Technologies: ${analysis.techStack.join(", ")}. 
+              Features: ${analysis.keyFeatures.join(", ")}.
+            `.trim();
+            
             const embedding = await generateEmbedding(
               this.env.AI,
-              `${analysis.title}. ${analysis.description}`
+              embeddingText
             );
 
             await this.env.VECTORIZE.upsert([
@@ -239,6 +286,7 @@ This PR was automatically generated by the post generation workflow.
                   title: analysis.title,
                   slug: `project-${project.slug}`,
                   url: `/writing/project-${project.slug}`,
+                  tech: analysis.techStack.join(", "),
                 },
               },
             ]);
@@ -253,13 +301,13 @@ This PR was automatically generated by the post generation workflow.
         });
 
         console.log(
-          `[PostGenerationWorkflow] Successfully processed ${project.slug}`
+          `[PostGenerationWorkflow] ✅ Successfully processed ${project.slug}`
         );
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : String(error);
         console.error(
-          `[PostGenerationWorkflow] Error processing ${project.slug}:`,
+          `[PostGenerationWorkflow] ❌ Error processing ${project.slug}:`,
           errorMessage
         );
 
@@ -278,7 +326,7 @@ This PR was automatically generated by the post generation workflow.
                 this.env.REPO_NAME,
                 {
                   title: `[Auto Post Generation] Failed for ${project.name}`,
-                  body: `## Post Generation Failed
+                  body: `## ❌ Post Generation Failed
 
 The automatic post generation workflow failed for this project.
 
@@ -292,10 +340,17 @@ The automatic post generation workflow failed for this project.
 ${errorMessage}
 \`\`\`
 
+### Possible Causes
+- Repository might be private or inaccessible
+- GitHub API rate limiting
+- Anthropic API issues
+- Repository has unusual structure
+
 ### Next Steps
-1. Check the workflow logs for more details
-2. Fix any issues with the project data
-3. Re-run the workflow or manually create the post
+1. Check the workflow logs in Cloudflare dashboard
+2. Verify the GitHub token has access to the repository
+3. Check Anthropic API key is valid
+4. Re-run the workflow or manually create the post
 
 ---
 *This issue was automatically created by PostGenerationWorkflow*`,
@@ -312,7 +367,6 @@ ${errorMessage}
             issueUrl: issue.html_url,
           });
         } catch (issueError) {
-          // Failed to create issue, just log the original error
           console.error(
             `[PostGenerationWorkflow] Failed to create issue:`,
             issueError

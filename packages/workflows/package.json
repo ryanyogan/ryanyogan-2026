@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.74.0",
     "@ryanyogan/shared": "workspace:*"
   },
   "devDependencies": {
