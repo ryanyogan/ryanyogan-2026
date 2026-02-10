@@ -34,7 +34,28 @@ export async function analyzeProject(
     max_tokens: 2000,
   });
 
-  const responseText = (response as { response: string }).response;
+  // Handle various response formats from Workers AI
+  let responseText: string;
+  
+  if (typeof response === "string") {
+    responseText = response;
+  } else if (response && typeof response === "object") {
+    // Could be { response: string } or { text: string } or other formats
+    const resp = response as Record<string, unknown>;
+    if (typeof resp.response === "string") {
+      responseText = resp.response;
+    } else if (typeof resp.text === "string") {
+      responseText = resp.text;
+    } else if (typeof resp.generated_text === "string") {
+      responseText = resp.generated_text;
+    } else {
+      console.error("[AI] Unexpected response format:", JSON.stringify(response));
+      throw new Error(`Unexpected AI response format: ${JSON.stringify(response)}`);
+    }
+  } else {
+    console.error("[AI] Invalid response type:", typeof response);
+    throw new Error(`Invalid AI response type: ${typeof response}`);
+  }
 
   // Try to parse JSON, handling potential markdown wrapping
   let jsonText = responseText.trim();
@@ -92,7 +113,22 @@ Do NOT include frontmatter or title - start directly with your opening paragraph
     max_tokens: 4000,
   });
 
-  return (response as { response: string }).response;
+  // Handle various response formats from Workers AI
+  if (typeof response === "string") {
+    return response;
+  } else if (response && typeof response === "object") {
+    const resp = response as Record<string, unknown>;
+    if (typeof resp.response === "string") {
+      return resp.response;
+    } else if (typeof resp.text === "string") {
+      return resp.text;
+    } else if (typeof resp.generated_text === "string") {
+      return resp.generated_text;
+    }
+  }
+  
+  console.error("[AI] Unexpected blog generation response:", JSON.stringify(response));
+  throw new Error(`Unexpected AI response format for blog generation`);
 }
 
 /**
