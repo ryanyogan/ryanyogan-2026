@@ -179,6 +179,22 @@ importers:
         specifier: ^4.0.0
         version: 4.64.0(@cloudflare/workers-types@4.20260210.0)
 
+  packages/workflows:
+    dependencies:
+      '@ryanyogan/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20250204.0
+        version: 4.20260210.0
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+      wrangler:
+        specifier: ^4.0.0
+        version: 4.64.0(@cloudflare/workers-types@4.20260210.0)
+
 packages:
 
   '@babel/code-frame@7.27.1':

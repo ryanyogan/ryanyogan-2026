@@ -27,7 +27,7 @@ export const Route = createFileRoute("/projects")({
 });
 
 function ProjectItem({ project }: { project: ProjectMeta }) {
-  const href = project.url || project.githubUrl;
+  const href = project.url || project.github;
   const isExternal = href?.startsWith("http");
   const blogPost = getProjectPost(project.slug);
 

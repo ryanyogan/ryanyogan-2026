@@ -1,0 +1,34 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ryanyogan-workflows",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  // Workflow definition
+  "workflows": [
+    {
+      "name": "post-generation-workflow",
+      "binding": "POST_GENERATION",
+      "class_name": "PostGenerationWorkflow"
+    }
+  ],
+  // Workers AI for content generation and embeddings
+  "ai": {
+    "binding": "AI"
+  },
+  // Vectorize for search embeddings
+  "vectorize": [
+    {
+      "binding": "VECTORIZE",
+      "index_name": "ryanyogan-embeddings"
+    }
+  ],
+  // Environment variables
+  "vars": {
+    "REPO_OWNER": "ryanyogan",
+    "REPO_NAME": "ryanyogan.com"
+  }
+}

@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as WritingIndexRouteImport } from './routes/writing/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WritingSlugRouteImport } from './routes/writing/$slug'
+import { Route as ApiTriggerWorkflowRouteImport } from './routes/api/trigger-workflow'
 import { Route as ApiSeedSearchRouteImport } from './routes/api/seed-search'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
 import { Route as ApiGeneratePostRouteImport } from './routes/api/generate-post'
@@ -56,6 +57,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const WritingSlugRoute = WritingSlugRouteImport.update({
   id: '/writing/$slug',
   path: '/writing/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTriggerWorkflowRoute = ApiTriggerWorkflowRouteImport.update({
+  id: '/api/trigger-workflow',
+  path: '/api/trigger-workflow',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSeedSearchRoute = ApiSeedSearchRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
+  '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/writing/': typeof WritingIndexRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
+  '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin': typeof AdminIndexRoute
   '/writing': typeof WritingIndexRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
+  '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/writing/': typeof WritingIndexRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
+    | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin/'
     | '/writing/'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
+    | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin'
     | '/writing'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
+    | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin/'
     | '/writing/'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   ApiGeneratePostRoute: typeof ApiGeneratePostRoute
   ApiSearchRoute: typeof ApiSearchRoute
   ApiSeedSearchRoute: typeof ApiSeedSearchRoute
+  ApiTriggerWorkflowRoute: typeof ApiTriggerWorkflowRoute
   WritingSlugRoute: typeof WritingSlugRoute
   WritingIndexRoute: typeof WritingIndexRoute
 }
@@ -242,6 +255,13 @@ declare module '@tanstack/react-router' {
       path: '/writing/$slug'
       fullPath: '/writing/$slug'
       preLoaderRoute: typeof WritingSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/trigger-workflow': {
+      id: '/api/trigger-workflow'
+      path: '/api/trigger-workflow'
+      fullPath: '/api/trigger-workflow'
+      preLoaderRoute: typeof ApiTriggerWorkflowRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/seed-search': {
@@ -315,6 +335,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiGeneratePostRoute: ApiGeneratePostRoute,
   ApiSearchRoute: ApiSearchRoute,
   ApiSeedSearchRoute: ApiSeedSearchRoute,
+  ApiTriggerWorkflowRoute: ApiTriggerWorkflowRoute,
   WritingSlugRoute: WritingSlugRoute,
   WritingIndexRoute: WritingIndexRoute,
 }

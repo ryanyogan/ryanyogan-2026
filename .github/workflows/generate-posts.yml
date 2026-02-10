@@ -1,0 +1,119 @@
+name: Generate Blog Posts for New Projects
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'packages/web/content/projects.md'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force check for missing posts (even without file changes)'
+        required: false
+        default: 'false'
+
+jobs:
+  detect-and-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install js-yaml
+        run: npm install js-yaml
+
+      - name: Detect missing posts
+        id: detect
+        run: |
+          # Parse projects from projects.md frontmatter and find missing posts
+          node << 'EOF'
+          const fs = require('fs');
+          const yaml = require('js-yaml');
+          const path = require('path');
+
+          // Read projects.md
+          const projectsPath = 'packages/web/content/projects.md';
+          const projectsContent = fs.readFileSync(projectsPath, 'utf8');
+
+          // Extract YAML frontmatter
+          const frontmatterMatch = projectsContent.match(/^---\n([\s\S]*?)\n---/);
+          if (!frontmatterMatch) {
+            console.log('No frontmatter found in projects.md');
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, 'missing=[]\n');
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, 'missing_count=0\n');
+            process.exit(0);
+          }
+
+          const data = yaml.load(frontmatterMatch[1]);
+          const projects = data.projects || [];
+
+          // Filter to only featured projects (those that should have posts)
+          const featuredProjects = projects.filter(p => p.featured);
+          console.log(`Found ${featuredProjects.length} featured projects`);
+
+          // Get existing post slugs
+          const writingDir = 'packages/web/content/writing';
+          let existingPosts = [];
+          if (fs.existsSync(writingDir)) {
+            existingPosts = fs.readdirSync(writingDir)
+              .filter(f => f.endsWith('.mdx'))
+              .map(f => f.replace('.mdx', ''));
+          }
+          console.log(`Found ${existingPosts.length} existing posts:`, existingPosts);
+
+          // Find projects without posts
+          const missing = featuredProjects.filter(p => {
+            const expectedSlug = `project-${p.slug}`;
+            return !existingPosts.includes(expectedSlug);
+          });
+
+          console.log(`Missing posts for ${missing.length} projects:`, missing.map(p => p.slug));
+
+          // Write outputs
+          const missingJson = JSON.stringify(missing);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `missing=${missingJson}\n`);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `missing_count=${missing.length}\n`);
+          EOF
+
+      - name: Display detection results
+        run: |
+          echo "Missing count: ${{ steps.detect.outputs.missing_count }}"
+          echo "Missing projects: ${{ steps.detect.outputs.missing }}"
+
+      - name: Trigger Cloudflare Workflow
+        if: steps.detect.outputs.missing_count != '0'
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          echo "Triggering workflow for ${{ steps.detect.outputs.missing_count }} projects..."
+          
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "${SITE_URL}/api/trigger-workflow" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"projectsToProcess": ${{ steps.detect.outputs.missing }}}')
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+          
+          echo "Response: $BODY"
+          echo "HTTP Code: $HTTP_CODE"
+          
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Failed to trigger workflow. HTTP $HTTP_CODE"
+            exit 1
+          fi
+          
+          echo "Workflow triggered successfully!"
+          echo "::notice::Post generation workflow started for ${{ steps.detect.outputs.missing_count }} projects"
+
+      - name: No missing posts
+        if: steps.detect.outputs.missing_count == '0'
+        run: |
+          echo "All featured projects already have blog posts."
+          echo "::notice::No new posts to generate"

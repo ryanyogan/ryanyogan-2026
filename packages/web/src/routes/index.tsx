@@ -87,7 +87,7 @@ function HomePage() {
         <h2 className="section-title">Projects</h2>
         <div className="projects-list">
           {projects.slice(0, 3).map((project) => {
-            const href = project.url || project.githubUrl;
+            const href = project.url || project.github;
             const isExternal = href?.startsWith("http");
 
             const content = (

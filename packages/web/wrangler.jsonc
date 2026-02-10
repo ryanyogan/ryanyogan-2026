@@ -33,6 +33,13 @@
   "ai": {
     "binding": "AI"
   },
+  // Service binding to the workflows worker
+  "services": [
+    {
+      "binding": "POST_GENERATION_WORKFLOW",
+      "service": "ryanyogan-workflows"
+    }
+  ],
   // Environment variables (secrets set via wrangler secret put)
   "vars": {
     "ENVIRONMENT": "production",

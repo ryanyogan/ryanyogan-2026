@@ -3,21 +3,22 @@ import { PageLayout } from "~/components/layout";
 import { getPostBySlug, formatDate } from "~/lib/content";
 import { mdxComponents } from "~/components/ui/mdx-components";
 
-// Import MDX files directly - they're prerendered at build time
-import BuildingTeams from "../../../content/writing/building-teams.mdx";
-import EmbeddedRust from "../../../content/writing/embedded-rust.mdx";
-import AiHardware from "../../../content/writing/ai-hardware.mdx";
-import StartupLessons from "../../../content/writing/startup-lessons.mdx";
-import ProjectYoganHockey from "../../../content/writing/project-yogan-hockey.mdx";
+// Dynamically import all MDX files at build time using Vite's glob import
+// This automatically picks up any new MDX files without manual imports
+const mdxModules = import.meta.glob("../../../content/writing/*.mdx", {
+  eager: true,
+}) as Record<string, { default: React.ComponentType<{ components?: Record<string, React.ComponentType<unknown>> }> }>;
 
-// Map slugs to MDX components
-const mdxPosts: Record<string, React.ComponentType<{ components?: Record<string, React.ComponentType> }>> = {
-  "building-teams": BuildingTeams,
-  "embedded-rust": EmbeddedRust,
-  "ai-hardware": AiHardware,
-  "startup-lessons": StartupLessons,
-  "project-yogan-hockey": ProjectYoganHockey,
-};
+// Create slug -> component map from the glob imports
+const mdxPosts: Record<
+  string,
+  React.ComponentType<{ components?: Record<string, React.ComponentType<unknown>> }>
+> = {};
+
+for (const [path, module] of Object.entries(mdxModules)) {
+  const slug = path.split("/").pop()?.replace(".mdx", "") || "";
+  mdxPosts[slug] = module.default;
+}
 
 export const Route = createFileRoute("/writing/$slug")({
   component: WritingPost,
@@ -32,7 +33,9 @@ export const Route = createFileRoute("/writing/$slug")({
     const post = loaderData?.post;
     return {
       meta: [
-        { title: post ? `${post.title} - Ryan Yogan` : "Writing - Ryan Yogan" },
+        {
+          title: post ? `${post.title} - Ryan Yogan` : "Writing - Ryan Yogan",
+        },
         { property: "og:title", content: post?.title || "Writing" },
         { name: "description", content: post?.description || "" },
       ],
@@ -42,7 +45,7 @@ export const Route = createFileRoute("/writing/$slug")({
 
 function WritingPost() {
   const { post } = Route.useLoaderData();
-  
+
   const MDXContent = mdxPosts[post.slug];
 
   if (!MDXContent) {
@@ -56,7 +59,14 @@ function WritingPost() {
   return (
     <PageLayout>
       <Link to="/writing" className="post-back">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
         back to writing
