@@ -18,14 +18,14 @@ interface TriggerRequest {
   projectsToProcess: ProjectToProcess[];
 }
 
-// Type for workflow binding
-interface WorkflowBinding {
-  create: (options: { params: unknown }) => Promise<{ id: string }>;
+// Type for service binding (calls another worker via fetch)
+interface ServiceBinding {
+  fetch: (request: Request) => Promise<Response>;
 }
 
 // Type for our environment bindings
 interface Env {
-  POST_GENERATION_WORKFLOW?: WorkflowBinding;
+  POST_GENERATION_WORKFLOW?: ServiceBinding;
   ADMIN_TOKEN?: string;
 }
 
@@ -74,33 +74,38 @@ export const Route = createFileRoute("/api/trigger-workflow")({
 
         // Trigger the workflow via service binding
         try {
-          const workflow = cfEnv.POST_GENERATION_WORKFLOW;
+          const workflowService = cfEnv.POST_GENERATION_WORKFLOW;
 
-          if (!workflow) {
-            console.error("[TriggerWorkflow] Workflow binding not configured");
+          if (!workflowService) {
+            console.error("[TriggerWorkflow] Workflow service binding not configured");
             return Response.json(
-              { error: "Workflow binding not configured" },
+              { error: "Workflow service binding not configured" },
               { status: 500 }
             );
           }
 
-          // Create workflow instance
-          const instance = await workflow.create({
-            params: { projectsToProcess },
-          });
+          // Call the workflow worker's /trigger endpoint via service binding
+          const triggerResponse = await workflowService.fetch(
+            new Request("https://internal/trigger", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ projectsToProcess }),
+            })
+          );
+
+          const result = await triggerResponse.json();
+
+          if (!triggerResponse.ok) {
+            console.error("[TriggerWorkflow] Workflow service returned error:", result);
+            return Response.json(result, { status: triggerResponse.status });
+          }
 
           console.log(
-            `[TriggerWorkflow] Started workflow ${instance.id} for ${projectsToProcess.length} projects:`,
+            `[TriggerWorkflow] Started workflow for ${projectsToProcess.length} projects:`,
             projectsToProcess.map((p) => p.slug).join(", ")
           );
 
-          return Response.json({
-            message: "Workflow started",
-            triggered: true,
-            instanceId: instance.id,
-            projectCount: projectsToProcess.length,
-            projects: projectsToProcess.map((p) => p.slug),
-          });
+          return Response.json(result);
         } catch (error) {
           console.error("[TriggerWorkflow] Failed to start workflow:", error);
           return Response.json(
