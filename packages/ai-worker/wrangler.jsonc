@@ -1,0 +1,51 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ryanyogan-ai-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  // Cron triggers for scheduled jobs
+  "triggers": {
+    "crons": [
+      // Weekly digest - every Monday at 9 AM UTC
+      "0 9 * * 1",
+      // GitHub activity sync - every 6 hours
+      "0 */6 * * *",
+      // Stats update - daily at midnight
+      "0 0 * * *"
+    ]
+  },
+  // D1 Database binding
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ryanyogan-db",
+      "database_id": "placeholder-will-be-replaced"
+    }
+  ],
+  // KV for caching
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "placeholder-will-be-replaced"
+    }
+  ],
+  // Vectorize for RAG
+  "vectorize": [
+    {
+      "binding": "VECTORIZE",
+      "index_name": "ryanyogan-embeddings"
+    }
+  ],
+  // Workers AI
+  "ai": {
+    "binding": "AI"
+  },
+  // Environment variables
+  "vars": {
+    "ENVIRONMENT": "production"
+  }
+}
