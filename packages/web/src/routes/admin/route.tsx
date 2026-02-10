@@ -1,7 +1,6 @@
 import { createFileRoute, Outlet, Link, redirect } from "@tanstack/react-router";
 import {
   HomeIcon,
-  DocumentIcon,
   ProjectIcon,
   UserIcon,
   TerminalIcon,
@@ -18,9 +17,10 @@ export const Route = createFileRoute("/admin")({
   // },
 });
 
+// Note: Posts are now managed via MDX files in content/writing/
+// See /writing for blog posts - no admin UI needed
 const sidebarLinks = [
   { label: "Dashboard", href: "/admin", icon: HomeIcon },
-  { label: "Posts", href: "/admin/posts", icon: DocumentIcon },
   { label: "Projects", href: "/admin/projects", icon: ProjectIcon },
   { label: "Experience", href: "/admin/experience", icon: UserIcon },
   { label: "AI Content", href: "/admin/content", icon: TerminalIcon },

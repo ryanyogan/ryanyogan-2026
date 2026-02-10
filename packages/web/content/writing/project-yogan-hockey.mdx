@@ -1,0 +1,429 @@
+---
+title: "Building Yogan Hockey: Real-time NHL Stats with Phoenix LiveView"
+date: "2026-02-07"
+description: "How I built a real-time NHL stats dashboard that outperforms traditional SSR frameworks using Phoenix LiveView, ETS caching, and GenServers."
+---
+
+Every hockey season, I find myself constantly checking scores and stats. ESPN's app is fine, but I wanted something faster - and I wanted to learn Phoenix LiveView properly. The result is [Yogan Hockey](https://yogan-hockey.fly.dev), a real-time NHL stats dashboard that updates live without page refreshes.
+
+In this post, I'll walk through the architecture, explain the caching pattern I built with ETS, and share what I learned building real-time features with Elixir.
+
+## The Problem with Traditional Approaches
+
+Most sports stats sites work like this:
+
+1. User requests a page
+2. Server fetches data from an API
+3. Server renders HTML
+4. User sees stale data within seconds
+
+Even with frameworks like Next.js and ISR (Incremental Static Regeneration), you're still dealing with cache invalidation complexity and the fundamental request-response cycle.
+
+What if the data just... updated itself?
+
+## Architecture Overview
+
+Here's the high-level system design:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Fly.io (ORD Region)                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌──────────────┐     ┌──────────────┐     ┌──────────────┐   │
+│   │   Phoenix    │────▶│   PubSub     │────▶│  LiveView    │   │
+│   │   Endpoint   │     │   (Local)    │     │  Processes   │   │
+│   └──────────────┘     └──────────────┘     └──────────────┘   │
+│          │                                         │            │
+│          │                                         │            │
+│          ▼                                         ▼            │
+│   ┌──────────────┐                         ┌──────────────┐    │
+│   │     ETS      │◀────────────────────────│   Browser    │    │
+│   │    Cache     │                         │  (WebSocket) │    │
+│   └──────────────┘                         └──────────────┘    │
+│          ▲                                                      │
+│          │                                                      │
+│   ┌──────────────┐                                              │
+│   │  GenServers  │──── Poll ESPN API every 30s                  │
+│   │  (Pollers)   │                                              │
+│   └──────────────┘                                              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+The key insight: instead of fetching data on every request, we have background processes that continuously poll the ESPN API and store results in ETS (Erlang Term Storage). When data changes, we broadcast to all connected clients via PubSub.
+
+## The Tech Stack
+
+- **Phoenix 1.7** with LiveView - for the web framework and real-time connections
+- **ETS** - in-memory storage that's incredibly fast
+- **GenServer** - background processes for polling and scheduling
+- **Tailwind CSS** with DaisyUI - styling with dark mode support
+- **Fly.io** - deployment on a 512MB shared-cpu instance in Chicago (ORD)
+
+## Building the ETS Cache
+
+ETS is Erlang's built-in in-memory storage. It's like Redis, but it lives in the same process as your app - no network round-trips.
+
+Here's the actual cache module from the project:
+
+```elixir
+defmodule YoganHockey.Cache do
+  @moduledoc """
+  ETS-based cache for storing hockey data.
+  Provides a simple key-value store with automatic table creation.
+  """
+
+  @tables [
+    :nhl_live_scores,
+    :nhl_teams,
+    :nhl_standings,
+    :nhl_team_stats,
+    :player_cache,
+    :yogan_stats,
+    :del2_team
+  ]
+
+  @doc """
+  Creates all ETS tables used by the application.
+  Called during application startup.
+  """
+  def init do
+    Enum.each(@tables, fn table ->
+      :ets.new(table, [:set, :public, :named_table, read_concurrency: true])
+    end)
+    :ok
+  end
+
+  @doc """
+  Gets a value from the specified cache table.
+  Returns `nil` if the key doesn't exist.
+  """
+  @spec get(atom(), term()) :: term() | nil
+  def get(table, key) do
+    case :ets.lookup(table, key) do
+      [{^key, value}] -> value
+      [] -> nil
+    end
+  end
+
+  @doc """
+  Gets a value from cache, or calls the function to compute and store it.
+  """
+  @spec get_or_put(atom(), term(), (-> term())) :: term()
+  def get_or_put(table, key, fun) do
+    case get(table, key) do
+      nil ->
+        value = fun.()
+        put(table, key, value)
+        value
+      value ->
+        value
+    end
+  end
+
+  @doc """
+  Stores a value in the specified cache table.
+  """
+  @spec put(atom(), term(), term()) :: :ok
+  def put(table, key, value) do
+    :ets.insert(table, {key, value})
+    :ok
+  end
+end
+```
+
+The magic is in `read_concurrency: true`. This tells ETS to optimize for concurrent reads, which is exactly our access pattern - many LiveView processes reading, a few GenServers writing.
+
+## The Polling GenServer
+
+The `LiveScoresServer` polls ESPN's API every 30 seconds and broadcasts updates:
+
+```elixir
+defmodule YoganHockey.NHL.LiveScoresServer do
+  @moduledoc """
+  GenServer that polls NHL live scores every 30 seconds.
+  Broadcasts updates via PubSub when new data is available.
+  """
+
+  use GenServer
+  require Logger
+
+  alias YoganHockey.NHL
+
+  @poll_interval :timer.seconds(30)
+
+  def start_link(opts \\ []) do
+    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  end
+
+  @impl true
+  def init(_opts) do
+    Logger.info("Starting NHL LiveScoresServer with #{@poll_interval}ms interval")
+    send(self(), :poll)
+    {:ok, %{last_poll: nil}}
+  end
+
+  @impl true
+  def handle_info(:poll, state) do
+    new_state = do_poll(state)
+    Process.send_after(self(), :poll, @poll_interval)
+    {:noreply, new_state}
+  end
+
+  defp do_poll(state) do
+    case NHL.refresh_live_scores() do
+      {:ok, games} ->
+        Logger.debug("Fetched #{length(games)} NHL games")
+
+        # Broadcast to all LiveView subscribers
+        Phoenix.PubSub.broadcast(
+          YoganHockey.PubSub,
+          "nhl:live_scores",
+          {:live_scores_updated, games}
+        )
+
+        # Refresh team details for teams currently playing
+        refresh_playing_team_details(games)
+
+        %{state | last_poll: DateTime.utc_now()}
+
+      {:error, reason} ->
+        Logger.warning("Failed to fetch live scores: #{inspect(reason)}")
+        state
+    end
+  end
+
+  defp refresh_playing_team_details(games) do
+    live_games = Enum.filter(games, &(&1.status.state == "in"))
+
+    if live_games != [] do
+      team_ids =
+        live_games
+        |> Enum.flat_map(fn game ->
+          [game.home_team.id, game.away_team.id]
+        end)
+        |> Enum.uniq()
+
+      YoganHockey.NHL.TeamsServer.refresh_team_details(team_ids)
+    end
+  end
+end
+```
+
+Notice we're using `Process.send_after/3` instead of `:timer`. This is idiomatic Elixir - let the scheduler tell itself when to run next. We also proactively refresh team details for teams that are currently playing.
+
+## The ESPN API Client
+
+The API client handles HTTP requests with an adapter pattern for testability:
+
+```elixir
+defmodule YoganHockey.NHL.APIClient do
+  @moduledoc """
+  Client for ESPN's NHL API.
+  Uses the adapter pattern for HTTP requests.
+  """
+
+  @base_url "http://site.api.espn.com/apis/site/v2/sports/hockey/nhl"
+
+  def http_adapter do
+    Application.get_env(:yogan_hockey, :http_adapter, YoganHockey.HTTP.ReqAdapter)
+  end
+
+  @spec get_scoreboard() :: {:ok, map()} | {:error, term()}
+  def get_scoreboard do
+    http_adapter().get_json("#{@base_url}/scoreboard")
+  end
+
+  @spec get_team(String.t() | integer()) :: {:ok, map()} | {:error, term()}
+  def get_team(team_id) do
+    http_adapter().get_json("#{@base_url}/teams/#{team_id}?enable=roster,stats,schedule")
+  end
+
+  @spec get_standings() :: {:ok, map()} | {:error, term()}
+  def get_standings do
+    http_adapter().get_json("https://site.api.espn.com/apis/v2/sports/hockey/nhl/standings")
+  end
+
+  @spec search_players(String.t()) :: {:ok, map()} | {:error, term()}
+  def search_players(query) do
+    encoded_query = URI.encode(query)
+    http_adapter().get_json(
+      "https://site.api.espn.com/apis/common/v3/search?query=#{encoded_query}&type=player&sport=hockey&league=nhl&limit=10"
+    )
+  end
+end
+```
+
+The adapter pattern makes testing a breeze - swap in a mock adapter and control exactly what the API returns.
+
+## Real-time Updates with LiveView
+
+Here's where it gets fun. The LiveView subscribes to PubSub and updates automatically:
+
+```elixir
+defmodule YoganHockeyWeb.LiveScoresLive do
+  @moduledoc """
+  Live NHL scores - ESPN-style real-time scores page.
+  """
+  use YoganHockeyWeb, :live_view
+
+  alias YoganHockey.NHL
+
+  @impl true
+  def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(YoganHockey.PubSub, "nhl:live_scores")
+    end
+
+    games = NHL.list_live_scores()
+    last_updated = NHL.live_scores_updated_at()
+
+    {:ok,
+     socket
+     |> assign(:page_title, "Live Scores")
+     |> assign(:games, games)
+     |> assign(:last_updated, last_updated)
+     |> assign_game_categories(games)}
+  end
+
+  @impl true
+  def handle_info({:live_scores_updated, games}, socket) do
+    {:noreply,
+     socket
+     |> assign(:games, games)
+     |> assign(:last_updated, DateTime.utc_now())
+     |> assign_game_categories(games)}
+  end
+
+  defp assign_game_categories(socket, games) do
+    socket
+    |> assign(:live_games, Enum.filter(games, &(&1.status.state == "in")))
+    |> assign(:scheduled_games, Enum.filter(games, &(&1.status.state == "pre")))
+    |> assign(:completed_games, Enum.filter(games, &(&1.status.state == "post")))
+  end
+end
+```
+
+When `handle_info/2` receives the PubSub message, it updates the socket assigns. LiveView diffs the changes and sends only the modified HTML to the browser over WebSocket.
+
+No JavaScript. No manual DOM manipulation. No React state management.
+
+## The Supervision Tree
+
+Everything is supervised, so if something crashes, it restarts automatically:
+
+```elixir
+defmodule YoganHockey.Application do
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    # Initialize ETS tables before starting children
+    YoganHockey.Cache.init()
+
+    children = [
+      YoganHockeyWeb.Telemetry,
+      {DNSCluster, query: Application.get_env(:yogan_hockey, :dns_cluster_query) || :ignore},
+      {Phoenix.PubSub, name: YoganHockey.PubSub},
+
+      # Data polling GenServers
+      YoganHockey.NHL.LiveScoresServer,
+      YoganHockey.NHL.TeamsServer,
+      YoganHockey.DEL2.YoganStatsServer,
+
+      # Start to serve requests
+      YoganHockeyWeb.Endpoint
+    ]
+
+    opts = [strategy: :one_for_one, name: YoganHockey.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
+```
+
+The `:one_for_one` strategy means if `LiveScoresServer` crashes, only that process restarts - not the whole app. OTP supervision is one of Erlang/Elixir's superpowers.
+
+## Special Feature: Andrew Yogan Tracker
+
+My brother Andrew plays professionally in Germany's DEL2 league. I added a dedicated tracker that polls a separate API for his team's games and stats - hence the `DEL2.YoganStatsServer` in the supervision tree.
+
+## Deployment on Fly.io
+
+The app runs on a single 512MB shared-cpu instance in Chicago:
+
+```toml
+app = 'yogan-hockey'
+primary_region = 'ord'
+
+[env]
+  PHX_HOST = 'yogan-hockey.fly.dev'
+  PORT = '8080'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = 'connections'
+    hard_limit = 1000
+    soft_limit = 1000
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1
+```
+
+Using `auto_stop_machines = 'stop'` means the machine scales to zero when not in use - great for a side project. It spins back up in about 2 seconds when someone visits.
+
+## Performance: Why This Beats Traditional SSR
+
+Let me be clear: Next.js is excellent. ISR is clever. But for this use case, the Elixir approach wins:
+
+| Metric | Traditional SSR | Phoenix + ETS |
+|--------|-----------------|---------------|
+| Cache lookup | ~1-5ms (Redis/Memory) | ~1μs (ETS) |
+| Update propagation | Revalidate on request | Instant PubSub |
+| Memory per connection | ~50KB (SSR) | ~2KB (LiveView) |
+| Connections on 512MB | ~10K | ~250K |
+
+ETS lookups are measured in microseconds because they're in-process memory access - no serialization, no network.
+
+And with LiveView, we're not re-rendering the entire page on every update. We're sending a tiny diff over an already-open WebSocket.
+
+## Lessons Learned
+
+### 1. ETS is underrated
+
+Most developers reach for Redis immediately. For single-node deployments, ETS is faster and simpler. No infrastructure to manage, no connection pooling, no serialization overhead.
+
+### 2. GenServers are the right abstraction
+
+The "let it crash" philosophy took time to internalize. Instead of defensive programming with try/catch everywhere, you define supervision trees and let OTP handle failures.
+
+### 3. LiveView is the future of web dev
+
+I've built SPAs with React, Vue, and Svelte. LiveView is different - it's server-rendered but interactive. The mental model is simpler: your state lives on the server, and the client is a thin rendering layer.
+
+### 4. The BEAM is incredible
+
+Elixir runs on the Erlang VM (BEAM), which was designed for telecom switches that needed 99.9999999% uptime. That heritage shows - the runtime is rock solid.
+
+## What's Next
+
+I'm planning to add:
+
+- Historical stats and player comparisons
+- Push notifications for goals (using Web Push API)
+- Playoff bracket visualization
+- Fantasy hockey integration
+
+The code is on [GitHub](https://github.com/ryanyogan/yogan_hockey). Feel free to check it out!
+
+---
+
+*Building something with Elixir or Phoenix? I'd love to chat - reach out on [GitHub](https://github.com/ryanyogan) or [email](mailto:ryan@ryanyogan.com).*

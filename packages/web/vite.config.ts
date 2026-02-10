@@ -13,13 +13,14 @@ export default defineConfig({
     // MDX support - must come before React
     mdx({
       remarkPlugins: [remarkGfm, remarkFrontmatter],
-      providerImportSource: "@mdx-js/react",
     }),
     // Tailwind must come first for CSS processing
     tailwindcss(),
     // Cloudflare for Workers deployment
     cloudflare({ viteEnvironment: { name: "ssr" } }),
     // TanStack Start for routing and SSR
+    // Note: Prerendering disabled - causes slow builds with Cloudflare Workers
+    // Posts are still fully SSR'd on request
     tanstackStart(),
     // React for JSX
     react(),

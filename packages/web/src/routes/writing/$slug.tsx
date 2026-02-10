@@ -1,10 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
 import { getPostBySlug, formatDate } from "~/lib/content";
-import { lazy, Suspense } from "react";
+import { mdxComponents } from "~/components/ui/mdx-components";
 
-// Import MDX files - Vite will handle these at build time
-const mdxModules = import.meta.glob("../../content/writing/*.mdx");
+// Import MDX files directly - they're prerendered at build time
+import BuildingTeams from "../../../content/writing/building-teams.mdx";
+import EmbeddedRust from "../../../content/writing/embedded-rust.mdx";
+import AiHardware from "../../../content/writing/ai-hardware.mdx";
+import StartupLessons from "../../../content/writing/startup-lessons.mdx";
+import ProjectYoganHockey from "../../../content/writing/project-yogan-hockey.mdx";
+
+// Map slugs to MDX components
+const mdxPosts: Record<string, React.ComponentType<{ components?: Record<string, React.ComponentType> }>> = {
+  "building-teams": BuildingTeams,
+  "embedded-rust": EmbeddedRust,
+  "ai-hardware": AiHardware,
+  "startup-lessons": StartupLessons,
+  "project-yogan-hockey": ProjectYoganHockey,
+};
 
 export const Route = createFileRoute("/writing/$slug")({
   component: WritingPost,
@@ -30,16 +43,15 @@ export const Route = createFileRoute("/writing/$slug")({
 function WritingPost() {
   const { post } = Route.useLoaderData();
   
-  // Dynamically load the MDX component
-  const MDXContent = lazy(async () => {
-    const modulePath = `../../content/writing/${post.slug}.mdx`;
-    const loader = mdxModules[modulePath];
-    if (!loader) {
-      throw new Error(`MDX file not found: ${post.slug}`);
-    }
-    const module = await loader() as { default: React.ComponentType };
-    return { default: module.default };
-  });
+  const MDXContent = mdxPosts[post.slug];
+
+  if (!MDXContent) {
+    return (
+      <PageLayout>
+        <div>Post content not found for: {post.slug}</div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout>
@@ -57,9 +69,7 @@ function WritingPost() {
         </header>
 
         <div className="prose">
-          <Suspense fallback={<p>Loading...</p>}>
-            <MDXContent />
-          </Suspense>
+          <MDXContent components={mdxComponents} />
         </div>
       </article>
     </PageLayout>

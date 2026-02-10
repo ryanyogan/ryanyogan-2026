@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
 import { getAllPosts } from "~/lib/content";
 
-export const Route = createFileRoute("/writing")({
+export const Route = createFileRoute("/writing/")({
   component: WritingPage,
   head: () => ({
     meta: [
@@ -21,7 +21,7 @@ function WritingPage() {
 
   return (
     <PageLayout>
-      <h1 style={{ marginBottom: "2rem" }}>writing</h1>
+      <h1 className="page-title">Writing</h1>
 
       <div className="writing-list">
         {posts.map((post) => (

@@ -12,14 +12,7 @@
     {
       "binding": "DB",
       "database_name": "ryanyogan-db",
-      "database_id": "placeholder-will-be-replaced"
-    }
-  ],
-  // KV for caching and rate limiting
-  "kv_namespaces": [
-    {
-      "binding": "CACHE",
-      "id": "placeholder-will-be-replaced"
+      "database_id": "1d16165e-ed7b-4f68-9147-bc0dd81f4200"
     }
   ],
   // R2 for asset storage
@@ -29,18 +22,18 @@
       "bucket_name": "ryanyogan-assets"
     }
   ],
-  // Vectorize for RAG
+  // Vectorize for RAG search
   "vectorize": [
     {
       "binding": "VECTORIZE",
       "index_name": "ryanyogan-embeddings"
     }
   ],
-  // Workers AI
+  // Workers AI for embeddings and content generation
   "ai": {
     "binding": "AI"
   },
-  // Environment variables
+  // Environment variables (secrets set via wrangler secret put)
   "vars": {
     "ENVIRONMENT": "production",
     "BETTER_AUTH_URL": "https://ryanyogan.com"

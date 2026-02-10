@@ -1,13 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
-import { getProjects } from "~/lib/server/db";
-import type { Project } from "@ryanyogan/db/schema";
+import {
+  getFeaturedProjects,
+  getOtherProjects,
+  getProjectPost,
+  type ProjectMeta,
+} from "~/lib/content";
 
 export const Route = createFileRoute("/projects")({
   component: ProjectsPage,
   loader: async () => {
-    const projects = await getProjects();
-    return { projects };
+    const featured = getFeaturedProjects();
+    const other = getOtherProjects();
+    return { featured, other };
   },
   head: () => ({
     meta: [
@@ -21,44 +26,82 @@ export const Route = createFileRoute("/projects")({
   }),
 });
 
+function ProjectItem({ project }: { project: ProjectMeta }) {
+  const href = project.url || project.githubUrl;
+  const isExternal = href?.startsWith("http");
+  const blogPost = getProjectPost(project.slug);
+
+  const content = (
+    <div className="project-item-content">
+      <div className="project-item-header">
+        <span className="project-name">{project.name}</span>
+        <span className="project-tech-inline">{project.tech.join(", ")}</span>
+      </div>
+      <span className="project-description">{project.description}</span>
+      {blogPost && (
+        <Link
+          to="/writing/$slug"
+          params={{ slug: blogPost.slug }}
+          className="project-read-more"
+          onClick={(e) => e.stopPropagation()}
+        >
+          Read the write-up
+        </Link>
+      )}
+    </div>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        className="project-item"
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return <div className="project-item">{content}</div>;
+}
+
 function ProjectsPage() {
-  const { projects } = Route.useLoaderData() as { projects: Project[] };
+  const { featured, other } = Route.useLoaderData();
 
   return (
     <PageLayout>
-      <h1 style={{ marginBottom: "1rem" }}>projects</h1>
-      <p style={{ color: "var(--color-muted)", marginBottom: "2rem" }}>
-        A mix of open source work, side projects, and experiments.
-      </p>
+      <header className="page-header">
+        <h1 className="page-title">Projects</h1>
+        <p className="page-description">
+          A mix of open source work, side projects, and experiments.
+        </p>
+      </header>
 
-      <div className="projects-list">
-        {projects.map((project) => {
-          const href = project.url || project.githubUrl;
-          const isExternal = href?.startsWith("http");
+      {/* 2026 Projects */}
+      {featured.length > 0 && (
+        <section className="projects-section">
+          <h2 className="projects-section-title">2026 Projects</h2>
+          <div className="projects-list">
+            {featured.map((project) => (
+              <ProjectItem key={project.slug} project={project} />
+            ))}
+          </div>
+        </section>
+      )}
 
-          if (href) {
-            return (
-              <a
-                key={project.id}
-                href={href}
-                target={isExternal ? "_blank" : undefined}
-                rel={isExternal ? "noopener noreferrer" : undefined}
-                className="project-item"
-              >
-                <span className="project-name">{project.name}</span>
-                <span className="project-description">{project.description}</span>
-              </a>
-            );
-          }
-
-          return (
-            <div key={project.id} className="project-item">
-              <span className="project-name">{project.name}</span>
-              <span className="project-description">{project.description}</span>
-            </div>
-          );
-        })}
-      </div>
+      {/* Past Projects & Repositories */}
+      {other.length > 0 && (
+        <section className="projects-section">
+          <h2 className="projects-section-title">Past Projects & Repositories</h2>
+          <div className="projects-list">
+            {other.map((project) => (
+              <ProjectItem key={project.slug} project={project} />
+            ))}
+          </div>
+        </section>
+      )}
     </PageLayout>
   );
 }
