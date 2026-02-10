@@ -1,0 +1,55 @@
+---
+title: "AI at the edge: when software meets hardware"
+date: "2024-03-10"
+description: "Exploring the intersection of machine learning and embedded systems."
+---
+
+# AI at the edge: when software meets hardware
+
+Running AI models on embedded devices opens up possibilities that cloud-based solutions can't match. Here's what I've learned.
+
+## Why edge AI?
+
+- **Latency** - No network round-trip means real-time responses
+- **Privacy** - Data never leaves the device
+- **Reliability** - Works offline, no dependency on cloud services
+- **Cost** - No per-inference cloud costs
+
+## The hardware landscape
+
+Modern edge AI runs on a variety of hardware:
+
+| Platform | Pros | Cons |
+|----------|------|------|
+| NVIDIA Jetson | Powerful GPU | Power hungry |
+| Raspberry Pi 5 | Accessible | Limited ML acceleration |
+| ESP32-S3 | Low power, cheap | Very limited models |
+| Google Coral | Fast inference | Model conversion required |
+
+## Model optimization
+
+Edge devices have limited resources. You need to optimize:
+
+```python
+# Quantize model to int8
+converter = tf.lite.TFLiteConverter.from_saved_model(model_path)
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+converter.target_spec.supported_types = [tf.int8]
+tflite_model = converter.convert()
+```
+
+Quantization can reduce model size by 4x with minimal accuracy loss.
+
+## Real-world applications
+
+I've been working on:
+
+- **Computer vision** for robotics navigation
+- **Anomaly detection** in industrial equipment
+- **Voice recognition** for offline assistants
+
+The key is choosing the right model architecture for your constraints.
+
+## The future
+
+As hardware gets more capable and models get more efficient, we'll see AI everywhere - in your car, your appliances, your tools. The devices around us are about to get a lot smarter.

@@ -1,0 +1,69 @@
+---
+title: "Getting started with embedded Rust"
+date: "2024-02-20"
+description: "A practical guide to writing Rust for microcontrollers and embedded systems."
+---
+
+# Getting started with embedded Rust
+
+I've been using Rust for embedded systems development, and it's been a game-changer. Here's how to get started.
+
+## Why Rust for embedded?
+
+Traditional embedded development is done in C, but Rust offers:
+
+- **Memory safety** without garbage collection
+- **Zero-cost abstractions** - high-level code compiles to efficient machine code
+- **Modern tooling** - cargo, rust-analyzer, and great error messages
+
+## Setting up your environment
+
+First, install the embedded toolchain:
+
+```bash
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Add the ARM Cortex-M target (for STM32, nRF, etc.)
+rustup target add thumbv7em-none-eabihf
+
+# Install debugging tools
+cargo install probe-rs --features cli
+```
+
+## Your first blink
+
+The "hello world" of embedded is blinking an LED:
+
+```rust
+#![no_std]
+#![no_main]
+
+use cortex_m_rt::entry;
+use panic_halt as _;
+use stm32f4xx_hal::{pac, prelude::*};
+
+#[entry]
+fn main() -> ! {
+    let dp = pac::Peripherals::take().unwrap();
+    let gpioc = dp.GPIOC.split();
+    let mut led = gpioc.pc13.into_push_pull_output();
+
+    loop {
+        led.set_high();
+        cortex_m::asm::delay(8_000_000);
+        led.set_low();
+        cortex_m::asm::delay(8_000_000);
+    }
+}
+```
+
+## Next steps
+
+Once you have the basics down, explore:
+
+- **RTIC** for real-time interrupt handling
+- **Embassy** for async/await on embedded
+- **defmt** for efficient logging
+
+The Rust embedded ecosystem is growing fast. It's a great time to get involved.

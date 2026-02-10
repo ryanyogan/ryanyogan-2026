@@ -1,0 +1,49 @@
+---
+title: "Lessons from startup life"
+date: "2024-04-05"
+description: "What I learned from building products at early-stage startups."
+---
+
+# Lessons from startup life
+
+After spending years at startups of various stages, here are the lessons that stuck with me.
+
+## Ship fast, learn faster
+
+The biggest mistake I see is over-engineering early. Your first version should be embarrassingly simple:
+
+```typescript
+// Bad: Over-engineering from day one
+class UserServiceFactoryProviderImpl implements IUserServiceFactory {
+  // 500 lines of abstraction
+}
+
+// Good: Just ship it
+async function createUser(email: string) {
+  return db.users.create({ email });
+}
+```
+
+You can always add complexity later. You can't get back the time spent building the wrong thing.
+
+## Talk to users constantly
+
+I used to think my job was to write code. Now I know it's to solve problems. The best way to understand problems is to talk to the people who have them.
+
+Schedule weekly calls with users. Watch them use your product. Feel their frustration.
+
+## Technical debt is a tool
+
+Used wisely, technical debt lets you move fast when speed matters. The key is knowing when to pay it back:
+
+- **Take on debt** to validate ideas quickly
+- **Pay it back** before scaling
+- **Never ignore** security or data integrity debt
+
+## The team is everything
+
+I've seen great ideas fail with bad teams and mediocre ideas succeed with great teams. Hire people you'd want to work with for years.
+
+## Know when to leave
+
+Sometimes the right move is to walk away - from a project, a company, or an approach. It's not giving up; it's making room for something better.

@@ -15,11 +15,18 @@
       "database_id": "placeholder-will-be-replaced"
     }
   ],
-  // KV for caching
+  // KV for caching and rate limiting
   "kv_namespaces": [
     {
       "binding": "CACHE",
       "id": "placeholder-will-be-replaced"
+    }
+  ],
+  // R2 for asset storage
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "ryanyogan-assets"
     }
   ],
   // Vectorize for RAG
@@ -35,6 +42,7 @@
   },
   // Environment variables
   "vars": {
-    "ENVIRONMENT": "production"
+    "ENVIRONMENT": "production",
+    "BETTER_AUTH_URL": "https://ryanyogan.com"
   }
 }

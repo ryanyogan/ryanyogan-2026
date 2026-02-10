@@ -4,9 +4,9 @@ import { CommandKHint } from "~/components/ui/command-palette";
 import { SearchIcon } from "~/components/ui/icons";
 
 const navItems = [
-  { label: "writing", href: "/blog" },
+  { label: "work", href: "/work" },
+  { label: "writing", href: "/writing" },
   { label: "projects", href: "/projects" },
-  { label: "about", href: "/about" },
 ] as const;
 
 export function Header() {

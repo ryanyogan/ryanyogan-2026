@@ -8,7 +8,6 @@ import {
   DocumentIcon,
   ProjectIcon,
   UserIcon,
-  MailIcon,
   SunIcon,
   MoonIcon,
   SearchIcon,
@@ -65,12 +64,23 @@ export function CommandPalette() {
       group: "navigation",
     },
     {
-      id: "blog",
-      label: "Writing",
+      id: "work",
+      label: "Work",
       shortcut: "W",
+      icon: <UserIcon size={16} />,
+      action: () => {
+        navigate({ to: "/work" });
+        setOpen(false);
+      },
+      group: "navigation",
+    },
+    {
+      id: "writing",
+      label: "Writing",
+      shortcut: "B",
       icon: <DocumentIcon size={16} />,
       action: () => {
-        navigate({ to: "/blog" });
+        navigate({ to: "/writing" });
         setOpen(false);
       },
       group: "navigation",
@@ -82,28 +92,6 @@ export function CommandPalette() {
       icon: <ProjectIcon size={16} />,
       action: () => {
         navigate({ to: "/projects" });
-        setOpen(false);
-      },
-      group: "navigation",
-    },
-    {
-      id: "about",
-      label: "About",
-      shortcut: "A",
-      icon: <UserIcon size={16} />,
-      action: () => {
-        navigate({ to: "/about" });
-        setOpen(false);
-      },
-      group: "navigation",
-    },
-    {
-      id: "contact",
-      label: "Contact",
-      shortcut: "C",
-      icon: <MailIcon size={16} />,
-      action: () => {
-        navigate({ to: "/contact" });
         setOpen(false);
       },
       group: "navigation",
@@ -267,10 +255,10 @@ export function CommandPalette() {
 
           <div className="command-footer">
             <span className="command-footer-hint">
-              <kbd>↑↓</kbd> navigate
+              <kbd>press</kbd> navigate
             </span>
             <span className="command-footer-hint">
-              <kbd>↵</kbd> select
+              <kbd>enter</kbd> select
             </span>
             <span className="command-footer-hint">
               <kbd>esc</kbd> close
@@ -282,7 +270,7 @@ export function CommandPalette() {
   );
 }
 
-// Keyboard hint component for header
+// Keyboard hint component for header (legacy, keeping for compatibility)
 export function CommandKHint() {
   return (
     <button
@@ -300,7 +288,7 @@ export function CommandKHint() {
       <SearchIcon size={14} />
       <span className="command-k-hint-text">Search</span>
       <kbd className="command-k-hint-kbd">
-        <span>⌘</span>K
+        <span>cmd</span>K
       </kbd>
     </button>
   );

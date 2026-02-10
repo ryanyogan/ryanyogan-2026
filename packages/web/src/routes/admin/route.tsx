@@ -1,0 +1,67 @@
+import { createFileRoute, Outlet, Link, redirect } from "@tanstack/react-router";
+import {
+  HomeIcon,
+  DocumentIcon,
+  ProjectIcon,
+  UserIcon,
+  TerminalIcon,
+} from "~/components/ui/icons";
+
+export const Route = createFileRoute("/admin")({
+  component: AdminLayout,
+  // TODO: Add auth check once Better Auth is configured
+  // beforeLoad: async () => {
+  //   const session = await getSession();
+  //   if (!session || session.user.role !== "admin") {
+  //     throw redirect({ to: "/", search: { error: "unauthorized" } });
+  //   }
+  // },
+});
+
+const sidebarLinks = [
+  { label: "Dashboard", href: "/admin", icon: HomeIcon },
+  { label: "Posts", href: "/admin/posts", icon: DocumentIcon },
+  { label: "Projects", href: "/admin/projects", icon: ProjectIcon },
+  { label: "Experience", href: "/admin/experience", icon: UserIcon },
+  { label: "AI Content", href: "/admin/content", icon: TerminalIcon },
+];
+
+function AdminLayout() {
+  return (
+    <div className="admin-layout">
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar-header">
+          <Link to="/" className="admin-logo">
+            <span className="admin-logo-mark">R</span>
+            <span className="admin-logo-text">Admin</span>
+          </Link>
+        </div>
+        
+        <nav className="admin-nav">
+          {sidebarLinks.map((link) => (
+            <Link
+              key={link.href}
+              to={link.href}
+              className="admin-nav-link"
+              activeProps={{ className: "admin-nav-link is-active" }}
+              activeOptions={{ exact: link.href === "/admin" }}
+            >
+              <link.icon size={18} />
+              <span>{link.label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        <div className="admin-sidebar-footer">
+          <Link to="/" className="admin-nav-link">
+            <span>← Back to site</span>
+          </Link>
+        </div>
+      </aside>
+
+      <main className="admin-main">
+        <Outlet />
+      </main>
+    </div>
+  );
+}

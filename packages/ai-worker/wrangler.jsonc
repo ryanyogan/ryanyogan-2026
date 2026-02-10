@@ -33,6 +33,13 @@
       "id": "placeholder-will-be-replaced"
     }
   ],
+  // R2 for asset storage (screenshots, etc.)
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "ryanyogan-assets"
+    }
+  ],
   // Vectorize for RAG
   "vectorize": [
     {
