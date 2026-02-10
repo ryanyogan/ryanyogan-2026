@@ -35,48 +35,66 @@ export async function analyzeProject(
   });
 
   // Handle various response formats from Workers AI
-  let responseText: string;
+  let analysisData: unknown;
   
-  if (typeof response === "string") {
-    responseText = response;
-  } else if (response && typeof response === "object") {
-    // Could be { response: string } or { text: string } or other formats
+  if (response && typeof response === "object") {
     const resp = response as Record<string, unknown>;
-    if (typeof resp.response === "string") {
-      responseText = resp.response;
-    } else if (typeof resp.text === "string") {
-      responseText = resp.text;
-    } else if (typeof resp.generated_text === "string") {
-      responseText = resp.generated_text;
-    } else {
+    
+    // Case 1: { response: <object> } - AI already parsed the JSON for us
+    if (resp.response && typeof resp.response === "object") {
+      analysisData = resp.response;
+    }
+    // Case 2: { response: "<json string>" } - need to parse
+    else if (typeof resp.response === "string") {
+      let jsonText = resp.response.trim();
+      // Remove markdown code block if present
+      if (jsonText.startsWith("```json")) {
+        jsonText = jsonText.slice(7);
+      } else if (jsonText.startsWith("```")) {
+        jsonText = jsonText.slice(3);
+      }
+      if (jsonText.endsWith("```")) {
+        jsonText = jsonText.slice(0, -3);
+      }
+      jsonText = jsonText.trim();
+      
+      try {
+        analysisData = JSON.parse(jsonText);
+      } catch (error) {
+        console.error("[AI] Failed to parse analysis JSON string:", jsonText);
+        throw new Error(`Failed to parse AI analysis response: ${error}`);
+      }
+    }
+    // Case 3: { text: "<json string>" }
+    else if (typeof resp.text === "string") {
+      try {
+        analysisData = JSON.parse(resp.text);
+      } catch (error) {
+        console.error("[AI] Failed to parse text field:", resp.text);
+        throw new Error(`Failed to parse AI text response: ${error}`);
+      }
+    }
+    // Case 4: Response object is the analysis itself
+    else if (resp.title || resp.techStack || resp.mainPurpose) {
+      analysisData = resp;
+    }
+    else {
       console.error("[AI] Unexpected response format:", JSON.stringify(response));
       throw new Error(`Unexpected AI response format: ${JSON.stringify(response)}`);
+    }
+  } else if (typeof response === "string") {
+    try {
+      analysisData = JSON.parse(response);
+    } catch (error) {
+      console.error("[AI] Failed to parse string response:", response);
+      throw new Error(`Failed to parse AI string response: ${error}`);
     }
   } else {
     console.error("[AI] Invalid response type:", typeof response);
     throw new Error(`Invalid AI response type: ${typeof response}`);
   }
 
-  // Try to parse JSON, handling potential markdown wrapping
-  let jsonText = responseText.trim();
-  
-  // Remove markdown code block if present
-  if (jsonText.startsWith("```json")) {
-    jsonText = jsonText.slice(7);
-  } else if (jsonText.startsWith("```")) {
-    jsonText = jsonText.slice(3);
-  }
-  if (jsonText.endsWith("```")) {
-    jsonText = jsonText.slice(0, -3);
-  }
-  jsonText = jsonText.trim();
-
-  try {
-    return JSON.parse(jsonText) as ProjectAnalysis;
-  } catch (error) {
-    console.error("[AI] Failed to parse analysis JSON:", jsonText);
-    throw new Error(`Failed to parse AI analysis response: ${error}`);
-  }
+  return analysisData as ProjectAnalysis;
 }
 
 /**
