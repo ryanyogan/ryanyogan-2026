@@ -15,7 +15,7 @@ projects:
 
   - slug: ryanyogan-com
     name: ryanyogan.com
-    github: https://github.com/ryanyogan/ryanyogan.com
+    github: https://github.com/ryanyogan/ryanyogan-2026
     featured: true
     description: This website. Built with TanStack Start, deployed on Cloudflare Workers with D1, R2, and Workers AI for RAG-powered search.
     tech:
