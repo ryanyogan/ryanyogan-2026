@@ -6,7 +6,6 @@ import { syncVectorEmbeddings } from "./jobs/vector-sync";
 
 export interface Env {
   DB: D1Database;
-  CACHE: KVNamespace;
   VECTORIZE: VectorizeIndex;
   AI: Ai;
   GITHUB_TOKEN: string;

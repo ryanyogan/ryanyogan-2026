@@ -93,14 +93,6 @@ export async function updateSiteStats(db: Database, env: Env): Promise<void> {
       }
     }
 
-    // Cache stats in KV for fast access
-    const allStats = await db.select().from(siteStats);
-    await env.CACHE.put(
-      "site_stats",
-      JSON.stringify(allStats),
-      { expirationTtl: 86400 } // 24 hours
-    );
-
     console.log("[Stats Update] Updated", statsToUpdate.length, "stats");
   } catch (error) {
     console.error("[Stats Update] Error:", error);

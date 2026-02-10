@@ -23,14 +23,7 @@
     {
       "binding": "DB",
       "database_name": "ryanyogan-db",
-      "database_id": "placeholder-will-be-replaced"
-    }
-  ],
-  // KV for caching
-  "kv_namespaces": [
-    {
-      "binding": "CACHE",
-      "id": "placeholder-will-be-replaced"
+      "database_id": "1d16165e-ed7b-4f68-9147-bc0dd81f4200"
     }
   ],
   // R2 for asset storage (screenshots, etc.)
