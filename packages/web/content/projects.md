@@ -9,6 +9,7 @@ projects:
     tech:
       - Elixir
       - Phoenix LiveView
+      - Gen Servers
       - ETS
       - Fly.io
 
