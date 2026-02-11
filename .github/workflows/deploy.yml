@@ -4,9 +4,9 @@ on:
   push:
     branches: [master]
     paths:
-      - 'packages/**'
-      - 'pnpm-lock.yaml'
-      - 'turbo.json'
+      - "packages/**"
+      - "pnpm-lock.yaml"
+      - "turbo.json"
   workflow_dispatch:
 
 jobs:
@@ -21,13 +21,13 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.15.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
@@ -81,12 +81,12 @@ jobs:
           RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "${SITE_URL}/api/seed-vectorize" \
             -H "Authorization: Bearer ${ADMIN_TOKEN}" \
             -H "Content-Type: application/json")
-          
+
           HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
           BODY=$(echo "$RESPONSE" | sed '$d')
-          
+
           echo "Response: $BODY"
-          
+
           if [ "$HTTP_CODE" != "200" ]; then
             echo "::warning::Failed to seed Vectorize. HTTP $HTTP_CODE"
           else
