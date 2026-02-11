@@ -1,0 +1,492 @@
+---
+title: "My Most Over-Engineered Site to Date"
+date: "2026-02-10"
+description: "How I built a personal site that auto-generates blog posts using Cloudflare Workflows, Claude Sonnet, and an unhealthy amount of infrastructure for what could have been a static HTML page."
+featured: true
+---
+
+I fucking love AI.
+
+There, I said it. And before you roll your eyes at another tech bro gushing about large language models, hear me out. This isn't about AI replacing developers or some dystopian future. This is about a very specific problem I've had for over a decade: I build things, I push them to GitHub, and then... nothing. The project sits there, gathering digital dust, while I've already moved on to the next shiny thing.
+
+My GitHub is nearing 1,000 repositories. One thousand. Some are genuinely useful tools I use daily. Others are experiments from 3 AM coding sessions fueled by curiosity and caffeine. Most fall somewhere in between - interesting enough to build, not interesting enough to document. I'd create projects, fully intend to write a blog post or record a video, and then... nothing. The ADHD brain had already latched onto something new.
+
+Well, not anymore.
+
+## The Old ryanyogan.com
+
+Let me paint you a picture of what ryanyogan.com used to be. It was simple. Beautifully, boringly simple. A static site, probably built with Hugo or Gatsby (I honestly don't remember anymore), hosted on Netlify or Vercel, with maybe a dozen pages that I updated once a year when I felt guilty about neglecting my online presence.
+
+And you know what? That was fine. It worked. Nobody complained.
+
+But here's the thing about being a senior engineering leader with two decades of experience and a tendency to overcomplicate everything: "fine" isn't good enough when you can build something absurd.
+
+## What It Is Now
+
+ryanyogan.com is now a monorepo containing:
+
+- **A TanStack Start application** running on Cloudflare Workers
+- **A D1 database** for structured data (posts, projects, experience)
+- **An R2 bucket** for asset storage
+- **A Vectorize index** for semantic search with RAG
+- **Three separate Cloudflare Workers:**
+  - `ryanyogan-web` - The main site
+  - `ryanyogan-ai-worker` - Scheduled jobs for GitHub sync, stats, vector embeddings
+  - `ryanyogan-workflows` - Durable workflows for blog post generation
+- **A GitHub Action** that triggers when I update a single markdown file
+- **Claude Sonnet** analyzing every file in my project repos and writing exhaustive blog posts
+
+The directory structure looks like this:
+
+```
+ryanyogan.com/
+├── packages/
+│   ├── web/                    # TanStack Start app
+│   │   ├── content/
+│   │   │   ├── projects.md     # THE magic file
+│   │   │   └── writing/        # Blog posts (auto-generated!)
+│   │   ├── src/
+│   │   │   ├── routes/         # File-based routing
+│   │   │   ├── components/     # React components
+│   │   │   └── lib/            # Utilities
+│   │   └── wrangler.jsonc      # Cloudflare config
+│   ├── db/                     # Drizzle ORM + D1 schema
+│   ├── workflows/              # Cloudflare Workflows
+│   │   ├── src/
+│   │   │   ├── post-generation.ts
+│   │   │   └── lib/
+│   │   │       ├── ai.ts       # Claude Sonnet integration
+│   │   │       └── github.ts   # GitHub API client
+│   ├── ai-worker/              # Scheduled jobs
+│   └── shared/                 # Shared types
+├── .github/
+│   └── workflows/
+│       └── generate-posts.yml  # The trigger
+├── turbo.json                  # Turborepo config
+└── pnpm-workspace.yaml
+```
+
+For what is essentially a personal portfolio site. I know.
+
+## The Magic: One Markdown File
+
+Here's where it gets interesting. The entire system is driven by a single file: `content/projects.md`.
+
+```yaml
+---
+projects:
+  - slug: yogan_hockey
+    name: Yogan Hockey
+    github: https://github.com/ryanyogan/yogan_hockey
+    url: https://yogan-hockey.fly.dev
+    featured: true
+    description: Real-time NHL stats dashboard built with Phoenix LiveView.
+    tech:
+      - Elixir
+      - Phoenix LiveView
+      - ETS
+      - Fly.io
+
+  - slug: embedded-weather
+    name: Embedded Weather Station
+    github: https://github.com/ryanyogan/weather-station
+    featured: true
+    description: ESP32-based weather station with Rust firmware.
+    tech:
+      - Rust
+      - ESP32
+      - Embassy
+      - MQTT
+---
+```
+
+That's it. That's the interface. I add a project with `featured: true`, push to master, and a world comes alive.
+
+## The Pipeline: What Happens After
+
+When I push changes to `projects.md`, here's what unfolds:
+
+### 1. GitHub Action Detects Changes
+
+```yaml
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'packages/web/content/projects.md'
+```
+
+The action parses the YAML frontmatter, compares featured projects against existing blog posts in `content/writing/`, and identifies which projects need posts generated.
+
+### 2. Cloudflare Workflow Triggered
+
+The GitHub Action calls my `/api/trigger-workflow` endpoint, which uses a service binding to invoke the `PostGenerationWorkflow`:
+
+```typescript
+const triggerResponse = await workflowService.fetch(
+  new Request("https://internal/trigger", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ projectsToProcess }),
+  })
+);
+```
+
+### 3. The Workflow Fetches Everything
+
+This is where it gets thorough. The workflow doesn't just grab a README. It fetches *every single file* from the repository:
+
+```typescript
+async getAllFiles(
+  owner: string,
+  repo: string,
+  maxFiles = 100,
+  maxFileSize = 100000
+): Promise<Record<string, string>> {
+  const allFiles: Record<string, string> = {};
+  
+  const includeExtensions = new Set([
+    ".ts", ".tsx", ".js", ".jsx",
+    ".py", ".rb", ".go", ".rs", ".ex", ".exs",
+    ".json", ".yaml", ".yml", ".toml",
+    ".md", ".mdx",
+    // ... and many more
+  ]);
+
+  const skipDirs = new Set([
+    "node_modules", ".git", "dist", "build",
+    "_build", "deps", "target", // ...
+  ]);
+
+  // Recursively fetch everything
+  const fetchDir = async (path = ""): Promise<void> => {
+    const contents = await this.getContents(owner, repo, path);
+    
+    for (const item of contents) {
+      if (item.type === "dir" && !skipDirs.has(item.name)) {
+        await fetchDir(item.path);
+      } else if (item.type === "file") {
+        const ext = "." + item.name.split(".").pop();
+        if (includeExtensions.has(ext)) {
+          allFiles[item.path] = await this.getFileContent(owner, repo, item.path);
+        }
+      }
+    }
+  };
+
+  await fetchDir();
+  return allFiles;
+}
+```
+
+Up to 100 files, each up to 100KB. That's potentially 10MB of source code being analyzed.
+
+### 4. Claude Sonnet Analyzes the Project
+
+The entire codebase gets sent to Claude Sonnet for deep analysis:
+
+```typescript
+const prompt = `You are a senior software architect analyzing a GitHub repository 
+in extreme detail. Your goal is to understand EVERYTHING about this project - 
+its purpose, architecture, every technical decision, and what makes it interesting.
+
+## ALL SOURCE FILES
+${fileContents}
+
+Analyze this repository EXHAUSTIVELY. Look at every file, understand the architecture, 
+the patterns used, the technologies, the interesting implementation details.`;
+```
+
+Claude returns a structured analysis including:
+- A compelling title
+- Detailed description
+- Complete tech stack
+- Key features
+- Architecture overview
+- Code highlights with file references
+- Technical decisions made
+- Challenges solved
+- Best practices demonstrated
+
+### 5. Claude Writes the Blog Post
+
+With the analysis complete, Claude generates an exhaustive blog post:
+
+```typescript
+const prompt = `You are Ryan Yogan, a senior engineering leader with 20+ years 
+of experience. You're writing an EXHAUSTIVE technical blog post about one of 
+your projects.
+
+Write a COMPREHENSIVE, EXHAUSTIVE technical blog post. This should be a 
+definitive guide that:
+- Explains the WHY
+- Deep architecture dive
+- Code walkthrough with MANY examples (10+ if warranted)
+- Technical decisions and tradeoffs
+- Lessons learned
+- Implementation details
+
+Length: 3000-6000 words. This is a THOROUGH post. Don't skimp.`;
+```
+
+The output is 3000-6000 words of genuine technical content, not fluffy marketing speak.
+
+### 6. A Pull Request Appears
+
+The workflow creates a branch, commits the generated MDX file, and opens a PR:
+
+```typescript
+await github.createBranch(owner, repo, branchName, "master");
+
+await github.createOrUpdateFile(owner, repo, filePath, {
+  message: `Add comprehensive blog post: ${project.name}`,
+  content: mdxContent,
+  branch: branchName,
+});
+
+await github.createPullRequest(owner, repo, {
+  title: `[Auto] Deep-dive blog post: ${project.name}`,
+  body: `## 🤖 AI-Generated Comprehensive Blog Post
+  
+  Word Count: ~${wordCount} words
+  Files Analyzed: ${Object.keys(allFiles).length}
+  
+  ### Review Checklist
+  - [ ] Content is accurate
+  - [ ] Code examples are correct
+  - [ ] Tone matches Ryan's writing style`,
+  head: branchName,
+  base: "master",
+});
+```
+
+I get a notification, review the post, maybe tweak a few things, and merge. Done.
+
+### 7. Vectorize Gets Seeded
+
+The workflow also generates embeddings and updates the Vectorize index for semantic search:
+
+```typescript
+const embedding = await generateEmbedding(
+  env.AI,
+  `${analysis.title}. ${analysis.description}. ${analysis.mainPurpose}.`
+);
+
+await env.VECTORIZE.upsert([{
+  id: `post-project-${project.slug}`,
+  values: embedding,
+  metadata: {
+    type: "post",
+    title: analysis.title,
+    slug: `project-${project.slug}`,
+    url: `/writing/project-${project.slug}`,
+  },
+}]);
+```
+
+This means the new post is immediately searchable, and the RAG-powered search can find it based on semantic meaning, not just keywords.
+
+## The Tech Stack Deep Dive
+
+### TanStack Start
+
+I chose TanStack Start because it's the spiritual successor to the developer experience I loved in Next.js, but built for the edge. It uses Vinxi under the hood (which uses Vite), and the file-based routing is intuitive:
+
+```
+src/routes/
+├── __root.tsx          # Root layout
+├── index.tsx           # Home page
+├── projects.tsx        # /projects
+├── writing/
+│   ├── index.tsx       # /writing
+│   └── $slug.tsx       # /writing/:slug (dynamic)
+└── api/
+    ├── search.ts       # /api/search
+    └── trigger-workflow.ts
+```
+
+The `$slug.tsx` pattern for dynamic routes feels natural, and the integration with Cloudflare Workers is seamless.
+
+### Virtual Module for Content
+
+One clever piece is the Vite plugin that creates a virtual module from markdown files at build time:
+
+```typescript
+function contentPlugin(): Plugin {
+  const virtualModuleId = "virtual:content";
+  const resolvedVirtualModuleId = "\0" + virtualModuleId;
+
+  return {
+    name: "content-plugin",
+    resolveId(id: string) {
+      if (id === virtualModuleId) return resolvedVirtualModuleId;
+    },
+    load(id: string) {
+      if (id === resolvedVirtualModuleId) {
+        // Load projects from projects.md
+        const projectsFile = fs.readFileSync(projectsPath, "utf-8");
+        const { data } = matter(projectsFile);
+        
+        // Load posts from writing/*.mdx
+        const mdxFiles = fs.readdirSync(writingDir).filter(f => f.endsWith(".mdx"));
+        const posts = mdxFiles.map(file => {
+          const content = fs.readFileSync(path.join(writingDir, file), "utf-8");
+          const { data } = matter(content);
+          return { slug: file.replace(".mdx", ""), ...data };
+        });
+
+        return `
+          export const projects = ${JSON.stringify(data.projects)};
+          export const posts = ${JSON.stringify(posts)};
+        `;
+      }
+    },
+  };
+}
+```
+
+This means I can import content metadata directly:
+
+```typescript
+import { projects, posts } from "virtual:content";
+```
+
+No runtime file system access needed. It's all baked into the bundle at build time.
+
+### Cloudflare Workflows
+
+The real hero of this system is Cloudflare Workflows. They provide durable execution - if a step fails, it can retry automatically with exponential backoff:
+
+```typescript
+const githubData = await step.do(
+  `fetch-github-${project.slug}`,
+  {
+    retries: { limit: 3, delay: "10 seconds", backoff: "exponential" },
+    timeout: "5 minutes",
+  },
+  async () => {
+    // Fetch all files from GitHub
+  }
+);
+```
+
+Each step is independently retryable, and the workflow state is persisted. If Claude's API is having a bad day, the workflow waits and retries. If GitHub rate limits us, same thing.
+
+### The AI Worker
+
+Separate from the main site, there's a dedicated AI worker running scheduled jobs:
+
+```typescript
+async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
+  switch (controller.cron) {
+    case "0 9 * * 1":  // Weekly digest - Monday 9 AM
+      ctx.waitUntil(generateWeeklyDigest(db, env));
+      break;
+    case "0 */6 * * *":  // GitHub sync - every 6 hours
+      ctx.waitUntil(syncGithubActivity(db, env));
+      ctx.waitUntil(syncVectorEmbeddings(db, env));
+      break;
+    case "0 0 * * *":  // Stats update - daily midnight
+      ctx.waitUntil(updateSiteStats(db, env));
+      break;
+  }
+}
+```
+
+This keeps the search index fresh, syncs GitHub activity, and handles any recurring tasks.
+
+## The Database Schema
+
+The D1 database handles structured data that doesn't belong in markdown:
+
+```typescript
+// posts.ts
+export const posts = sqliteTable("posts", {
+  id: text("id").primaryKey(),
+  slug: text("slug").unique().notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  status: text("status", { enum: ["draft", "published"] }).default("draft"),
+  views: integer("views").default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }),
+  publishedAt: integer("published_at", { mode: "timestamp" }),
+});
+
+// experience.ts
+export const experience = sqliteTable("experience", {
+  id: text("id").primaryKey(),
+  company: text("company").notNull(),
+  role: text("role").notNull(),
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date"),
+  description: text("description"),
+  highlights: text("highlights"), // JSON array
+});
+```
+
+I use Drizzle ORM because it's type-safe and the DX is excellent for D1.
+
+## Future: Post Types
+
+The infrastructure supports something I haven't fully implemented yet - different post types based on project metadata. The idea is:
+
+```yaml
+- slug: complex-project
+  featured: true
+  post_type: deep-dive  # Options: post, deep-dive, tutorial
+```
+
+Then the workflow could adjust its prompts:
+- **post**: Standard 2000-3000 word blog post
+- **deep-dive**: Exhaustive 5000+ word technical exploration
+- **tutorial**: Step-by-step guide with code samples
+
+Claude can write all three formats. It's just a matter of the right prompts.
+
+## Why This Is Actually Useful
+
+"But Ryan," you say, "this is insane. You built enterprise infrastructure for a personal blog."
+
+Yes. And here's why it works for me:
+
+1. **I actually have blog posts now.** Before this, I had maybe 5 posts accumulated over years. Now, every featured project gets documentation.
+
+2. **The posts are good.** Claude Sonnet reading the entire codebase produces genuinely insightful content. It catches patterns I forgot I implemented. It explains decisions I made intuitively.
+
+3. **It scales with my ADHD.** The system doesn't care that I've moved on to the next thing. It quietly generates content for whatever I marked as featured.
+
+4. **I still have control.** Every generated post comes as a PR. I can reject it, edit it, or merge it as-is. It's augmentation, not automation.
+
+5. **The site is still simple for me.** One markdown file. That's my interface. Everything else is just... infrastructure.
+
+## A Warning
+
+If you're thinking about cloning this repo, let me be clear: **this is probably not for you**.
+
+This setup relies on you being:
+- An avid tinkerer with ADHD that forgets to write posts
+- Someone with nearly 1,000 GitHub repos who needs automation
+- Comfortable with Cloudflare's ecosystem (Workers, D1, R2, Vectorize, Workflows)
+- Willing to pay for Claude API calls
+
+If you love writing and waxing poetic before jumping into coding, this is probably a waste of your Cloudflare resources. Just use Astro or Hugo or even plain HTML. They work great.
+
+But if you're like me - if you have a graveyard of undocumented projects and a brain that can't sit still long enough to write about them - maybe, just maybe, this level of over-engineering makes sense.
+
+## What's Next
+
+A few things on my radar:
+
+1. **Better post types** - Actually implementing the deep-dive/tutorial variants
+2. **Auto-tagging** - Let Claude categorize posts automatically
+3. **Weekly digest** - An AI-generated summary of what I've been building
+4. **Project screenshots** - Automated with Puppeteer, stored in R2
+5. **Analytics integration** - Which posts actually get read?
+
+## The Code
+
+Everything is open source: [github.com/ryanyogan/ryanyogan-2026](https://github.com/ryanyogan/ryanyogan-2026)
+
+Feel free to steal ideas, fork it, or just marvel at the absurdity. I fucking love AI, and I built a personal site that proves it.
+
+Now if you'll excuse me, I have another project to start and immediately forget about. But at least this time, the blog post will write itself.

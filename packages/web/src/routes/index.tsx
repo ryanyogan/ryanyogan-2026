@@ -1,6 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
-import { getFeaturedProjects, getAllPosts, type ProjectMeta, type PostMeta } from "~/lib/content";
+import {
+  getFeaturedProjects,
+  getAllPosts,
+  type ProjectMeta,
+  type PostMeta,
+} from "~/lib/content";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -23,7 +28,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const { projects, posts } = Route.useLoaderData() as { 
+  const { projects, posts } = Route.useLoaderData() as {
     projects: ProjectMeta[];
     posts: PostMeta[];
   };
@@ -35,28 +40,47 @@ function HomePage() {
         <h2 className="section-title">About</h2>
         <div className="bio">
           <p>
-            I'm an engineering leader with <strong>20 years</strong> of experience building 
-            teams and products. I've worked at{" "}
-            <a href="https://procore.com" target="_blank" rel="noopener noreferrer" className="text-link">
+            Engineering leader with <strong>20 years</strong> of experience
+            building teams and products. I've worked at orgs such as{" "}
+            <a
+              href="https://procore.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-link"
+            >
               Procore
             </a>{" "}
-            (pre-IPO) and{" "}
-            <a href="https://peak6.com" target="_blank" rel="noopener noreferrer" className="text-link">
+            (pre-IPO SaaS) to{" "}
+            <a
+              href="https://peak6.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-link"
+            >
               Peak6
             </a>{" "}
-            (high-frequency trading), and built engineering teams from 0 to 40+ people at 
-            various startups. See my{" "}
+            (high-frequency trading) and just about everything in-between. I've
+            created engineering teams from 0 to 40+ people spanning a wide
+            variety of technolgical domains. See my{" "}
             <Link to="/work" className="text-link">
               full work history
-            </Link>.
+            </Link>
+            .
           </p>
           <p>
-            I'm passionate about <strong>embedded systems</strong>, <strong>AI</strong>, 
-            and <strong>robotics</strong> - building software that controls hardware. 
-            When I'm not coding, you'll find me playing hockey or working on side projects.
+            I'm passionate about <strong>embedded systems</strong>,{" "}
+            <strong>AI</strong>, and <strong>robotics</strong> - building
+            software that controls hardware. When I'm not coding, you'll find me
+            watching our boy play hockey, pretending like I can still skate or
+            working on side projects.
           </p>
+
           <p>
-            Based in <strong>Chicago, IL</strong>. Currently open to new opportunities.
+            <small>I've only got dad jokes at this point.</small>
+          </p>
+
+          <p>
+            Based in <strong>Chicago, IL</strong>.
           </p>
         </div>
       </section>
@@ -66,14 +90,16 @@ function HomePage() {
         <h2 className="section-title">Writing</h2>
         <div className="writing-list">
           {posts.map((post) => (
-            <Link 
+            <Link
               key={post.slug}
-              to="/writing/$slug" 
-              params={{ slug: post.slug }} 
+              to="/writing/$slug"
+              params={{ slug: post.slug }}
               className="writing-item"
             >
               <span className="writing-title">{post.title}</span>
-              <span className="writing-date">{new Date(post.date).getFullYear()}</span>
+              <span className="writing-date">
+                {new Date(post.date).getFullYear()}
+              </span>
             </Link>
           ))}
         </div>
@@ -93,8 +119,12 @@ function HomePage() {
             const content = (
               <div className="project-item-content">
                 <span className="project-name">{project.name}</span>
-                <span className="project-description">{project.description}</span>
-                <span className="project-tech-inline">{project.tech.join(", ")}</span>
+                <span className="project-description">
+                  {project.description}
+                </span>
+                <span className="project-tech-inline">
+                  {project.tech.join(", ")}
+                </span>
               </div>
             );
 
