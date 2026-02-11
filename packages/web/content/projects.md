@@ -36,6 +36,19 @@ projects:
       - Claude Vision
       - Cloudflare R2
 
+  - slug: ice-yeti
+    name: Ice Yeti Training
+    github: https://github.com/ryanyogan/ice-yeti
+    url: https://slax.fly.dev
+    featured: true
+    description: Hockey training platform connecting skaters with trainers. Features real-time chat, session booking, training programs, and virtual sessions. Built with Phoenix LiveView and PubSub for live updates.
+    tech:
+      - Elixir
+      - Phoenix LiveView
+      - PostgreSQL
+      - PubSub
+      - Fly.io
+
   - slug: ai-code-review
     name: AI Code Review Bot
     github: https://github.com/ryanyogan/ai-code-review
