@@ -96,6 +96,7 @@ pnpm --filter @ryanyogan/ai-worker deploy
 ## Features
 
 ### Current
+
 - [x] Responsive design with light/dark mode
 - [x] GSAP scroll animations
 - [x] Blog with markdown support
@@ -104,6 +105,7 @@ pnpm --filter @ryanyogan/ai-worker deploy
 - [x] SEO optimized
 
 ### Planned
+
 - [ ] AI-powered weekly digests
 - [ ] GitHub activity integration
 - [ ] RAG-powered search
@@ -114,21 +116,15 @@ pnpm --filter @ryanyogan/ai-worker deploy
 ## Environment Variables
 
 ### Web App (`packages/web/.dev.vars`)
+
 ```
 ENVIRONMENT=development
 ```
 
 ### AI Worker (`packages/ai-worker/.dev.vars`)
+
 ```
 GITHUB_TOKEN=your_github_token
 GITHUB_USERNAME=ryanyogan
 ENVIRONMENT=development
 ```
-
-## Contributing
-
-This is a personal website, but feel free to use it as inspiration or reference for your own projects!
-
-## License
-
-MIT
