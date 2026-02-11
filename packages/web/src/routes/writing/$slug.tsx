@@ -75,7 +75,16 @@ function WritingPost() {
       <article>
         <header className="post-header">
           <h1 className="post-title">{post.title}</h1>
-          <p className="post-meta">{formatDate(post.date)}</p>
+          <p className="post-meta">
+            {formatDate(post.date)}
+            {post.author && (
+              <span className="post-author-badge" data-author={post.author}>
+                {post.author === "human" && "Written by human"}
+                {post.author === "ai" && "Written by AI"}
+                {post.author === "hybrid" && "Human + AI"}
+              </span>
+            )}
+          </p>
         </header>
 
         <div className="prose">

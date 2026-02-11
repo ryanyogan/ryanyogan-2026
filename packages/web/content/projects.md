@@ -24,16 +24,17 @@ projects:
       - D1
       - Vectorize
 
-  - slug: embedded-weather
-    name: Embedded Weather Station
-    github: https://github.com/ryanyogan/weather-station
+  - slug: puck-pro
+    name: Puck Pro
+    github: https://github.com/ryanyogan/puck_pro
     featured: true
-    description: ESP32-based weather station with Rust firmware. Collects temperature, humidity, and pressure data, streams to a cloud dashboard.
+    description: AI-powered hockey training app with real-time pose detection. Uses MediaPipe in the browser at 30fps to analyze shots, track form, and provide Claude-powered coaching feedback. Eventually projecting onto the ice for live training.
     tech:
-      - Rust
-      - ESP32
-      - Embassy
-      - MQTT
+      - Elixir
+      - Phoenix LiveView
+      - MediaPipe
+      - Claude Vision
+      - Cloudflare R2
 
   - slug: ai-code-review
     name: AI Code Review Bot

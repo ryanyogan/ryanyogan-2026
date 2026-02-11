@@ -58,26 +58,26 @@ function HomePage() {
             >
               Peak6
             </a>{" "}
-            (high-frequency trading) and just about everything in-between. I've
-            created engineering teams from 0 to 40+ people spanning a wide
-            variety of technolgical domains. See my{" "}
+            (high-frequency trading) and just about every type of org
+            in-between. I've created engineering teams from 0 to 40+ people
+            spanning a wide variety of technolgical domains. See my{" "}
             <Link to="/work" className="text-link">
               full work history
             </Link>
             .
           </p>
           <p>
-            I'm passionate about <strong>embedded systems</strong>,{" "}
-            <strong>AI</strong>, and <strong>robotics</strong> - building
-            software that controls hardware. When I'm not coding, you'll find me
-            watching our boy play hockey, pretending like I can still skate or
-            working on side projects.
-          </p>
-
-          <p>
-            Based in <strong>Chicago, IL</strong>.
+            I'm passionate about building <strong>AI</strong>,{" "}
+            <strong>embedded systems</strong>, and <strong>robotics</strong> -
+            building software that controls hardware. When I'm not coding,
+            you'll find me watching our boy play hockey, pretending like I can
+            still skate, out in the snow with my better half, working on
+            robotics with our other kiddo, or half-finishing side projects.
           </p>
         </div>
+        <p className="keyboard-hint">
+          <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> to search
+        </p>
       </section>
 
       {/* Writing */}

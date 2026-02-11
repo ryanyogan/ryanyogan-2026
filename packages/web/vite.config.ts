@@ -59,6 +59,7 @@ function contentPlugin(): Plugin {
               date: data.date || "",
               description: data.description || "",
               featured: data.featured || false,
+              author: data.author || undefined,
             });
           }
         }

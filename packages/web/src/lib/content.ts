@@ -23,6 +23,7 @@ export interface PostMeta {
   date: string;
   description: string;
   featured?: boolean;
+  author?: "human" | "ai" | "hybrid";
 }
 
 // Type the imports from virtual module

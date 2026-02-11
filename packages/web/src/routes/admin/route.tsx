@@ -8,13 +8,12 @@ import {
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
-  // TODO: Add auth check once Better Auth is configured
-  // beforeLoad: async () => {
-  //   const session = await getSession();
-  //   if (!session || session.user.role !== "admin") {
-  //     throw redirect({ to: "/", search: { error: "unauthorized" } });
-  //   }
-  // },
+  beforeLoad: async () => {
+    // Disable admin in production
+    if (import.meta.env.PROD) {
+      throw redirect({ to: "/" });
+    }
+  },
 });
 
 // Note: Posts are now managed via MDX files in content/writing/

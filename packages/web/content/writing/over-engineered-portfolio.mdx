@@ -3,23 +3,24 @@ title: "My Most Over-Engineered Site to Date"
 date: "2026-02-10"
 description: "How I built a personal site that auto-generates blog posts using Cloudflare Workflows, Claude Sonnet, and an unhealthy amount of infrastructure for what could have been a static HTML page."
 featured: true
+author: "hybrid"
 ---
 
-I fucking love AI.
+I fucking love AI. I've enjoyed it back to the silly "advanced intellisense" 2019/2020 CoPilot days.
 
-There, I said it. And before you roll your eyes at another tech bro gushing about large language models, hear me out. This isn't about AI replacing developers or some dystopian future. This is about a very specific problem I've had for over a decade: I build things, I push them to GitHub, and then... nothing. The project sits there, gathering digital dust, while I've already moved on to the next shiny thing.
+There, I said it. And before you roll your eyes at another old tech doofus gushing about large language models, hear me out. This isn't about AI replacing developers or some dystopian future. This is about a very specific problem I've had for over a decade: I build things, I push them to GitHub, and then... nothing. The project sits there, gathering digital dust, while I've already moved on to the next shiny thing.
 
 My GitHub is nearing 1,000 repositories. One thousand. Some are genuinely useful tools I use daily. Others are experiments from 3 AM coding sessions fueled by curiosity and caffeine. Most fall somewhere in between - interesting enough to build, not interesting enough to document. I'd create projects, fully intend to write a blog post or record a video, and then... nothing. The ADHD brain had already latched onto something new.
 
 Well, not anymore.
 
-## The Old ryanyogan.com
+## The Old Site
 
-Let me paint you a picture of what ryanyogan.com used to be. It was simple. Beautifully, boringly simple. A static site, probably built with Hugo or Gatsby (I honestly don't remember anymore), hosted on Netlify or Vercel, with maybe a dozen pages that I updated once a year when I felt guilty about neglecting my online presence.
+Let me paint you a picture of what ryanyogan.com used to be. It was simple. Beautifully, boringly simple. A static site, built with Next.js, no Remix, no... (I honestly don't remember anymore, I changed monthly), hosted on Vercely, then Fly.io for faster responses, with maybe a dozen pages that I updated once a year when I felt guilty about neglecting my online presence.
 
 And you know what? That was fine. It worked. Nobody complained.
 
-But here's the thing about being a senior engineering leader with two decades of experience and a tendency to overcomplicate everything: "fine" isn't good enough when you can build something absurd.
+But here's the thing about having two decades of experience and a tendency to overcomplicate personal projects: "fine" isn't good enough when you can build something absurd.
 
 ## What It Is Now
 
@@ -113,7 +114,7 @@ on:
   push:
     branches: [master]
     paths:
-      - 'packages/web/content/projects.md'
+      - "packages/web/content/projects.md"
 ```
 
 The action parses the YAML frontmatter, compares featured projects against existing blog posts in `content/writing/`, and identifies which projects need posts generated.
@@ -128,13 +129,13 @@ const triggerResponse = await workflowService.fetch(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ projectsToProcess }),
-  })
+  }),
 );
 ```
 
 ### 3. The Workflow Fetches Everything
 
-This is where it gets thorough. The workflow doesn't just grab a README. It fetches *every single file* from the repository:
+This is where it gets thorough. The workflow doesn't just grab a README. It fetches _every single file_ from the repository:
 
 ```typescript
 async getAllFiles(
@@ -144,7 +145,7 @@ async getAllFiles(
   maxFileSize = 100000
 ): Promise<Record<string, string>> {
   const allFiles: Record<string, string> = {};
-  
+
   const includeExtensions = new Set([
     ".ts", ".tsx", ".js", ".jsx",
     ".py", ".rb", ".go", ".rs", ".ex", ".exs",
@@ -161,7 +162,7 @@ async getAllFiles(
   // Recursively fetch everything
   const fetchDir = async (path = ""): Promise<void> => {
     const contents = await this.getContents(owner, repo, path);
-    
+
     for (const item of contents) {
       if (item.type === "dir" && !skipDirs.has(item.name)) {
         await fetchDir(item.path);
@@ -198,6 +199,7 @@ the patterns used, the technologies, the interesting implementation details.`;
 ```
 
 Claude returns a structured analysis including:
+
 - A compelling title
 - Detailed description
 - Complete tech stack
@@ -269,19 +271,21 @@ The workflow also generates embeddings and updates the Vectorize index for seman
 ```typescript
 const embedding = await generateEmbedding(
   env.AI,
-  `${analysis.title}. ${analysis.description}. ${analysis.mainPurpose}.`
+  `${analysis.title}. ${analysis.description}. ${analysis.mainPurpose}.`,
 );
 
-await env.VECTORIZE.upsert([{
-  id: `post-project-${project.slug}`,
-  values: embedding,
-  metadata: {
-    type: "post",
-    title: analysis.title,
-    slug: `project-${project.slug}`,
-    url: `/writing/project-${project.slug}`,
+await env.VECTORIZE.upsert([
+  {
+    id: `post-project-${project.slug}`,
+    values: embedding,
+    metadata: {
+      type: "post",
+      title: analysis.title,
+      slug: `project-${project.slug}`,
+      url: `/writing/project-${project.slug}`,
+    },
   },
-}]);
+]);
 ```
 
 This means the new post is immediately searchable, and the RAG-powered search can find it based on semantic meaning, not just keywords.
@@ -326,10 +330,12 @@ function contentPlugin(): Plugin {
         // Load projects from projects.md
         const projectsFile = fs.readFileSync(projectsPath, "utf-8");
         const { data } = matter(projectsFile);
-        
+
         // Load posts from writing/*.mdx
-        const mdxFiles = fs.readdirSync(writingDir).filter(f => f.endsWith(".mdx"));
-        const posts = mdxFiles.map(file => {
+        const mdxFiles = fs
+          .readdirSync(writingDir)
+          .filter((f) => f.endsWith(".mdx"));
+        const posts = mdxFiles.map((file) => {
           const content = fs.readFileSync(path.join(writingDir, file), "utf-8");
           const { data } = matter(content);
           return { slug: file.replace(".mdx", ""), ...data };
@@ -366,7 +372,7 @@ const githubData = await step.do(
   },
   async () => {
     // Fetch all files from GitHub
-  }
+  },
 );
 ```
 
@@ -433,10 +439,11 @@ The infrastructure supports something I haven't fully implemented yet - differen
 ```yaml
 - slug: complex-project
   featured: true
-  post_type: deep-dive  # Options: post, deep-dive, tutorial
+  post_type: deep-dive # Options: post, deep-dive, tutorial
 ```
 
 Then the workflow could adjust its prompts:
+
 - **post**: Standard 2000-3000 word blog post
 - **deep-dive**: Exhaustive 5000+ word technical exploration
 - **tutorial**: Step-by-step guide with code samples
@@ -453,7 +460,7 @@ Yes. And here's why it works for me:
 
 2. **The posts are good.** Claude Sonnet reading the entire codebase produces genuinely insightful content. It catches patterns I forgot I implemented. It explains decisions I made intuitively.
 
-3. **It scales with my ADHD.** The system doesn't care that I've moved on to the next thing. It quietly generates content for whatever I marked as featured.
+3. **It scales with my ADHD/Tinkering-Mindset.** The system doesn't care that I've moved on to the next thing. It quietly generates content for whatever I marked as featured.
 
 4. **I still have control.** Every generated post comes as a PR. I can reject it, edit it, or merge it as-is. It's augmentation, not automation.
 
@@ -464,12 +471,13 @@ Yes. And here's why it works for me:
 If you're thinking about cloning this repo, let me be clear: **this is probably not for you**.
 
 This setup relies on you being:
-- An avid tinkerer with ADHD that forgets to write posts
-- Someone with nearly 1,000 GitHub repos who needs automation
+
+- An avid tinkerer that forgets to write posts
+- Someone with too many GitHub repos who needs automation
 - Comfortable with Cloudflare's ecosystem (Workers, D1, R2, Vectorize, Workflows)
 - Willing to pay for Claude API calls
 
-If you love writing and waxing poetic before jumping into coding, this is probably a waste of your Cloudflare resources. Just use Astro or Hugo or even plain HTML. They work great.
+If you love writing and waxing poetic before jumping into coding, this is probably a waste of your Cloudflare resources. Just use Astro or even plain HTML. They work great.
 
 But if you're like me - if you have a graveyard of undocumented projects and a brain that can't sit still long enough to write about them - maybe, just maybe, this level of over-engineering makes sense.
 

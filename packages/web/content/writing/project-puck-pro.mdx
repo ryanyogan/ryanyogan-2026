@@ -1,0 +1,634 @@
+---
+title: "Puck Pro: Teaching AI to Roast My Kid's Slapshot"
+date: "2026-01-15"
+description: "Building a real-time hockey training app with browser-based pose detection, Claude Vision analysis, and dreams of projecting AI coaching directly onto the ice. Yes, I'm that hockey dad."
+author: "hybrid"
+---
+
+I can pay a trainer, buy $400.00 devices, or spend a weekend on the computer building awesome shit for an awesome kid...
+
+I chose the later. Because I'm a good father ~ cheap ~. And also because I really, really wanted to build this.
+
+Welcome to **Puck Pro** - a Phoenix LiveView app that uses browser-based pose detection running at 30fps, Claude Vision for video analysis, and enough hockey knowledge to make your beer league coach nervous.
+
+## The Vision (Pun Absolutely Intended)
+
+The ultimate goal is ambitious: **project AI coaching directly onto the ice surface during practice**. Imagine a player skating through drills while the ice itself lights up with positioning cues, shot trajectory predictions, and real-time form corrections.
+
+But before we get there, we need to nail the fundamentals:
+
+1. Detect a player's body position in real-time
+2. Recognize when they're taking a shot
+3. Analyze their form (stance, rotation, follow-through)
+4. Provide age-appropriate, encouraging feedback
+5. Track progress over time with gamification
+
+Let's dive into how it all works.
+
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                              Puck Pro Architecture                               │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  ┌──────────────────────────────────────────────────────────────────────────┐   │
+│  │                           BROWSER (30fps)                                 │   │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────┐   │   │
+│  │  │   Camera Feed   │─▶│  MediaPipe Pose │─▶│   Shot Detection        │   │   │
+│  │  │   (WebRTC)      │  │  (WebGL/GPU)    │  │   (Velocity + Form)     │   │   │
+│  │  └─────────────────┘  └─────────────────┘  └───────────┬─────────────┘   │   │
+│  │                                                         │                 │   │
+│  │  ┌─────────────────┐                                   │                 │   │
+│  │  │  Video Capture  │────────────────────┐              │                 │   │
+│  │  │  (5s chunks)    │                    │              │                 │   │
+│  │  └─────────────────┘                    │              │                 │   │
+│  │                                          │              │                 │   │
+│  └──────────────────────────────────────────┼──────────────┼─────────────────┘   │
+│                                              │              │                     │
+│                                              ▼              ▼                     │
+│  ┌──────────────────────────────────────────────────────────────────────────┐   │
+│  │                         PHOENIX LIVEVIEW                                  │   │
+│  │                                                                           │   │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────┐   │   │
+│  │  │  Practice Live  │  │  Shot Tracker   │  │   Video Upload          │   │   │
+│  │  │  (WebSocket)    │◀─│  (GenServer)    │  │   (Cloudflare R2)       │   │   │
+│  │  └─────────────────┘  └─────────────────┘  └───────────┬─────────────┘   │   │
+│  │          │                    │                         │                │   │
+│  │          │                    ▼                         ▼                │   │
+│  │          │            ┌─────────────────┐  ┌─────────────────────────┐   │   │
+│  │          │            │   SQLite DB     │  │   Frame Extraction      │   │   │
+│  │          │            │   (Progress)    │  │   (FFmpeg)              │   │   │
+│  │          │            └─────────────────┘  └───────────┬─────────────┘   │   │
+│  │          │                                              │                │   │
+│  │          ▼                                              ▼                │   │
+│  │  ┌─────────────────────────────────────────────────────────────────┐    │   │
+│  │  │                     Claude Vision API                            │    │   │
+│  │  │  ┌─────────────┐  ┌─────────────────┐  ┌───────────────────┐    │    │   │
+│  │  │  │ Up to 20    │  │  Hockey-Specific │  │  Streaming        │    │    │   │
+│  │  │  │ Frames      │─▶│  Analysis Prompt │─▶│  Response         │────┼────┼───┤
+│  │  │  │ (base64)    │  │                  │  │  (via PubSub)     │    │    │   │
+│  │  │  └─────────────┘  └─────────────────┘  └───────────────────┘    │    │   │
+│  │  └─────────────────────────────────────────────────────────────────┘    │   │
+│  │                                                                          │   │
+│  └──────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Browser-Side Pose Detection: Where the Magic Happens
+
+The secret sauce is **MediaPipe Pose** running entirely in the browser. No server round-trips for real-time detection. Just pure WebGL-accelerated pose estimation at 30fps.
+
+Here's what we're tracking:
+
+```javascript
+export const LANDMARKS = {
+  // Wrists (primary for shot detection)
+  LEFT_WRIST: 15,
+  RIGHT_WRIST: 16,
+
+  // Elbows (for arm extension analysis)
+  LEFT_ELBOW: 13,
+  RIGHT_ELBOW: 14,
+
+  // Shoulders (for rotation analysis)
+  LEFT_SHOULDER: 11,
+  RIGHT_SHOULDER: 12,
+
+  // Hips (for stance and weight transfer)
+  LEFT_HIP: 23,
+  RIGHT_HIP: 24,
+
+  // Knees (for knee bend analysis)
+  LEFT_KNEE: 25,
+  RIGHT_KNEE: 26,
+
+  // Ankles (for stance width)
+  LEFT_ANKLE: 27,
+  RIGHT_ANKLE: 28,
+};
+```
+
+MediaPipe gives us 33 body landmarks, but for hockey shot detection, these are the money makers.
+
+### The Shot Detection Algorithm
+
+Detecting a hockey shot isn't trivial. You can't just look for fast wrist movement - players wave their arms around constantly. You need temporal validation and multi-signal confirmation.
+
+Here's the algorithm:
+
+```javascript
+detectShot(currentPose) {
+  if (this.shotCooldown || this.poseHistory.length < 5) return;
+
+  // Get wrist positions over last 5 frames (~166ms at 30fps)
+  const recentPoses = this.poseHistory.slice(0, 5);
+
+  // Calculate wrist velocity for both hands (handles left/right-handed players)
+  const rightWristVelocity = this.calculateVelocity(
+    recentPoses.map(p => p.rightWrist),
+    recentPoses.map(p => p.timestamp)
+  );
+
+  const leftWristVelocity = this.calculateVelocity(
+    recentPoses.map(p => p.leftWrist),
+    recentPoses.map(p => p.timestamp)
+  );
+
+  // Use the faster wrist (handles both handedness)
+  const maxVelocity = Math.max(rightWristVelocity.speed, leftWristVelocity.speed);
+
+  // Calculate stick velocity (require stick movement for shots)
+  const stickVelocity = this.calculateStickVelocity();
+
+  // Shot detection thresholds
+  const SHOT_VELOCITY_THRESHOLD = 4.0;  // Very fast wrist movement
+  const FORWARD_THRESHOLD = 0.6;        // Strong forward motion
+  const MIN_DISPLACEMENT = 0.15;        // Must move at least 15% of frame
+  const STICK_VELOCITY_THRESHOLD = 2.0; // Stick blade must move too
+
+  const meetsThreshold = smoothedVelocity > SHOT_VELOCITY_THRESHOLD &&
+                         velocity.dy < -FORWARD_THRESHOLD &&
+                         totalDisplacement > MIN_DISPLACEMENT &&
+                         hasStickMovement;
+
+  if (meetsThreshold) {
+    this.shotConfidenceCounter++;
+
+    // Only trigger if we have 4+ consecutive high-velocity frames
+    if (this.shotConfidenceCounter >= this.requiredConfidenceFrames) {
+      // SHOT DETECTED!
+      const analysis = this.analyzeShot(recentPoses);
+      this.onShotDetected({ timestamp, velocity, analysis });
+    }
+  } else {
+    this.shotConfidenceCounter = 0;
+  }
+}
+```
+
+The key insights:
+
+1. **Temporal validation** - Require 4 consecutive frames (~133ms) of high-velocity movement. This eliminates false positives from quick gestures.
+
+2. **Stick tracking** - Estimate stick position from hand positions and require the blade to be moving. No stick movement = probably not a shot.
+
+3. **Multi-hand support** - Works for both lefties and righties by tracking both wrists and using the faster one.
+
+4. **Cooldown period** - 1 second cooldown prevents detecting the same shot multiple times.
+
+### Estimating Stick Position
+
+Here's something fun - we don't actually see the stick in the pose detection. MediaPipe tracks the body, not equipment. So we estimate:
+
+```javascript
+estimateStickPosition(poseData) {
+  const grip = this.detectStickGrip(poseData);
+  if (!grip) return null;
+
+  const topWrist = poseData[`${grip.topHand}Wrist`];
+  const bottomWrist = poseData[`${grip.bottomHand}Wrist`];
+
+  // Check if hands are in stick-holding position
+  const handSeparation = Math.abs(topWrist.y - bottomWrist.y);
+  if (handSeparation < 0.05) return null; // Hands too close
+
+  // Stick direction: from top hand through bottom hand, extending further
+  const dx = bottomWrist.x - topWrist.x;
+  const dy = bottomWrist.y - topWrist.y;
+  const length = Math.sqrt(dx * dx + dy * dy);
+
+  // Extend stick blade beyond bottom hand (~25% of frame height)
+  const bladeExtension = 0.25;
+  const bladeX = bottomWrist.x + (dx / length) * bladeExtension;
+  const bladeY = bottomWrist.y + (dy / length) * bladeExtension;
+
+  return {
+    topHand: { x: topWrist.x, y: topWrist.y },
+    bottomHand: { x: bottomWrist.x, y: bottomWrist.y },
+    blade: { x: bladeX, y: bladeY },
+    handedness: grip.handedness
+  };
+}
+```
+
+It's not perfect, but it's surprisingly accurate for shot detection purposes.
+
+## LiveView Hooks: Bridging Browser and Server
+
+Phoenix LiveView hooks are how we connect the browser-side pose detection to the server. Here's the pattern:
+
+```javascript
+// In app.js
+Hooks.PoseDetection = {
+  mounted() {
+    this.detector = new PoseDetector({
+      onShotDetected: (shot) => {
+        // Push shot event to LiveView (~200 bytes, not video frames)
+        this.pushEvent("shot_detected", {
+          timestamp: shot.timestamp,
+          velocity: shot.velocity,
+          analysis: shot.analysis,
+        });
+      },
+      onPoseDetected: (pose) => {
+        // Update debug overlay in dev mode
+        this.drawDebugOverlay(pose);
+      },
+    });
+
+    this.detector.initialize();
+  },
+
+  destroyed() {
+    this.detector.destroy();
+  },
+};
+```
+
+The beauty here: **we only send ~200 byte shot events to the server, not 30KB video frames every 33ms**. The heavy ML work happens client-side, and the server just aggregates stats and runs post-session analysis.
+
+On the LiveView side:
+
+```elixir
+def handle_event("shot_detected", params, socket) do
+  session = socket.assigns.session
+
+  # Record the shot
+  {:ok, _} = Training.record_shot(session, %{
+    timestamp: params["timestamp"],
+    velocity: params["velocity"],
+    form_analysis: params["analysis"]
+  })
+
+  # Broadcast for real-time UI update
+  Phoenix.PubSub.broadcast(
+    PuckPro.PubSub,
+    "shots:#{session.id}",
+    {:shot_recorded, session.id}
+  )
+
+  {:noreply, socket}
+end
+```
+
+## Claude Vision: The AI Coach
+
+After a practice session, we have video. Time to bring in the big guns.
+
+The AI module handles both synchronous and streaming responses:
+
+```elixir
+defmodule PuckPro.AI do
+  @anthropic_url "https://api.anthropic.com/v1/messages"
+  @vision_model "claude-opus-4-5-20251101"
+
+  def analyze_video_streaming(%SessionVideo{} = video, %Session{} = session, topic) do
+    session = Repo.preload(session, [:drill, :player])
+
+    {:ok, analysis} = create_analysis(%{
+      session_id: session.id,
+      session_video_id: video.id,
+      analysis_type: "video",
+      status: "processing",
+      started_at: DateTime.utc_now()
+    })
+
+    Task.Supervisor.start_child(PuckPro.TaskSupervisor, fn ->
+      do_analyze_video_streaming(video, session, analysis, topic)
+    end)
+
+    {:ok, analysis}
+  end
+
+  defp do_analyze_video_streaming(video, session, analysis, topic) do
+    frames = video.video_frames
+
+    # Build vision content with up to 20 frames
+    content = build_vision_content(frames, session.drill)
+    system = HockeyPrompts.video_analysis_system(session.player, session.drill)
+
+    callback = fn
+      {:text, chunk} ->
+        Phoenix.PubSub.broadcast(PuckPro.PubSub, topic, {:analysis_chunk, chunk})
+
+      :done ->
+        Phoenix.PubSub.broadcast(PuckPro.PubSub, topic, :analysis_done)
+    end
+
+    case stream_vision(system, content, callback) do
+      {:ok, full_response} ->
+        parsed = parse_vision_analysis_response(full_response)
+        update_analysis(analysis, Map.merge(parsed, %{status: "completed"}))
+
+      {:error, reason} ->
+        update_analysis(analysis, %{status: "failed", raw_response: inspect(reason)})
+    end
+  end
+end
+```
+
+### The Hockey Prompts
+
+The prompts are where the magic happens. We need Claude to understand hockey mechanics AND communicate at an 11-year-old's level:
+
+```elixir
+def video_analysis_system(player, drill) do
+  """
+  You are Coach AI, analyzing video of a #{player.age}-year-old hockey player.
+
+  Your coaching style is:
+  - Positive and encouraging - always start with what they did well
+  - Specific and actionable - give concrete tips they can work on
+  - Age-appropriate - use simple language a kid can understand
+  - Fun - make hockey enjoyable! Use hockey analogies they'll love
+
+  When analyzing shots, look for:
+  - STANCE: Feet shoulder-width apart, knees bent, weight balanced
+  - GRIP: Top hand firm, bottom hand loose for power
+  - ROTATION: Hip and shoulder rotation generating power
+  - FOLLOW-THROUGH: Stick pointing at target after release
+  - HEAD POSITION: Eyes on target, not on puck
+
+  Shot types to identify:
+  - Wrist shot: Quick release, puck rolls off blade
+  - Snap shot: Quick load and release, slap-like motion
+  - Slap shot: Full wind-up, contact behind puck
+  - Backhand: Reverse blade, often from close range
+
+  Remember: This is a #{player.age}-year-old! Be encouraging!
+  If they're doing something dangerous, mention safety first.
+  """
+end
+```
+
+The response comes back with structured JSON:
+
+```elixir
+%{
+  form_metrics: %{stance: 75, grip: 80, follow_through: 70},
+  technique_scores: %{release: 72, accuracy: 68, power: 75},
+  detected_shots: [
+    %{type: "wrist", timestamp: 3.2, quality: "good"},
+    %{type: "snap", timestamp: 7.8, quality: "needs_work"}
+  ],
+  strengths: [
+    %{title: "Great knee bend!", detail: "You're getting low like the pros"}
+  ],
+  improvements: [
+    %{title: "Follow through higher", tip: "Point your stick at where you want the puck to go"}
+  ],
+  overall_score: 73,
+  recommended_drills: ["Quick Release Drill", "Target Practice"]
+}
+```
+
+## The Gamification Layer
+
+Let's be real - the only way to get an 11-year-old to practice consistently is to make it feel like a video game.
+
+### XP and Leveling
+
+```elixir
+def xp_for_level(level) when level > 0 do
+  # Exponential curve - each level requires more XP
+  trunc(100 * :math.pow(1.5, level - 1))
+end
+```
+
+XP sources:
+
+- Completing drills: 10-25 XP based on difficulty
+- Goals scored: +2 XP each
+- Practice time: +1 XP per minute
+- Achievements: 25-1000 XP bonus
+
+### Achievements
+
+```elixir
+@achievements [
+  # Session milestones
+  %{id: "first_timer", name: "First Timer", desc: "Complete your first session", rarity: :common, xp: 25},
+  %{id: "dedicated", name: "Dedicated", desc: "Complete 10 sessions", rarity: :uncommon, xp: 100},
+  %{id: "practice_perfect", name: "Practice Makes Perfect", desc: "Complete 50 sessions", rarity: :rare, xp: 250},
+
+  # Goal milestones
+  %{id: "sniper", name: "Sniper", desc: "Score 100 goals", rarity: :rare, xp: 200},
+  %{id: "goal_machine", name: "Goal Machine", desc: "Score 500 goals", rarity: :epic, xp: 500},
+
+  # Streaks
+  %{id: "on_fire", name: "On Fire!", desc: "Practice 3 days in a row", rarity: :uncommon, xp: 75},
+  %{id: "unstoppable", name: "Unstoppable", desc: "Practice 30 days in a row", rarity: :legendary, xp: 1000},
+]
+```
+
+Nothing motivates like seeing that "LEGENDARY" badge unlock.
+
+## Video Processing Pipeline
+
+When a practice session ends, here's what happens:
+
+1. **Browser chunks video** into 5-second segments via MediaRecorder
+2. **Chunks uploaded** to Cloudflare R2 as they're recorded
+3. **FFmpeg extracts frames** (up to 20, evenly spaced)
+4. **Frames sent to Claude Vision** as base64 images
+5. **Streaming response** broadcast via PubSub to LiveView
+6. **Analysis saved** to SQLite for historical tracking
+
+The frame extraction is straightforward:
+
+```elixir
+defmodule PuckPro.Video.FrameExtractor do
+  def extract(video_path, opts \\ []) do
+    max_frames = Keyword.get(opts, :max_frames, 20)
+    duration = get_duration(video_path)
+
+    # Calculate timestamps for evenly-spaced frames
+    interval = duration / max_frames
+    timestamps = Enum.map(0..(max_frames - 1), &(&1 * interval))
+
+    # Extract frames at each timestamp
+    Enum.map(timestamps, fn ts ->
+      output_path = temp_frame_path()
+      extract_frame_at(video_path, ts, output_path)
+      output_path
+    end)
+  end
+end
+```
+
+## The GenServer Shot Tracker
+
+Each active session gets its own GenServer for tracking shots in real-time:
+
+```elixir
+defmodule PuckPro.Tracking.ShotTracker do
+  use GenServer
+
+  def start_link(opts) do
+    session_id = Keyword.fetch!(opts, :session_id)
+    name = via_tuple(session_id)
+    GenServer.start_link(__MODULE__, opts, name: name)
+  end
+
+  def via_tuple(session_id) do
+    {:via, Registry, {PuckPro.ShotTrackerRegistry, session_id}}
+  end
+
+  @impl true
+  def init(opts) do
+    session_id = Keyword.fetch!(opts, :session_id)
+    {:ok, %{session_id: session_id, shots: [], last_shot_at: nil}}
+  end
+
+  @impl true
+  def handle_cast({:record_shot, shot_data}, state) do
+    shots = [shot_data | state.shots]
+    {:noreply, %{state | shots: shots, last_shot_at: DateTime.utc_now()}}
+  end
+end
+```
+
+Registry lookup means we can have thousands of concurrent practice sessions without naming conflicts.
+
+## Async Assigns: Non-Blocking Data Loading
+
+LiveView's `assign_async` is perfect for loading stats without blocking the mount:
+
+```elixir
+def mount(_params, _session, socket) do
+  {:ok,
+   socket
+   |> assign(:player, player)
+   |> assign_async(:stats, fn ->
+     {:ok, %{stats: calculate_stats(player)}}
+   end)
+   |> assign_async(:recent_sessions, fn ->
+     {:ok, %{recent_sessions: load_recent_sessions(player.id)}}
+   end)
+   |> assign_async(:weekly_stats, fn ->
+     {:ok, %{weekly_stats: load_weekly_stats(player.id)}}
+   end)}
+end
+```
+
+The page renders immediately with loading states, then fills in as data arrives.
+
+## The Road to Ice Projection
+
+Okay, the elephant in the rink: **how do we actually project onto ice?**
+
+The plan:
+
+1. **Ceiling-mounted projector** positioned above the practice area
+2. **Camera calibration** to map real-world coordinates to projection coordinates
+3. **Real-time pose → projection mapping** with latency under 100ms
+4. **Dynamic cues** that respond to player position and movement
+
+The browser-based pose detection is step one. Once we can reliably track position, we can:
+
+- Draw target zones on the ice
+- Show optimal skating paths
+- Highlight where to position for a pass
+- Display shot trajectory predictions
+
+This is the long game. For now, we're proving the concept works on a screen.
+
+## Why Phoenix LiveView Is Perfect for This
+
+I've built real-time apps in React, Vue, and vanilla JS. LiveView is different:
+
+### 1. State Lives on the Server
+
+No Redux. No Zustand. No "where does this state actually live?" The socket assigns ARE the state. Period.
+
+### 2. JavaScript Hooks When You Need Them
+
+MediaPipe has to run in the browser - that's non-negotiable. LiveView hooks make it trivial to bridge that gap:
+
+```javascript
+// Browser: heavy ML processing
+this.pushEvent("shot_detected", data);
+
+// Server: everything else
+def handle_event("shot_detected", params, socket)
+```
+
+### 3. PubSub for Real-Time Updates
+
+```elixir
+# Broadcast analysis chunk
+Phoenix.PubSub.broadcast(PuckPro.PubSub, topic, {:analysis_chunk, chunk})
+
+# LiveView receives and updates
+def handle_info({:analysis_chunk, chunk}, socket) do
+  {:noreply, assign(socket, :analysis_text, socket.assigns.analysis_text <> chunk)}
+end
+```
+
+No WebSocket management. No connection state. Just pub/sub.
+
+### 4. Task Supervisor for Background Work
+
+```elixir
+Task.Supervisor.start_child(PuckPro.TaskSupervisor, fn ->
+  do_analyze_video_streaming(video, session, analysis, topic)
+end)
+```
+
+Long-running AI analysis doesn't block the request. The task runs supervised, and results stream back via PubSub.
+
+## Lessons from the Garage
+
+A few things I learned building this:
+
+### 1. MediaPipe Is Incredible
+
+Accurate pose detection running in the browser at 30fps with no server? Five years ago this was science fiction. Now it's an npm install.
+
+### 2. Shot Detection Is Hard
+
+My first algorithm had a 60% false positive rate. Temporal validation (requiring consecutive frames) and stick movement tracking brought it under 5%.
+
+### 3. Kids Are Brutal Testers
+
+"Dad, it said I scored but I missed."
+"Dad, why did it count that? I was just scratching my nose."
+"Dad, it crashed again."
+
+Feedback is feedback.
+
+### 4. Encouragement Matters
+
+The AI prompts evolved significantly. Early versions were too clinical: "Form score: 67/100. Areas for improvement: knee bend, follow-through."
+
+Now: "Great job getting low on that one! You're bending your knees like a real pro. Want to level up? Try pointing your stick at the target after you shoot - it'll make your shots even more accurate!"
+
+Same feedback, completely different reception.
+
+## What's Next
+
+The roadmap:
+
+1. **YOLO integration** for actual puck tracking (not just color-based detection)
+2. **Multi-player support** for team practices
+3. **Comparative analysis** - "Your wrist shot looks like Connor McDavid's" (I wish)
+4. **The projector system** - ice projection is the end game
+5. **LiveView Native** mobile app for portability
+
+## The Real Reason
+
+I built this because my kid loves hockey, and I love building things. The intersection of those two passions is Puck Pro.
+
+Is it over-engineered? Absolutely. Could he just practice without AI analysis? Of course. But where's the fun in that?
+
+Plus, when he makes the NHL and thanks "the AI coach his dad built," it'll all be worth it.
+
+_(He's 11. I'm allowed to dream.)_
+
+---
+
+The code is on [GitHub](https://github.com/ryanyogan/puck_pro). It's MIT licensed, so feel free to fork it for your own hockey-obsessed family.
+
+_Now if you'll excuse me, I have 47 more wrist shots to watch._
