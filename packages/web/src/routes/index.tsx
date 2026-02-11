@@ -35,9 +35,8 @@ function HomePage() {
 
   return (
     <PageLayout>
-      {/* About */}
-      <section className="section">
-        <h2 className="section-title">About</h2>
+      {/* Bio - no header, close to nav */}
+      <section className="bio-section">
         <div className="bio">
           <p>
             Engineering leader with <strong>20 years</strong> of experience
@@ -76,10 +75,6 @@ function HomePage() {
           </p>
 
           <p>
-            <small>I've only got dad jokes at this point.</small>
-          </p>
-
-          <p>
             Based in <strong>Chicago, IL</strong>.
           </p>
         </div>
@@ -87,7 +82,7 @@ function HomePage() {
 
       {/* Writing */}
       <section className="section">
-        <h2 className="section-title">Writing</h2>
+        <h2 className="section-header">Writing</h2>
         <div className="writing-list">
           {posts.map((post) => (
             <Link
@@ -110,7 +105,7 @@ function HomePage() {
 
       {/* Projects */}
       <section className="section">
-        <h2 className="section-title">Projects</h2>
+        <h2 className="section-header">Projects</h2>
         <div className="projects-list">
           {projects.slice(0, 3).map((project) => {
             const href = project.url || project.github;
@@ -118,12 +113,14 @@ function HomePage() {
 
             const content = (
               <div className="project-item-content">
-                <span className="project-name">{project.name}</span>
-                <span className="project-description">
+                <div className="project-item-header">
+                  <span className="project-name">{project.name}</span>
+                  <span className="project-tech-inline">
+                    {project.tech.join(", ")}
+                  </span>
+                </div>
+                <span className="project-description-truncated">
                   {project.description}
-                </span>
-                <span className="project-tech-inline">
-                  {project.tech.join(", ")}
                 </span>
               </div>
             );
