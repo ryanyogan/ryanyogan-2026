@@ -21,7 +21,7 @@ function WritingPage() {
 
   return (
     <PageLayout>
-      <h1 className="page-title">Writing</h1>
+      <h2 className="section-header">Writing</h2>
 
       <div className="writing-list">
         {posts.map((post) => (
@@ -33,7 +33,11 @@ function WritingPage() {
           >
             <span className="writing-title">{post.title}</span>
             <span className="writing-date">
-              {new Date(post.date).getFullYear()}
+              {new Date(post.date).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
             </span>
           </Link>
         ))}

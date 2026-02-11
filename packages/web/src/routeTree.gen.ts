@@ -17,6 +17,7 @@ import { Route as WritingIndexRouteImport } from './routes/writing/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WritingSlugRouteImport } from './routes/writing/$slug'
 import { Route as ApiTriggerWorkflowRouteImport } from './routes/api/trigger-workflow'
+import { Route as ApiSeedVectorizeRouteImport } from './routes/api/seed-vectorize'
 import { Route as ApiSeedSearchRouteImport } from './routes/api/seed-search'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
 import { Route as ApiGeneratePostRouteImport } from './routes/api/generate-post'
@@ -64,6 +65,11 @@ const ApiTriggerWorkflowRoute = ApiTriggerWorkflowRouteImport.update({
   path: '/api/trigger-workflow',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSeedVectorizeRoute = ApiSeedVectorizeRouteImport.update({
+  id: '/api/seed-vectorize',
+  path: '/api/seed-vectorize',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSeedSearchRoute = ApiSeedSearchRouteImport.update({
   id: '/api/seed-search',
   path: '/api/seed-search',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
+  '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
   '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
+  '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
   '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
+  '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
   '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
+    | '/api/seed-vectorize'
     | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin/'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
+    | '/api/seed-vectorize'
     | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
+    | '/api/seed-vectorize'
     | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin/'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   ApiGeneratePostRoute: typeof ApiGeneratePostRoute
   ApiSearchRoute: typeof ApiSearchRoute
   ApiSeedSearchRoute: typeof ApiSeedSearchRoute
+  ApiSeedVectorizeRoute: typeof ApiSeedVectorizeRoute
   ApiTriggerWorkflowRoute: typeof ApiTriggerWorkflowRoute
   WritingSlugRoute: typeof WritingSlugRoute
   WritingIndexRoute: typeof WritingIndexRoute
@@ -262,6 +275,13 @@ declare module '@tanstack/react-router' {
       path: '/api/trigger-workflow'
       fullPath: '/api/trigger-workflow'
       preLoaderRoute: typeof ApiTriggerWorkflowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/seed-vectorize': {
+      id: '/api/seed-vectorize'
+      path: '/api/seed-vectorize'
+      fullPath: '/api/seed-vectorize'
+      preLoaderRoute: typeof ApiSeedVectorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/seed-search': {
@@ -335,6 +355,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiGeneratePostRoute: ApiGeneratePostRoute,
   ApiSearchRoute: ApiSearchRoute,
   ApiSeedSearchRoute: ApiSeedSearchRoute,
+  ApiSeedVectorizeRoute: ApiSeedVectorizeRoute,
   ApiTriggerWorkflowRoute: ApiTriggerWorkflowRoute,
   WritingSlugRoute: WritingSlugRoute,
   WritingIndexRoute: WritingIndexRoute,

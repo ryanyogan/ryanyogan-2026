@@ -72,8 +72,8 @@ function ProjectsPage() {
 
   return (
     <PageLayout>
-      <header className="page-header">
-        <h1 className="page-title">Projects</h1>
+      <header className="section-header-with-description">
+        <h2 className="section-header">Projects</h2>
         <p className="page-description">
           A mix of open source work, side projects, and experiments.
         </p>

@@ -75,9 +75,21 @@ function HomePage() {
             robotics with our other kiddo, or half-finishing side projects.
           </p>
         </div>
-        <p className="keyboard-hint">
-          <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> to search
-        </p>
+        <button
+          className="keyboard-hint"
+          onClick={() => {
+            const event = new KeyboardEvent("keydown", {
+              key: "k",
+              metaKey: true,
+              bubbles: true,
+            });
+            window.dispatchEvent(event);
+          }}
+          aria-label="Open command palette"
+        >
+          <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> to{" "}
+          <span className="keyboard-hint-search">search</span>
+        </button>
       </section>
 
       {/* Writing */}

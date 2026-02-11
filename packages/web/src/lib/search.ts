@@ -1,6 +1,6 @@
 /**
  * Search utilities for RAG-powered content search
- * Uses Cloudflare Vectorize for semantic search
+ * Uses Cloudflare Vectorize for semantic search with content chunking
  */
 
 import { getAllSearchableContent, type SearchableContent } from "./content";
@@ -23,6 +23,53 @@ export interface Env {
 }
 
 /**
+ * Chunking configuration
+ * ~300-400 tokens per chunk with 15% overlap for context continuity
+ */
+const CHUNK_SIZE_CHARS = 1500;
+const CHUNK_OVERLAP_CHARS = 200;
+
+/**
+ * Split content into chunks for embedding
+ * Tries to break at natural boundaries (paragraphs, then sentences)
+ */
+function chunkContent(text: string): string[] {
+  const chunks: string[] = [];
+
+  // If text is short enough, return as single chunk
+  if (text.length <= CHUNK_SIZE_CHARS) {
+    return [text.trim()].filter((c) => c.length > 0);
+  }
+
+  let start = 0;
+  while (start < text.length) {
+    let end = start + CHUNK_SIZE_CHARS;
+
+    if (end < text.length) {
+      // Try to break at paragraph boundary
+      const paragraphBreak = text.lastIndexOf("\n\n", end);
+      if (paragraphBreak > start + CHUNK_SIZE_CHARS * 0.5) {
+        end = paragraphBreak;
+      } else {
+        // Fall back to sentence boundary
+        const sentenceBreak = text.lastIndexOf(". ", end);
+        if (sentenceBreak > start + CHUNK_SIZE_CHARS * 0.5) {
+          end = sentenceBreak + 1;
+        }
+      }
+    }
+
+    chunks.push(text.slice(start, Math.min(end, text.length)).trim());
+    start = Math.max(end - CHUNK_OVERLAP_CHARS, start + 1);
+
+    // Safety check to prevent infinite loop
+    if (start >= text.length) break;
+  }
+
+  return chunks.filter((c) => c.length > 0);
+}
+
+/**
  * Generate embeddings for text using Workers AI
  */
 export async function generateEmbedding(
@@ -39,26 +86,35 @@ export async function generateEmbedding(
 
 /**
  * Seed Vectorize with all searchable content
- * Call this once to populate the index
+ * Chunks long content for better semantic search coverage
  */
 export async function seedVectorize(env: Env): Promise<{ seeded: number }> {
   const content = getAllSearchableContent();
   const vectors: VectorizeVector[] = [];
 
   for (const item of content) {
-    const text = `${item.title}. ${item.description}`;
-    const embedding = await generateEmbedding(env.AI, text);
+    // Combine title, description, and full content
+    const fullText = `${item.title}\n\n${item.description}\n\n${item.content}`;
 
-    vectors.push({
-      id: item.id,
-      values: embedding,
-      metadata: {
-        type: item.type,
-        title: item.title,
-        description: item.description,
-        url: item.url,
-      },
-    });
+    // Chunk the content
+    const chunks = chunkContent(fullText);
+
+    for (let i = 0; i < chunks.length; i++) {
+      const embedding = await generateEmbedding(env.AI, chunks[i]);
+
+      vectors.push({
+        id: `${item.id}-chunk-${i}`,
+        values: embedding,
+        metadata: {
+          type: item.type,
+          title: item.title,
+          description: item.description,
+          url: item.url,
+          chunkIndex: i,
+          totalChunks: chunks.length,
+        },
+      });
+    }
   }
 
   // Upsert in batches of 100
@@ -73,6 +129,7 @@ export async function seedVectorize(env: Env): Promise<{ seeded: number }> {
 
 /**
  * Search content using Vectorize semantic search
+ * Deduplicates results from multiple chunks of the same content
  */
 export async function searchWithVectorize(
   env: Env,
@@ -82,21 +139,33 @@ export async function searchWithVectorize(
   // Generate embedding for the query
   const queryEmbedding = await generateEmbedding(env.AI, query);
 
-  // Query Vectorize
+  // Query Vectorize - get extra results to account for deduplication
   const matches = await env.VECTORIZE.query(queryEmbedding, {
-    topK,
+    topK: topK * 3,
     returnMetadata: "all",
   });
 
-  // Map to SearchResult format
-  return matches.matches.map((match) => ({
-    id: match.id,
-    type: (match.metadata?.type as "post" | "project") || "post",
-    title: (match.metadata?.title as string) || "",
-    description: (match.metadata?.description as string) || "",
-    url: (match.metadata?.url as string) || "",
-    score: match.score,
-  }));
+  // Deduplicate by base ID (remove -chunk-N suffix), keep highest score
+  const seen = new Map<string, SearchResult>();
+
+  for (const match of matches.matches) {
+    const baseId = match.id.replace(/-chunk-\d+$/, "");
+
+    if (!seen.has(baseId) || match.score > seen.get(baseId)!.score) {
+      seen.set(baseId, {
+        id: baseId,
+        type: (match.metadata?.type as "post" | "project") || "post",
+        title: (match.metadata?.title as string) || "",
+        description: (match.metadata?.description as string) || "",
+        url: (match.metadata?.url as string) || "",
+        score: match.score,
+      });
+    }
+  }
+
+  return Array.from(seen.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK);
 }
 
 /**

@@ -24,6 +24,7 @@ export interface PostMeta {
   description: string;
   featured?: boolean;
   author?: "human" | "ai" | "hybrid";
+  content?: string;
 }
 
 // Type the imports from virtual module
@@ -97,6 +98,7 @@ export interface SearchableContent {
   type: "post" | "project";
   title: string;
   description: string;
+  content: string;
   url: string;
 }
 
@@ -106,6 +108,7 @@ export function getAllSearchableContent(): SearchableContent[] {
     type: "post",
     title: post.title,
     description: post.description,
+    content: post.content || "",
     url: `/writing/${post.slug}`,
   }));
 
@@ -113,7 +116,8 @@ export function getAllSearchableContent(): SearchableContent[] {
     id: `project-${project.slug}`,
     type: "project",
     title: project.name,
-    description: `${project.description} Technologies: ${project.tech.join(", ")}`,
+    description: project.description,
+    content: `Technologies: ${project.tech.join(", ")}`,
     url: project.url || project.github || `/projects`,
   }));
 

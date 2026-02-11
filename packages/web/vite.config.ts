@@ -40,7 +40,7 @@ function contentPlugin(): Plugin {
           projects = data.projects || [];
         }
 
-        // Load posts from writing/*.mdx frontmatter
+        // Load posts from writing/*.mdx frontmatter and body content
         const writingDir = path.join(contentDir, "writing");
         const posts: unknown[] = [];
         if (fs.existsSync(writingDir)) {
@@ -48,11 +48,11 @@ function contentPlugin(): Plugin {
             .readdirSync(writingDir)
             .filter((f) => f.endsWith(".mdx"));
           for (const file of mdxFiles) {
-            const content = fs.readFileSync(
+            const fileContent = fs.readFileSync(
               path.join(writingDir, file),
               "utf-8"
             );
-            const { data } = matter(content);
+            const { data, content: bodyContent } = matter(fileContent);
             posts.push({
               slug: file.replace(".mdx", ""),
               title: data.title || "",
@@ -60,6 +60,7 @@ function contentPlugin(): Plugin {
               description: data.description || "",
               featured: data.featured || false,
               author: data.author || undefined,
+              content: bodyContent || "",
             });
           }
         }

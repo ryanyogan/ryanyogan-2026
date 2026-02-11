@@ -21,7 +21,6 @@ import type { SearchResponse, SearchResult } from "~/routes/api/search";
 type CommandItem = {
   id: string;
   label: string;
-  shortcut?: string;
   icon: React.ReactNode;
   action: () => void;
   group: "navigation" | "actions" | "social";
@@ -110,7 +109,6 @@ export function CommandPalette() {
       {
         id: "home",
         label: "Home",
-        shortcut: "H",
         icon: <HomeIcon size={16} />,
         action: () => {
           navigate({ to: "/" });
@@ -121,7 +119,6 @@ export function CommandPalette() {
       {
         id: "work",
         label: "Work",
-        shortcut: "W",
         icon: <UserIcon size={16} />,
         action: () => {
           navigate({ to: "/work" });
@@ -132,7 +129,6 @@ export function CommandPalette() {
       {
         id: "writing",
         label: "Writing",
-        shortcut: "B",
         icon: <DocumentIcon size={16} />,
         action: () => {
           navigate({ to: "/writing" });
@@ -143,7 +139,6 @@ export function CommandPalette() {
       {
         id: "projects",
         label: "Projects",
-        shortcut: "P",
         icon: <ProjectIcon size={16} />,
         action: () => {
           navigate({ to: "/projects" });
@@ -155,7 +150,6 @@ export function CommandPalette() {
       {
         id: "theme",
         label: theme === "dark" ? "Light Mode" : "Dark Mode",
-        shortcut: "T",
         icon: theme === "dark" ? <SunIcon size={16} /> : <MoonIcon size={16} />,
         action: () => {
           toggleTheme();
@@ -166,7 +160,6 @@ export function CommandPalette() {
       {
         id: "copy-email",
         label: "Copy Email",
-        shortcut: "E",
         icon: <CopyIcon size={16} />,
         action: copyEmail,
         group: "actions",
@@ -211,25 +204,7 @@ export function CommandPalette() {
   const actions = commands.filter((c) => c.group === "actions");
   const social = commands.filter((c) => c.group === "social");
 
-  // Handle keyboard shortcuts when modal is open
-  useEffect(() => {
-    if (!open) return;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Check for single-letter shortcuts
-      const key = e.key.toLowerCase();
-      const cmd = commands.find(
-        (c) => c.shortcut?.toLowerCase() === key && !e.metaKey && !e.ctrlKey
-      );
-      if (cmd && search === "") {
-        e.preventDefault();
-        cmd.action();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, search, commands]);
 
   // Navigate to search result
   const handleSearchResultSelect = useCallback(
@@ -325,11 +300,6 @@ export function CommandPalette() {
                     >
                       <span className="command-item-icon">{item.icon}</span>
                       <span className="command-item-label">{item.label}</span>
-                      {item.shortcut && (
-                        <kbd className="command-item-shortcut">
-                          {item.shortcut}
-                        </kbd>
-                      )}
                     </Command.Item>
                   ))}
                 </Command.Group>
@@ -344,11 +314,6 @@ export function CommandPalette() {
                     >
                       <span className="command-item-icon">{item.icon}</span>
                       <span className="command-item-label">{item.label}</span>
-                      {item.shortcut && (
-                        <kbd className="command-item-shortcut">
-                          {item.shortcut}
-                        </kbd>
-                      )}
                     </Command.Item>
                   ))}
                 </Command.Group>

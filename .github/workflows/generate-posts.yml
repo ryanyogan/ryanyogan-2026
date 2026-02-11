@@ -1,10 +1,13 @@
 name: Generate Blog Posts for New Projects
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'packages/web/content/projects.md'
+  # Trigger after Deploy workflow completes
+  workflow_run:
+    workflows: ["Deploy to Cloudflare"]
+    types:
+      - completed
+
+  # Manual trigger
   workflow_dispatch:
     inputs:
       force:
@@ -15,19 +18,55 @@ on:
 jobs:
   detect-and-trigger:
     runs-on: ubuntu-latest
+    # Only run if deploy succeeded, or if manually triggered
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if projects.md changed
+        id: check-projects
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          # Get the head SHA from the triggering workflow
+          HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+          
+          # Fetch the specific commit to check what files changed
+          git fetch origin ${HEAD_SHA} --depth=2
+          
+          # Check if projects.md was in the changed files
+          CHANGED_FILES=$(git diff --name-only ${HEAD_SHA}~1 ${HEAD_SHA} 2>/dev/null || echo "")
+          
+          if echo "$CHANGED_FILES" | grep -q "packages/web/content/projects.md"; then
+            echo "projects_changed=true" >> $GITHUB_OUTPUT
+            echo "projects.md was changed"
+          else
+            echo "projects_changed=false" >> $GITHUB_OUTPUT
+            echo "projects.md was not changed, skipping post generation"
+          fi
 
       - name: Setup Node.js
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.check-projects.outputs.projects_changed == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install js-yaml
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.check-projects.outputs.projects_changed == 'true'
         run: npm install js-yaml
 
       - name: Detect missing posts
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.check-projects.outputs.projects_changed == 'true'
         id: detect
         run: |
           # Parse projects from projects.md frontmatter and find missing posts
@@ -81,12 +120,17 @@ jobs:
           EOF
 
       - name: Display detection results
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          steps.check-projects.outputs.projects_changed == 'true'
         run: |
           echo "Missing count: ${{ steps.detect.outputs.missing_count }}"
           echo "Missing projects: ${{ steps.detect.outputs.missing }}"
 
       - name: Trigger Cloudflare Workflow
-        if: steps.detect.outputs.missing_count != '0'
+        if: |
+          (github.event_name == 'workflow_dispatch' || steps.check-projects.outputs.projects_changed == 'true') &&
+          steps.detect.outputs.missing_count != '0'
         env:
           SITE_URL: ${{ secrets.SITE_URL }}
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
@@ -113,7 +157,17 @@ jobs:
           echo "::notice::Post generation workflow started for ${{ steps.detect.outputs.missing_count }} projects"
 
       - name: No missing posts
-        if: steps.detect.outputs.missing_count == '0'
+        if: |
+          (github.event_name == 'workflow_dispatch' || steps.check-projects.outputs.projects_changed == 'true') &&
+          steps.detect.outputs.missing_count == '0'
         run: |
           echo "All featured projects already have blog posts."
           echo "::notice::No new posts to generate"
+
+      - name: Skip - No projects.md changes
+        if: |
+          github.event_name != 'workflow_dispatch' &&
+          steps.check-projects.outputs.projects_changed != 'true'
+        run: |
+          echo "projects.md was not changed in this deployment, skipping post generation."
+          echo "::notice::Skipped - no projects.md changes"
