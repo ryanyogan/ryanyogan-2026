@@ -1,0 +1,86 @@
+---
+title: "Building a Next.js 13 Personal Website with PlanetScale and Vercel"
+date: "2026-02-10"
+description: "A personal website project leveraging Next.js 13, PlanetScale, and Vercel for a scalable and performant web application"
+featured: true
+---
+
+I built this personal website project because I wanted to create a scalable and performant web application that showcases my skills and experience as a senior engineering leader. With over 20 years of experience in the field, I've had the opportunity to work on numerous projects, and I wanted to create a platform that would allow me to share my knowledge and insights with others. I chose to use Next.js 13, PlanetScale, and Vercel for this project because of their reputation for delivering high-performance and scalable applications.
+
+## Problem Statement
+When building a personal website, one of the biggest challenges is creating a platform that is both scalable and performant. As traffic increases, the website needs to be able to handle the load without sacrificing performance. Additionally, the website needs to be secure and easy to maintain. I wanted to create a website that would not only showcase my skills and experience but also demonstrate my ability to build scalable and performant applications.
+
+## Architecture Overview
+The system architecture for this project is based on a Next.js 13 application with a PlanetScale database, utilizing Vercel for deployment and analytics, and NextAuth.js for authentication. The application uses the new `app/` directory in Next.js 13, which provides a more streamlined and efficient way of building applications. The PlanetScale database provides a scalable and secure way of managing data, while Vercel provides a robust platform for deployment and analytics. NextAuth.js provides a secure and easy-to-use authentication system.
+
+### Key Components
+The application consists of several key components, including the Next.js 13 application, the PlanetScale database, and the Vercel deployment and analytics platform. The Next.js 13 application provides the frontend and backend functionality for the website, while the PlanetScale database manages the data. The Vercel platform provides the deployment and analytics capabilities for the application.
+
+## Key Technical Decisions
+One of the key technical decisions I made when building this project was to use the new `app/` directory in Next.js 13. This decision was made because of the improved performance and scalability that the `app/` directory provides. The `app/` directory allows for a more streamlined and efficient way of building applications, which was essential for creating a scalable and performant website.
+
+```javascript
+// app/layout.js
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <head>
+        <title>My Personal Website</title>
+      </head>
+      <body>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
+    </html>
+  );
+}
+```
+
+Another key technical decision I made was to use PlanetScale for the database. PlanetScale provides a scalable and secure way of managing data, which was essential for creating a performant website.
+
+```javascript
+// lib/db.js
+import { Database } from '@planetscale/database';
+
+const db = new Database({
+  host: process.env PLANETSCALE_HOST,
+  username: process.env.PLANETSCALE_USERNAME,
+  password: process.env.PLANETSCALE_PASSWORD,
+  database: process.env.PLANETSCALE_DATABASE,
+});
+
+export default db;
+```
+
+I also decided to use Vercel for deployment and analytics. Vercel provides a robust platform for deploying and analyzing applications, which was essential for creating a scalable and performant website.
+
+```javascript
+// vercel.json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "next.config.js",
+      "use": "@vercel/static-build"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "next.config.js"
+    }
+  ]
+}
+```
+
+## Lessons Learned
+One of the biggest lessons I learned when building this project was the importance of scalability and performance. Creating a website that can handle high traffic and provide fast load times is crucial for providing a good user experience. I also learned the importance of security and ease of maintenance when building a website. Using a robust platform like Vercel and a secure database like PlanetScale was essential for creating a secure and maintainable website.
+
+## What's Next
+Now that the project is complete, I plan to continue adding new features and functionality to the website. One of the next steps is to add a global 404 page, which will provide a better user experience for users who encounter errors. I also plan to move redirects to the end of the routing stack, which will improve the performance of the website. Additionally, I plan to use the new support for API routes in the `app/` directory, which will provide a more streamlined and efficient way of building APIs.
+
+If you're interested in learning more about this project, I invite you to check out the [GitHub repository](https://github.com/ryanyogan/ryanyogan.com). The repository contains all of the code for the project, including the Next.js 13 application, the PlanetScale database, and the Vercel deployment and analytics platform. I hope that this project will serve as a useful example for others who are looking to build scalable and performant web applications.
