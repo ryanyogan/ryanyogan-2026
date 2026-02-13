@@ -1,0 +1,82 @@
+---
+title: "Building Scalable Web Applications with Phoenix Framework"
+date: "2026-02-10"
+description: "Learn how to leverage the Phoenix Framework to build efficient and scalable web applications"
+featured: true
+---
+
+I built this project, YoganHockey, because I wanted to explore the capabilities of the Phoenix Framework in building efficient and scalable web applications. As a senior engineering leader with 20 years of experience, I've had the opportunity to work with various frameworks and technologies, but I was particularly drawn to Phoenix's promise of high-performance and real-time updates. In this blog post, I'll share my journey of building YoganHockey, the technical decisions I made, and the lessons I learned along the way.
+
+## Introduction to the Problem
+When building web applications, scalability and performance are crucial considerations. Traditional frameworks often rely on request-response cycles, which can lead to slow page loads and poor user experience. Phoenix Framework, on the other hand, offers a unique approach to building web applications using its Live View feature, which enables real-time updates and efficient data transfer. I wanted to leverage this feature to build a fast, scalable, and maintainable web application.
+
+## Architecture Overview
+The system architecture of YoganHockey is based on a modular design, with a clear separation of concerns between the application logic, database interactions, and web interface. I used the Phoenix Framework as the core framework, with Elixir as the programming language. For the frontend, I utilized Tailwind CSS and Heroicons to create a responsive and customizable UI. The project also relies on Swoosh for email notifications and Mix for efficient dependency management.
+
+### Modular Design
+The modular design of YoganHockey allows for easy maintenance and updates. Each component is designed to be independent, making it easier to modify or replace individual parts without affecting the entire system. This approach also enables better scalability, as new components can be added as needed to handle increased traffic or demand.
+
+## Key Technical Decisions
+One of the key technical decisions I made was to use Phoenix Live View for real-time updates. This feature enables the application to push updates to connected clients, eliminating the need for traditional request-response cycles. To implement Live View, I added the following code to my `mix.exs` file:
+```elixir
+defp deps do
+  [
+    # ...
+    {:phoenix_live_view, "~> 1.1.0"},
+    # ...
+  ]
+end
+```
+This dependency allows me to use the Live View functionality in my application.
+
+### Efficient Dependency Management
+Another important decision was to use Mix for efficient dependency management. Mix is a build tool that comes with Elixir, and it allows me to manage dependencies and compile my code efficiently. In my `mix.exs` file, I defined the following function to specify the dependencies:
+```elixir
+defp deps do
+  [
+    {:phoenix, "~> 1.8.1"},
+    {:phoenix_html, "~> 4.1"},
+    {:phoenix_live_reload, "~> 1.2", only: :dev},
+    {:phoenix_live_view, "~> 1.1.0"},
+    {:lazy_html, ">= 0.1.0", only: :test},
+    {:phoenix_live_dashboard, "~> 0.8.3"},
+    {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
+    {:tailwind, "~> 0.3", runtime: Mix.env() == :dev},
+    {:heroicons,
+     github: "tailwindlabs/heroicons",
+     tag: "v2.2.0",
+     sparse: "optimized",
+     app: false,
+     compile: false,
+     depth: 1}
+  ]
+end
+```
+This function specifies the dependencies required by my application, including the Phoenix Framework, Phoenix Live View, and Tailwind CSS.
+
+### Real-time Updates with Phoenix Live View
+To implement real-time updates, I used the `phoenix_live_view` dependency and created a Live View module:
+```elixir
+defmodule YoganHockeyWeb.LiveView do
+  use Phoenix.LiveView
+
+  def mount(params, session, socket) do
+    # ...
+  end
+
+  def render(assigns) do
+    # ...
+  end
+
+  def handle_event("update", params, socket) do
+    # ...
+  end
+end
+```
+This module defines the Live View functionality, including the `mount`, `render`, and `handle_event` functions.
+
+## Lessons Learned
+Throughout the development process, I learned several valuable lessons. First, the importance of modular design cannot be overstated. By separating concerns and creating independent components, I was able to build a scalable and maintainable application. Second, the Phoenix Framework's Live View feature is a game-changer for real-time updates. It enables efficient data transfer and eliminates the need for traditional request-response cycles. Finally, efficient dependency management is crucial for building fast and scalable applications. Mix, the build tool that comes with Elixir, makes it easy to manage dependencies and compile code efficiently.
+
+## What's Next
+Now that YoganHockey is complete, I'm excited to share it with the community. You can find the code on GitHub at [https://github.com/ryanyogan/yogan_hockey](https://github.com/ryanyogan/yogan_hockey). I invite you to explore the code, learn from my experiences, and contribute to the project. If you're interested in building fast, scalable, and maintainable web applications, I encourage you to check out the Phoenix Framework and its Live View feature. With its high-performance capabilities and real-time updates, Phoenix is an excellent choice for building modern web applications.
