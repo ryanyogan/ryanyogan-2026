@@ -27,7 +27,7 @@ export function Footer() {
           >
             Twitter
           </a>
-          <a href="mailto:ryan@ryanyogan.com" className="footer-link">
+          <a href="mailto:ryan.yogan@hey.com" className="footer-link">
             Email
           </a>
         </div>

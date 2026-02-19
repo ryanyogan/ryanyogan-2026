@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
+import { DocumentIcon } from "~/components/ui/icons";
 
 export const Route = createFileRoute("/work")({
   component: WorkPage,
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/work")({
       {
         name: "description",
         content:
-          "20 years of engineering experience at Procore, Peak6, and various startups.",
+          "Engineering executive with 20 years of experience building and scaling high-performing teams through IPO and beyond.",
       },
     ],
   }),
@@ -22,6 +23,7 @@ type Position = {
   period: string;
   location?: string;
   description?: string;
+  highlights?: string[];
   skills?: string[];
 };
 
@@ -35,24 +37,32 @@ const workHistory: WorkExperience[] = [
     company: "Avant",
     positions: [
       {
-        title: "Principal Engineer",
+        title: "Principal Architect & Engineering Lead",
         type: "Full-time",
         period: "Jun 2025 - Jan 2026",
-        location: "Chicago, Illinois · Hybrid",
-      },
-    ],
-  },
-  {
-    company: "Yogan Dot Dev",
-    positions: [
-      {
-        title: "Founder & Lead Engineer",
-        type: "Full-time",
-        period: "Oct 2019 - Jan 2026",
-        location: "Austin, Texas · Remote",
+        location: "Chicago, Illinois",
         description:
-          "I work with a wide range of clients—from small independent businesses to large enterprise organizations—designing and building systems that scale. My work spans the entire stack: from elegant, performant user interfaces on the web to backend services, infrastructure, and even low-level and embedded systems.\n\nMy core passion is crafting thoughtful UI/UX experiences. I specialize in TypeScript and React, with deep experience in Next.js, Remix, and TanStack. I've built aviation software for flight planning, procedures, and checklists; SaaS platforms using modern web frameworks; and backend systems in GoLang and Zig.",
-        skills: ["TypeScript", "React", "Next.js", "GoLang", "Elixir", "Rust", "Systems Design"],
+          "Led front-end architecture transformation at this fintech company, mentoring engineers daily while driving technical excellence across the organization.",
+        highlights: [
+          "Re-architected front-end strategy across the organization with 200k+ line refactors",
+          "Built internal AI-powered UI generation tools (similar to v0.dev/bolt.new)",
+          "Led architecture review board and technical design reviews for major initiatives",
+          "Established engineering standards and best practices documentation adopted org-wide",
+          "Created testing tutorials, React guides, and performance guidelines",
+          "Drove accessibility (A11y) compliance initiatives across the platform",
+          "Partnered with Product and Design leadership on quarterly roadmap planning",
+          "Built animations and interactive experiences using Three.js and modern CSS techniques",
+          "Initiated automated design system generating components from Figma designs",
+          "Mentored engineers daily on JavaScript fundamentals, event-driven systems, React, and Next.js",
+        ],
+        skills: [
+          "Technical Leadership",
+          "Architecture",
+          "A11y",
+          "Design Systems",
+          "Three.js",
+          "Mentorship",
+        ],
       },
     ],
   },
@@ -60,13 +70,33 @@ const workHistory: WorkExperience[] = [
     company: "Stealth AI Startup",
     positions: [
       {
-        title: "Engineering Team Lead",
+        title: "Co-Founder & CTO",
         type: "Full-time",
         period: "Jan 2024 - Jun 2025",
-        location: "New York · Hybrid",
+        location: "New York",
         description:
-          "Led end-to-end architecture: Built e-commerce backend (TypeScript), front-end (Next.js), and internal services in Elixir and TypeScript. Developed internal LLM models for procurement automation and document parsing. Owned core infrastructure: CI/CD, database design, cloud deployment, and developer tooling. Drove engineering strategy and collaborated with founders to align product vision with technical execution.",
-        skills: ["TypeScript", "Next.js", "Elixir", "LLM", "Infrastructure", "Team Leadership"],
+          "Co-founded and led engineering for an AI-powered procurement automation platform for the construction industry. Built the engineering organization from the ground up.",
+        highlights: [
+          "Built and led engineering team of 8, establishing hiring plans and organizational structure",
+          "Managed engineering budget and headcount planning aligned to runway",
+          "Created VC pitch decks, analyzed runway, and presented technical strategy to investors",
+          "Architected full platform: e-commerce backend (TypeScript), front-end (Next.js), internal services (Elixir)",
+          "Developed internal LLM models and custom vector stores for procurement automation",
+          "Built agentic AI systems for document parsing and supplier matching",
+          "Established vendor relationships and technology partnerships",
+          "Defined SLAs, incident response processes, and on-call rotations",
+          "Built engineering onboarding program for new hires",
+          "Ran weekly 1:1s, performance reviews, and compensation planning",
+          "Owned technical strategy, roadmap, and alignment with business objectives",
+        ],
+        skills: [
+          "Executive Leadership",
+          "Investor Relations",
+          "Team Building",
+          "LLM/AI",
+          "Vector Databases",
+          "Agentic AI",
+        ],
       },
     ],
   },
@@ -74,11 +104,33 @@ const workHistory: WorkExperience[] = [
     company: "HG Insights",
     positions: [
       {
-        title: "Senior Software Engineering Manager",
+        title: "Senior Engineering Manager",
         type: "Full-time",
         period: "Aug 2021 - Sep 2022",
         location: "Santa Barbara, California",
-        skills: ["Web Applications", "Scala", "Team Leadership"],
+        description:
+          "Led the data pipeline team through a major architectural transformation while rebuilding team culture and establishing career development frameworks.",
+        highlights: [
+          "Managed team of 7 engineers across UI and backend services",
+          "Managed engineering budget for the data pipeline team",
+          "Inherited a team without prior management. Built career ladders and development plans for each individual",
+          "Established OKRs that translated to individual KPIs for career trajectory alignment",
+          "Partnered with Product leadership on quarterly planning and roadmap prioritization",
+          "Migrated Scala/Airflow batch system to streaming architecture, eliminating 24+ hours of manual intervention",
+          "Collaborated with SRE on incident management, on-call documentation, and runbooks",
+          "Created psychological safety for engineers to discuss careers and prevent burnout",
+          "Restructured one large team into smaller, more effective units",
+          "Participated in executive leadership meetings representing engineering perspectives",
+          "Created onboarding documentation and engineering processes for new team members",
+          "Secured raises and promotions, transforming team from 'revolving door' to stable, engaged unit",
+        ],
+        skills: [
+          "People Development",
+          "Team Restructuring",
+          "OKR Design",
+          "Data Pipelines",
+          "SRE Partnership",
+        ],
       },
     ],
   },
@@ -91,8 +143,38 @@ const workHistory: WorkExperience[] = [
         period: "Oct 2016 - Jul 2021",
         location: "Carpinteria, California",
         description:
-          "Led platform engineering for cloud-based construction management software serving thousands of enterprise customers. Built and scaled engineering teams. Contributed to successful IPO preparation. Procore earned a spot on the Deloitte Technology Fast 500 list during my tenure.",
-        skills: ["Ruby on Rails", "Web Applications", "Team Leadership", "Platform Engineering"],
+          "Led engineering through hypergrowth and successful IPO. Scaled the UI organization from 8 to 65 engineers while building the frameworks, culture, and people development systems that enabled sustainable growth.",
+        highlights: [
+          "Managed 8-14 direct reports including engineering managers (skip-level leadership)",
+          "Managed $2M+ annual engineering budget with headcount planning and resource allocation",
+          "Scaled UI engineering org from 8 to 65 engineers across 5-8 teams",
+          "Partnered with CFO/Finance on IPO engineering metrics and investor reporting",
+          "Established engineering OKRs aligned to company objectives, cascading to team and individual KPIs",
+          "Interviewed 700+ candidates and personally hired 50+ engineers",
+          "Created the Technical Lead Manager role, defining a new career path at Procore",
+          "Major driver of the Procore Developer Academy, which grew into its own building and created a knowledge-first culture",
+          "Led vendor evaluations and contract negotiations for UI tooling and enterprise software",
+          "Participated in board-level technical discussions during IPO preparation",
+          "Coined 'Empathy Driven Development', reducing enterprise feedback loops from weeks to hours",
+          "Built internal tooling enabling real-time customer support with auditable, verified data access",
+          "Created incident management processes in partnership with SRE leadership",
+          "Implemented RUM and APM dashboards (Datadog, New Relic) providing org-wide visibility into application health",
+          "Established SLAs for enterprise customers and on-call rotation processes",
+          "Led org-wide performance initiative reducing page load times from 11s to 2s",
+          "Contributed to web-based CAD/BIM drawing tool with complex 2D/3D in-browser rendering",
+          "Saved largest enterprise client through on-site engagement and evangelized learnings company-wide",
+          "Built relationships with key enterprise stakeholders globally",
+          "Developed career ladders aligned to business goals, team goals, and individual aspirations",
+          "Promoted engineers from junior IC to Principal Architect",
+        ],
+        skills: [
+          "Organizational Scaling",
+          "IPO Preparation",
+          "Budget Management",
+          "People Development",
+          "Observability",
+          "Enterprise Engagement",
+        ],
       },
     ],
   },
@@ -103,7 +185,25 @@ const workHistory: WorkExperience[] = [
         title: "Director of Engineering",
         period: "Nov 2015 - May 2016",
         location: "Chicago, Illinois",
-        skills: ["Leadership", "Engineering Management"],
+        description:
+          "Led digital transformation of auto transport logistics, managing 11 engineers to modernize an industry reliant on manual processes.",
+        highlights: [
+          "Managed team of 11 engineers focused on disrupting transportation industry with technology",
+          "Managed department budget and resource allocation for engineering initiatives",
+          "Established engineering roadmap aligned to business objectives and revenue targets",
+          "Partnered with Operations and Sales leadership on technology initiatives",
+          "Led vendor selection for mobile development tools and logistics platforms",
+          "Built mobile applications replacing manual Bills of Lading (BOLs)",
+          "Implemented driver and shipment tracking with computer vision for 360-degree vehicle imaging",
+          "Created first-of-its-kind smart pricing system accurate within dollars (vs. industry norm of bait-and-switch)",
+        ],
+        skills: [
+          "Digital Transformation",
+          "Budget Management",
+          "Mobile Development",
+          "Computer Vision",
+          "Vendor Management",
+        ],
       },
     ],
   },
@@ -114,22 +214,47 @@ const workHistory: WorkExperience[] = [
         title: "VP of Research and Development",
         period: "Apr 2014 - Nov 2015",
         location: "Boston, Massachusetts",
-        skills: ["Leadership", "R&D"],
+        description:
+          "Promoted from Operations Engineer to VP in 4 months based on proactive leadership and technical innovation. Led dual-track research and product teams.",
+        highlights: [
+          "Led team of 4 engineers owning Clojure backend and insights dashboards",
+          "Managed R&D budget and resource allocation for research initiatives",
+          "Presented research findings and technical strategy to executive team",
+          "Established technology evaluation frameworks for emerging cloud technologies",
+          "Built direct partnership with AWS as Lambda early access program participant",
+          "Pioneered early AWS Lambda adoption, reducing infrastructure costs by 40%+",
+          "Led dual-track: delivered production products while driving cloud infrastructure research",
+          "Modernized stack from Angular 1.x to ClojureScript/React (Om), one of first orgs to adopt",
+          "Implemented immutable infrastructure with Ansible (later Terraform)",
+        ],
+        skills: [
+          "R&D Leadership",
+          "Budget Management",
+          "AWS Partnership",
+          "Clojure",
+          "Cost Optimization",
+        ],
       },
       {
         title: "Operations Engineer",
-        period: "Dec 2013 - May 2014",
+        period: "Dec 2013 - Apr 2014",
         location: "Boston, Massachusetts",
+        description:
+          "Drove continuous improvement through timeboxed research spikes with defined outcomes, leading to rapid promotion to VP.",
       },
     ],
   },
   {
-    company: "BradsDeals.com",
+    company: "Yogan Dot Dev",
     positions: [
       {
-        title: "Sr. Software Engineer",
-        period: "Feb 2012 - Mar 2013",
-        location: "Chicago, Illinois",
+        title: "Founder & Principal Consultant",
+        type: "Consulting",
+        period: "Oct 2019 - Present",
+        location: "Austin, Texas · Remote",
+        description:
+          "Independent consulting practice working with enterprise clients on complex technical challenges: Elixir/Erlang systems, advanced React patterns, legacy code modernization, and performance optimization.",
+        skills: ["Elixir", "React", "Legacy Modernization", "Performance"],
       },
     ],
   },
@@ -141,17 +266,26 @@ const workHistory: WorkExperience[] = [
         period: "Nov 2009 - Sep 2011",
         location: "Chicago, Illinois",
         description:
-          "Full-Stack engineer with a focus on middleware layers (Rails, Django, Struts) and JavaScript frameworks. Worked on reactive interfaces for high-frequency trading platforms where milliseconds matter.",
-        skills: ["Rails", "JavaScript", "High-Frequency Trading", "Middleware"],
+          "Built reactive interfaces for high-frequency trading platforms where milliseconds matter. Introduced Backbone.js (later Ember.js) to the organization.",
+        skills: [
+          "Ruby on Rails",
+          "JavaScript",
+          "C++",
+          "High-Frequency Trading",
+        ],
       },
     ],
   },
   {
-    company: "linkedFA",
+    company: "BradsDeals.com",
     positions: [
       {
-        title: "Software Engineer",
-        period: "2008 - 2010",
+        title: "Sr. Software Engineer",
+        period: "Feb 2012 - Mar 2013",
+        location: "Chicago, Illinois",
+        description:
+          "Led migration from Cold Fusion to Ruby on Rails. Built Black Friday game experiences and prepared systems for traffic surges at scale.",
+        skills: ["Ruby on Rails", "JavaScript", "Legacy Migration", "Scale"],
       },
     ],
   },
@@ -162,21 +296,100 @@ const workHistory: WorkExperience[] = [
         title: "Sr. Systems Analyst",
         period: "May 2006 - Oct 2009",
         location: "Fort Lauderdale, Florida",
+        description:
+          "Managed infrastructure for South Florida's premier performing arts venue: 200+ machines, data centers, networks, and VoIP. First box office to implement thin clients. Kept the lights on for Broadway productions including Lion King, Wicked, and Phantom of the Opera.",
+        skills: ["Infrastructure", "Data Centers", "Networking", "Operations"],
       },
     ],
   },
 ];
 
+const summaryParagraphs = [
+  `Engineering executive with 20 years of experience building and scaling high-performing teams. Led organizations through hypergrowth and IPO at Procore, scaling the UI engineering org from 8 to 65 engineers while managing $2M+ budgets and partnering with Finance on investor reporting.`,
+  `Managed engineering managers and established career frameworks that developed junior engineers into Principal Architects. Drove the Procore Developer Academy  initiative and coined "Empathy Driven Development", a customer-centric approach that reduced enterprise feedback loops from weeks to hours and directly contributed to retaining the company's largest client.`,
+  `Most recently served as Co-Founder & CTO of an AI startup, building the engineering organization from the ground up while presenting to investors and managing runway. I hire well (700+ interviews, 50+ hires), develop people intentionally, and believe the best engineering cultures are built on trust, psychological safety, and continuous learning.`,
+];
+
 function WorkPage() {
   return (
     <PageLayout>
-      <h1 className="page-title">Work</h1>
+      <div className="work-header">
+        <h1 className="page-title">Work</h1>
+      </div>
+
+      <section className="summary-section section">
+        {summaryParagraphs.map((paragraph, index) => (
+          <p key={index} className="work-summary">
+            {paragraph}
+          </p>
+        ))}
+      </section>
+
+      <section className="leadership-section section">
+        <h2 className="section-title">Leadership</h2>
+        <div className="skills-list">
+          <p>
+            <strong>Organizational Growth:</strong> Scaled teams from 8 to 65+
+            engineers · Managed engineering managers · IPO preparation · $2M+
+            budget ownership
+          </p>
+          <p>
+            <strong>People Development:</strong> Career ladder design · Created
+            Technical Lead Manager role · Promoted ICs to Principal Architect ·
+            Founded Developer Academy
+          </p>
+          <p>
+            <strong>Hiring:</strong> 700+ interviews · 50+ hires · Hiring
+            process design · Employer branding
+          </p>
+          <p>
+            <strong>Strategic:</strong> OKR/KPI design · Roadmap planning ·
+            Executive communication · Investor presentations · Vendor management
+          </p>
+          <p>
+            <strong>Operations:</strong> Incident management · SRE partnership ·
+            On-call processes · Observability (RUM/APM dashboards)
+          </p>
+          <p>
+            <strong>Culture:</strong> Psychological safety · Empathy Driven
+            Development · Knowledge-first culture · Team restructuring
+          </p>
+        </div>
+      </section>
+
+      <section className="skills-section section">
+        <h2 className="section-title">Technical</h2>
+        <div className="skills-list">
+          <p>
+            <strong>Languages:</strong> TypeScript, JavaScript, Elixir, GoLang,
+            Rust, C++, Ruby, Python
+          </p>
+          <p>
+            <strong>Frontend:</strong> React, Mobile (React Native/iOS/Android),
+            CSS, Figma, Design Systems, Three.js, A11y, Edge Performance
+          </p>
+          <p>
+            <strong>Backend:</strong> Node.js, Phoenix, Rails, Event-Driven
+            Architecture, CQRS
+          </p>
+          <p>
+            <strong>Infrastructure:</strong> Cloud Ops, AWS/GCP/Azure,
+            Cloudflare, Kubernetes, Docker, CI/CD
+          </p>
+          <p>
+            <strong>AI/ML:</strong> LLM Integration & Fine-tuning, Vector
+            Databases, Computer Vision, Agentic Development (MCP, Custom Agents)
+          </p>
+        </div>
+      </section>
+
+      <h2 className="section-title">Experience</h2>
 
       <div className="work-list">
         {workHistory.map((experience) => (
           <div key={experience.company} className="work-item">
             <div className="work-company">
-              <h2 className="work-company-name">{experience.company}</h2>
+              <h3 className="work-company-name">{experience.company}</h3>
               {experience.positions.length > 1 && (
                 <span className="work-company-tenure">
                   {calculateTotalTenure(experience.positions)}
@@ -190,9 +403,11 @@ function WorkPage() {
                   className={`work-position ${experience.positions.length > 1 ? "work-position-multi" : ""}`}
                 >
                   <div className="work-position-header">
-                    <h3 className="work-position-title">{position.title}</h3>
+                    <h4 className="work-position-title">{position.title}</h4>
                     {position.type && (
-                      <span className="work-position-type">{position.type}</span>
+                      <span className="work-position-type">
+                        {position.type}
+                      </span>
                     )}
                   </div>
                   <div className="work-position-meta">
@@ -203,6 +418,13 @@ function WorkPage() {
                   </div>
                   {position.description && (
                     <p className="work-description">{position.description}</p>
+                  )}
+                  {position.highlights && position.highlights.length > 0 && (
+                    <ul className="work-highlights">
+                      {position.highlights.map((highlight, i) => (
+                        <li key={i}>{highlight}</li>
+                      ))}
+                    </ul>
                   )}
                   {position.skills && position.skills.length > 0 && (
                     <div className="work-skills">
@@ -219,35 +441,13 @@ function WorkPage() {
           </div>
         ))}
       </div>
-
-      <section className="skills-section section">
-        <h2 className="section-title">Core Skills</h2>
-        <div className="skills-list">
-          <p>
-            <strong>Languages:</strong> TypeScript, JavaScript, Elixir, GoLang, Rust, C++, Ruby, Python
-          </p>
-          <p>
-            <strong>Frontend:</strong> React, Next.js, Remix, TanStack, React Native, CSS/Tailwind
-          </p>
-          <p>
-            <strong>Backend:</strong> Node.js, Phoenix, Rails, Event-Driven Architecture, CQRS
-          </p>
-          <p>
-            <strong>Infrastructure:</strong> AWS, Cloudflare, Kubernetes, Docker, CI/CD
-          </p>
-          <p>
-            <strong>Interests:</strong> Embedded systems, robotics, AI/ML, real-time systems
-          </p>
-        </div>
-      </section>
     </PageLayout>
   );
 }
 
 function calculateTotalTenure(positions: Position[]): string {
-  // Simple display - just show the range
   const periods = positions.map((p) => p.period);
-  const firstStart = periods[periods.length - 1].split(" - ")[0];
-  const lastEnd = periods[0].split(" - ")[1];
+  const firstStart = periods[periods.length - 1]?.split(" - ")[0] ?? "";
+  const lastEnd = periods[0]?.split(" - ")[1] ?? "";
   return `${firstStart} - ${lastEnd}`;
 }

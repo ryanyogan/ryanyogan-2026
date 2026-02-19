@@ -593,12 +593,40 @@ p {
   }
 }
 
+.work-summary {
+  font-size: 1rem;
+  color: var(--color-muted);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.work-summary:last-child {
+  margin-bottom: 0;
+}
+
 .work-description {
   font-size: 0.9375rem;
   color: var(--color-muted);
   line-height: 1.7;
   margin-top: 0.5rem;
   white-space: pre-line;
+}
+
+.work-highlights {
+  margin: 0.75rem 0 0 0;
+  padding-left: 1.25rem;
+  list-style-type: disc;
+}
+
+.work-highlights li {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0.375rem 0;
+}
+
+.work-highlights li::marker {
+  color: var(--color-subtle);
 }
 
 .work-skills {
@@ -618,9 +646,60 @@ p {
   border: 1px solid var(--color-border);
 }
 
+/* Work page header with resume button */
+.work-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.work-header .page-title {
+  margin-bottom: 0;
+}
+
+.resume-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-foreground);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.resume-button:hover {
+  background: var(--color-background);
+  border-color: var(--color-muted);
+}
+
+.resume-button svg {
+  flex-shrink: 0;
+}
+
+/* Summary section on work page */
+.summary-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Leadership section on work page */
+.leadership-section {
+  margin-bottom: 2rem;
+}
+
 /* Skills section on work page */
 .skills-section {
-  margin-top: 4rem;
+  margin-top: 0;
+  margin-bottom: 2.5rem;
 }
 
 .skills-list {

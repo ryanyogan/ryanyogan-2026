@@ -52,13 +52,13 @@ export function CommandPalette() {
   // Open with CMD+K
   useCommandK(
     useCallback(() => setOpen(true), []),
-    !open
+    !open,
   );
 
   // Close with Escape
   useEscape(
     useCallback(() => setOpen(false), []),
-    open
+    open,
   );
 
   // Fetch search results when debounced search changes
@@ -72,7 +72,7 @@ export function CommandPalette() {
       setIsSearching(true);
       try {
         const response = await fetch(
-          `/api/search?q=${encodeURIComponent(debouncedSearch)}`
+          `/api/search?q=${encodeURIComponent(debouncedSearch)}`,
         );
         if (response.ok) {
           const data: SearchResponse = await response.json();
@@ -196,15 +196,13 @@ export function CommandPalette() {
         group: "social",
       },
     ],
-    [theme, toggleTheme, navigate, copyEmail]
+    [theme, toggleTheme, navigate, copyEmail],
   );
 
   // Group commands
   const navigation = commands.filter((c) => c.group === "navigation");
   const actions = commands.filter((c) => c.group === "actions");
   const social = commands.filter((c) => c.group === "social");
-
-
 
   // Navigate to search result
   const handleSearchResultSelect = useCallback(
@@ -216,7 +214,7 @@ export function CommandPalette() {
       }
       setOpen(false);
     },
-    [navigate]
+    [navigate],
   );
 
   if (!open) return null;
@@ -279,9 +277,7 @@ export function CommandPalette() {
                         {result.description.length > 60 ? "..." : ""}
                       </span>
                     </div>
-                    <span className="command-item-type">
-                      {result.type}
-                    </span>
+                    <span className="command-item-type">{result.type}</span>
                   </Command.Item>
                 ))}
               </Command.Group>
