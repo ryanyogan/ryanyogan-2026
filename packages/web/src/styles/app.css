@@ -227,7 +227,15 @@ a {
   }
 }
 
-/* Theme toggle - very subtle */
+/* Nav actions container */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Shared nav icon button style */
+.nav-icon-button,
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -243,6 +251,7 @@ a {
   transition: opacity 0.15s;
 }
 
+.nav-icon-button:hover,
 .theme-toggle:hover {
   opacity: 0.8;
 }
@@ -582,8 +591,13 @@ p {
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.5rem 0;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
   transition: opacity 0.15s;
+}
+
+.writing-item:last-child {
+  border-bottom: none;
 }
 
 .writing-item:hover {
@@ -592,6 +606,7 @@ p {
 
 .writing-title {
   font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--color-foreground);
 }
 
@@ -882,7 +897,7 @@ p {
   border-bottom: 1px solid var(--color-border);
 }
 
-/* Home page simplified project list */
+/* Home page project list */
 .projects-list-home {
   display: flex;
   flex-direction: column;
@@ -890,26 +905,43 @@ p {
 
 .project-item-home {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.5rem 0;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
   transition: opacity 0.15s;
+}
+
+.project-item-home:last-child {
+  border-bottom: none;
 }
 
 .project-item-home:hover {
   opacity: 0.7;
 }
 
-.project-tagline {
-  font-size: 0.875rem;
-  color: var(--color-muted);
+.project-item-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.project-tech-home {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-subtle);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: right;
   flex-shrink: 1;
   min-width: 0;
+}
+
+.project-tagline {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  line-height: 1.5;
 }
 
 /* Tagline in projects list page */

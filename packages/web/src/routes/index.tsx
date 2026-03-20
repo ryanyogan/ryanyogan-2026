@@ -72,21 +72,6 @@ function HomePage() {
           still skate, out in the snow with my better half, working on robotics with our other
           kiddo, or half-finishing side projects.
         </p>
-        <button
-          className="keyboard-hint"
-          onClick={() => {
-            const event = new KeyboardEvent("keydown", {
-              key: "k",
-              metaKey: true,
-              bubbles: true,
-            });
-            window.dispatchEvent(event);
-          }}
-          aria-label="Open command palette"
-        >
-          <kbd>⌘</kbd>
-          <kbd>K</kbd> <span className="keyboard-hint-text">to search</span>
-        </button>
       </section>
 
       {/* Writing */}
@@ -118,17 +103,27 @@ function HomePage() {
           <h2 className="section-header">Projects</h2>
         </Link>
         <div className="projects-list-home">
-          {projects.slice(0, 3).map((project) => (
-            <Link
-              key={project.slug}
-              to="/projects/$slug"
-              params={{ slug: project.slug }}
-              className="project-item-home"
-            >
-              <span className="project-name">{project.name}</span>
-              <span className="project-tagline">{project.tagline}</span>
-            </Link>
-          ))}
+          {projects.slice(0, 3).map((project) => {
+            const techDisplay = project.tech.slice(0, 3).join(" · ");
+            const hasMore = project.tech.length > 3;
+            return (
+              <Link
+                key={project.slug}
+                to="/projects/$slug"
+                params={{ slug: project.slug }}
+                className="project-item-home"
+              >
+                <div className="project-item-header">
+                  <span className="project-name">{project.name}</span>
+                  <span className="project-tech-home">
+                    {techDisplay}
+                    {hasMore && " ..."}
+                  </span>
+                </div>
+                <span className="project-tagline">{project.tagline}</span>
+              </Link>
+            );
+          })}
         </div>
         <Link to="/projects" className="section-link">
           all projects
