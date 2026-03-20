@@ -51,7 +51,12 @@ function WritingPage() {
 
   return (
     <PageLayout>
-      <h2 className="section-header">Writing</h2>
+      <header className="section-header-with-description">
+        <h2 className="section-header">Writing</h2>
+        <p className="page-description">
+          Thoughts on engineering, leadership, and building things.
+        </p>
+      </header>
 
       <div className="writing-list">
         {posts.map((post) => (

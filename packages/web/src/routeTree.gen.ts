@@ -10,18 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkRouteImport } from './routes/work'
-import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WritingIndexRouteImport } from './routes/writing/index'
+import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WritingSlugRouteImport } from './routes/writing/$slug'
-import { Route as ApiTriggerWorkflowRouteImport } from './routes/api/trigger-workflow'
+import { Route as ProjectsSlugRouteImport } from './routes/projects/$slug'
 import { Route as ApiSitemapRouteImport } from './routes/api/sitemap'
-import { Route as ApiSeedVectorizeRouteImport } from './routes/api/seed-vectorize'
 import { Route as ApiSeedSearchRouteImport } from './routes/api/seed-search'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
-import { Route as ApiGeneratePostRouteImport } from './routes/api/generate-post'
 import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
 import { Route as AdminExperienceRouteImport } from './routes/admin/experience'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
@@ -29,11 +27,6 @@ import { Route as AdminContentRouteImport } from './routes/admin/content'
 const WorkRoute = WorkRouteImport.update({
   id: '/work',
   path: '/work',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProjectsRoute = ProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -51,6 +44,11 @@ const WritingIndexRoute = WritingIndexRouteImport.update({
   path: '/writing/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,19 +59,14 @@ const WritingSlugRoute = WritingSlugRouteImport.update({
   path: '/writing/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiTriggerWorkflowRoute = ApiTriggerWorkflowRouteImport.update({
-  id: '/api/trigger-workflow',
-  path: '/api/trigger-workflow',
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSitemapRoute = ApiSitemapRouteImport.update({
   id: '/api/sitemap',
   path: '/api/sitemap',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiSeedVectorizeRoute = ApiSeedVectorizeRouteImport.update({
-  id: '/api/seed-vectorize',
-  path: '/api/seed-vectorize',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSeedSearchRoute = ApiSeedSearchRouteImport.update({
@@ -84,11 +77,6 @@ const ApiSeedSearchRoute = ApiSeedSearchRouteImport.update({
 const ApiSearchRoute = ApiSearchRouteImport.update({
   id: '/api/search',
   path: '/api/search',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiGeneratePostRoute = ApiGeneratePostRouteImport.update({
-  id: '/api/generate-post',
-  path: '/api/generate-post',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
@@ -110,55 +98,49 @@ const AdminContentRoute = AdminContentRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
-  '/projects': typeof ProjectsRoute
   '/work': typeof WorkRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/experience': typeof AdminExperienceRoute
   '/admin/projects': typeof AdminProjectsRoute
-  '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
-  '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
   '/api/sitemap': typeof ApiSitemapRoute
-  '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
   '/writing/': typeof WritingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/projects': typeof ProjectsRoute
   '/work': typeof WorkRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/experience': typeof AdminExperienceRoute
   '/admin/projects': typeof AdminProjectsRoute
-  '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
-  '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
   '/api/sitemap': typeof ApiSitemapRoute
-  '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/projects': typeof ProjectsIndexRoute
   '/writing': typeof WritingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
-  '/projects': typeof ProjectsRoute
   '/work': typeof WorkRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/experience': typeof AdminExperienceRoute
   '/admin/projects': typeof AdminProjectsRoute
-  '/api/generate-post': typeof ApiGeneratePostRoute
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
-  '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
   '/api/sitemap': typeof ApiSitemapRoute
-  '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
   '/writing/': typeof WritingIndexRoute
 }
 export interface FileRouteTypes {
@@ -166,69 +148,61 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/projects'
     | '/work'
     | '/admin/content'
     | '/admin/experience'
     | '/admin/projects'
-    | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
-    | '/api/seed-vectorize'
     | '/api/sitemap'
-    | '/api/trigger-workflow'
+    | '/projects/$slug'
     | '/writing/$slug'
     | '/admin/'
+    | '/projects/'
     | '/writing/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/projects'
     | '/work'
     | '/admin/content'
     | '/admin/experience'
     | '/admin/projects'
-    | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
-    | '/api/seed-vectorize'
     | '/api/sitemap'
-    | '/api/trigger-workflow'
+    | '/projects/$slug'
     | '/writing/$slug'
     | '/admin'
+    | '/projects'
     | '/writing'
   id:
     | '__root__'
     | '/'
     | '/admin'
-    | '/projects'
     | '/work'
     | '/admin/content'
     | '/admin/experience'
     | '/admin/projects'
-    | '/api/generate-post'
     | '/api/search'
     | '/api/seed-search'
-    | '/api/seed-vectorize'
     | '/api/sitemap'
-    | '/api/trigger-workflow'
+    | '/projects/$slug'
     | '/writing/$slug'
     | '/admin/'
+    | '/projects/'
     | '/writing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
-  ProjectsRoute: typeof ProjectsRoute
   WorkRoute: typeof WorkRoute
-  ApiGeneratePostRoute: typeof ApiGeneratePostRoute
   ApiSearchRoute: typeof ApiSearchRoute
   ApiSeedSearchRoute: typeof ApiSeedSearchRoute
-  ApiSeedVectorizeRoute: typeof ApiSeedVectorizeRoute
   ApiSitemapRoute: typeof ApiSitemapRoute
-  ApiTriggerWorkflowRoute: typeof ApiTriggerWorkflowRoute
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
   WritingSlugRoute: typeof WritingSlugRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
   WritingIndexRoute: typeof WritingIndexRoute
 }
 
@@ -239,13 +213,6 @@ declare module '@tanstack/react-router' {
       path: '/work'
       fullPath: '/work'
       preLoaderRoute: typeof WorkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects': {
-      id: '/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -269,6 +236,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WritingIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects/': {
+      id: '/projects/'
+      path: '/projects'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof ProjectsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -283,11 +257,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WritingSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/trigger-workflow': {
-      id: '/api/trigger-workflow'
-      path: '/api/trigger-workflow'
-      fullPath: '/api/trigger-workflow'
-      preLoaderRoute: typeof ApiTriggerWorkflowRouteImport
+    '/projects/$slug': {
+      id: '/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/sitemap': {
@@ -295,13 +269,6 @@ declare module '@tanstack/react-router' {
       path: '/api/sitemap'
       fullPath: '/api/sitemap'
       preLoaderRoute: typeof ApiSitemapRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/seed-vectorize': {
-      id: '/api/seed-vectorize'
-      path: '/api/seed-vectorize'
-      fullPath: '/api/seed-vectorize'
-      preLoaderRoute: typeof ApiSeedVectorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/seed-search': {
@@ -316,13 +283,6 @@ declare module '@tanstack/react-router' {
       path: '/api/search'
       fullPath: '/api/search'
       preLoaderRoute: typeof ApiSearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/generate-post': {
-      id: '/api/generate-post'
-      path: '/api/generate-post'
-      fullPath: '/api/generate-post'
-      preLoaderRoute: typeof ApiGeneratePostRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/projects': {
@@ -370,15 +330,13 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
-  ProjectsRoute: ProjectsRoute,
   WorkRoute: WorkRoute,
-  ApiGeneratePostRoute: ApiGeneratePostRoute,
   ApiSearchRoute: ApiSearchRoute,
   ApiSeedSearchRoute: ApiSeedSearchRoute,
-  ApiSeedVectorizeRoute: ApiSeedVectorizeRoute,
   ApiSitemapRoute: ApiSitemapRoute,
-  ApiTriggerWorkflowRoute: ApiTriggerWorkflowRoute,
+  ProjectsSlugRoute: ProjectsSlugRoute,
   WritingSlugRoute: WritingSlugRoute,
+  ProjectsIndexRoute: ProjectsIndexRoute,
   WritingIndexRoute: WritingIndexRoute,
 }
 export const routeTree = rootRouteImport

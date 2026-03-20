@@ -161,14 +161,14 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3.5rem;
 }
 
 /* Nav name with decorative pastel dots */
 .nav-name {
   position: relative;
   font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-size: 1.375rem;
   font-weight: 600;
   letter-spacing: -0.02em;
   text-decoration: none;
@@ -177,11 +177,11 @@ a {
   margin: -0.25rem -0.5rem;
 }
 
-/* Decorative dots container */
+/* Decorative dots container - subtle animation */
 .nav-name::before {
   content: "";
   position: absolute;
-  inset: -8px -12px;
+  inset: -10px -16px;
   z-index: -1;
   background-image: 
     radial-gradient(circle at 10% 20%, var(--color-accent-pink) 3px, transparent 3px),
@@ -192,17 +192,37 @@ a {
     radial-gradient(circle at 70% 10%, var(--color-accent-mint) 2.5px, transparent 2.5px),
     radial-gradient(circle at 50% 95%, var(--color-accent-pink) 2px, transparent 2px);
   opacity: 0.7;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  animation: float-dots 12s ease-in-out infinite;
+  transition: opacity 0.3s ease;
 }
 
 .nav-name:hover::before {
   opacity: 1;
-  transform: scale(1.05);
+}
+
+/* Very subtle floating animation - barely noticeable */
+@keyframes float-dots {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1); 
+  }
+  25% { 
+    transform: translate(0.5px, -1px) scale(1.01); 
+  }
+  50% { 
+    transform: translate(0, -1.5px) scale(1); 
+  }
+  75% { 
+    transform: translate(-0.5px, -0.5px) scale(1.01); 
+  }
 }
 
 @media (min-width: 640px) {
   .nav-name {
-    font-size: 1.25rem;
+    font-size: 1.625rem;
+  }
+  
+  .nav-name::before {
+    inset: -12px -20px;
   }
 }
 
@@ -307,13 +327,65 @@ p {
 }
 
 /* ==========================================================================
-   Home Page - Bio
+   Home Page - Bio (Three-tier typography hierarchy)
    ========================================================================== */
 
 .bio-section {
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 }
 
+/* Tagline - largest, most prominent */
+.bio-tagline {
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  color: var(--color-foreground);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.5rem;
+  max-width: 56ch;
+}
+
+.bio-tagline strong {
+  font-weight: 600;
+}
+
+.bio-tagline .text-link {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.bio-tagline .text-link span {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.bio-tagline .text-link:hover span {
+  transform: translateX(3px);
+}
+
+/* Description - medium emphasis */
+.bio-description {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+  margin-bottom: 1rem;
+  max-width: 58ch;
+}
+
+.bio-description strong {
+  color: var(--color-foreground);
+  font-weight: 500;
+}
+
+/* Aside - smallest, most muted, personal touch */
+.bio-aside {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-subtle);
+  max-width: 60ch;
+}
+
+/* Legacy .bio styles for backwards compatibility */
 .bio p {
   font-size: 0.9375rem;
   line-height: 1.7;
@@ -330,15 +402,16 @@ p {
   font-weight: 500;
 }
 
+/* Keyboard hint - refined styling */
 .keyboard-hint {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--color-accent);
-  opacity: 0.6;
-  margin-top: 1.5rem;
+  gap: 0.375rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--color-subtle);
+  opacity: 0.65;
+  margin-top: 2.5rem;
   background: none;
   border: none;
   padding: 0;
@@ -351,17 +424,19 @@ p {
 }
 
 .keyboard-hint kbd {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 3px;
-  padding: 0.125rem 0.375rem;
-  font-size: 0.625rem;
+  border-radius: 4px;
+  padding: 0.2em 0.45em;
+  box-shadow: 0 1px 0 var(--color-border);
+  color: var(--color-muted);
 }
 
-.keyboard-hint-search {
-  text-decoration: underline;
-  text-decoration-color: var(--color-border);
-  text-underline-offset: 3px;
+.keyboard-hint-text {
+  margin-left: 0.125rem;
 }
 
 /* Social links inline */
@@ -463,8 +538,23 @@ p {
   );
 }
 
+/* Section header as link */
+.section-header-link {
+  display: block;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.section-header-link:hover .section-header {
+  color: var(--color-foreground);
+}
+
+.section-header-link:hover .section-header::after {
+  width: 70%;
+}
+
 .section-header-with-description {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .section-header-with-description .section-header {
@@ -698,7 +788,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -790,6 +880,44 @@ p {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Home page simplified project list */
+.projects-list-home {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-item-home {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  transition: opacity 0.15s;
+}
+
+.project-item-home:hover {
+  opacity: 0.7;
+}
+
+.project-tagline {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+/* Tagline in projects list page */
+.project-tagline-list {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+/* Projects list page */
 .projects-list {
   display: flex;
   flex-direction: column;
@@ -889,6 +1017,127 @@ p {
 .project-read-more:hover {
   color: var(--color-foreground);
   text-decoration-color: var(--color-foreground);
+}
+
+/* ==========================================================================
+   Project Detail Page
+   ========================================================================== */
+
+.project-detail {
+  max-width: var(--max-width);
+}
+
+.project-detail-header {
+  margin-bottom: 2rem;
+}
+
+.project-detail-title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  color: var(--color-foreground);
+}
+
+.project-detail-tagline {
+  font-size: 1.125rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.project-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.project-detail-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  width: fit-content;
+}
+
+.project-detail-description {
+  font-size: 1rem;
+  color: var(--color-muted);
+  line-height: 1.8;
+}
+
+.project-detail-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.project-detail-tech-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  padding: 0.25rem 0.625rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.project-detail-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.project-detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 4px;
+  transition: all 0.15s;
+}
+
+.project-detail-link:hover {
+  color: var(--color-foreground);
+  text-decoration-color: var(--color-foreground);
+}
+
+.project-detail-link svg {
+  flex-shrink: 0;
+}
+
+.project-detail-writeup {
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.project-detail-writeup-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--color-foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 4px;
+  transition: all 0.15s;
+}
+
+.project-detail-writeup-link:hover {
+  text-decoration-color: var(--color-foreground);
+}
+
+.project-detail-writeup-link svg {
+  flex-shrink: 0;
 }
 
 /* ==========================================================================

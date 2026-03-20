@@ -59,46 +59,26 @@ function HomePage() {
 
   return (
     <PageLayout>
-      {/* Bio - no header, close to nav */}
+      {/* Bio - three-tier typography hierarchy */}
       <section className="bio-section">
-        <div className="bio">
-          <p>
-            Engineering leader with <strong>20 years</strong> of experience
-            building teams and products. I've worked at orgs such as{" "}
-            <a
-              href="https://procore.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-link"
-            >
-              Procore
-            </a>{" "}
-            (pre-IPO SaaS) to{" "}
-            <a
-              href="https://peak6.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-link"
-            >
-              Peak6
-            </a>{" "}
-            (high-frequency trading) and just about every type of org
-            in-between. I've created engineering teams from 0 to 40+ people
-            spanning a wide variety of technolgical domains. See my{" "}
-            <Link to="/work" className="text-link">
-              full work history
-            </Link>
-            .
-          </p>
-          <p>
-            I'm passionate about building <strong>AI</strong>,{" "}
-            <strong>embedded systems</strong>, and <strong>robotics</strong> -
-            building software that controls hardware. When I'm not coding,
-            you'll find me watching our boy play hockey, pretending like I can
-            still skate, out in the snow with my better half, working on
-            robotics with our other kiddo, or half-finishing side projects.
-          </p>
-        </div>
+        <p className="bio-tagline">
+          Engineering leader with <strong>20 years</strong> of experience
+          building teams and products.{" "}
+          <Link to="/work" className="text-link">
+            Work history <span aria-hidden="true">→</span>
+          </Link>
+        </p>
+        <p className="bio-description">
+          I'm passionate about building <strong>AI</strong>,{" "}
+          <strong>embedded systems</strong>, and <strong>robotics</strong> —
+          building software that controls hardware.
+        </p>
+        <p className="bio-aside">
+          When I'm not coding, you'll find me watching our boy play hockey,
+          pretending like I can still skate, out in the snow with my better
+          half, working on robotics with our other kiddo, or half-finishing
+          side projects.
+        </p>
         <button
           className="keyboard-hint"
           onClick={() => {
@@ -111,14 +91,15 @@ function HomePage() {
           }}
           aria-label="Open command palette"
         >
-          <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> to{" "}
-          <span className="keyboard-hint-search">search</span>
+          <kbd>⌘</kbd><kbd>K</kbd> <span className="keyboard-hint-text">to search</span>
         </button>
       </section>
 
       {/* Writing */}
       <section className="section">
-        <h2 className="section-header">Writing</h2>
+        <Link to="/writing" className="section-header-link">
+          <h2 className="section-header">Writing</h2>
+        </Link>
         <div className="writing-list">
           {posts.map((post) => (
             <Link
@@ -141,46 +122,21 @@ function HomePage() {
 
       {/* Projects */}
       <section className="section">
-        <h2 className="section-header">Projects</h2>
-        <div className="projects-list">
-          {projects.slice(0, 3).map((project) => {
-            const href = project.url || project.github;
-            const isExternal = href?.startsWith("http");
-
-            const content = (
-              <div className="project-item-content">
-                <div className="project-item-header">
-                  <span className="project-name">{project.name}</span>
-                  <span className="project-tech-inline">
-                    {project.tech.join(", ")}
-                  </span>
-                </div>
-                <span className="project-description-truncated">
-                  {project.description}
-                </span>
-              </div>
-            );
-
-            if (href) {
-              return (
-                <a
-                  key={project.slug}
-                  href={href}
-                  target={isExternal ? "_blank" : undefined}
-                  rel={isExternal ? "noopener noreferrer" : undefined}
-                  className="project-item"
-                >
-                  {content}
-                </a>
-              );
-            }
-
-            return (
-              <div key={project.slug} className="project-item">
-                {content}
-              </div>
-            );
-          })}
+        <Link to="/projects" className="section-header-link">
+          <h2 className="section-header">Projects</h2>
+        </Link>
+        <div className="projects-list-home">
+          {projects.slice(0, 3).map((project) => (
+            <Link
+              key={project.slug}
+              to="/projects/$slug"
+              params={{ slug: project.slug }}
+              className="project-item-home"
+            >
+              <span className="project-name">{project.name}</span>
+              <span className="project-tagline">{project.tagline}</span>
+            </Link>
+          ))}
         </div>
         <Link to="/projects" className="section-link">
           all projects

@@ -3,7 +3,6 @@ import { PageLayout } from "~/components/layout";
 import {
   getFeaturedProjects,
   getOtherProjects,
-  getProjectPost,
   getAllProjects,
   type ProjectMeta,
 } from "~/lib/content";
@@ -18,7 +17,7 @@ import {
 
 const PROJECTS_DESCRIPTION = "Open source projects and things I've built.";
 
-export const Route = createFileRoute("/projects")({
+export const Route = createFileRoute("/projects/")({
   component: ProjectsPage,
   loader: async () => {
     const featured = getFeaturedProjects();
@@ -63,48 +62,28 @@ export const Route = createFileRoute("/projects")({
 });
 
 function ProjectItem({ project }: { project: ProjectMeta }) {
-  const href = project.url || project.github;
-  const isExternal = href?.startsWith("http");
-  const blogPost = getProjectPost(project.slug);
-
-  const content = (
-    <div className="project-item-content">
-      <div className="project-item-header">
-        <span className="project-name">{project.name}</span>
-        <span className="project-tech-inline">{project.tech.join(", ")}</span>
+  return (
+    <Link
+      to="/projects/$slug"
+      params={{ slug: project.slug }}
+      className="project-item"
+    >
+      <div className="project-item-content">
+        <div className="project-item-header">
+          <span className="project-name">{project.name}</span>
+          <span className="project-tech-inline">{project.tech.join(", ")}</span>
+        </div>
+        <span className="project-tagline-list">{project.tagline}</span>
       </div>
-      <span className="project-description">{project.description}</span>
-      {blogPost && (
-        <Link
-          to="/writing/$slug"
-          params={{ slug: blogPost.slug }}
-          className="project-read-more"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Read the write-up
-        </Link>
-      )}
-    </div>
+    </Link>
   );
-
-  if (href) {
-    return (
-      <a
-        href={href}
-        target={isExternal ? "_blank" : undefined}
-        rel={isExternal ? "noopener noreferrer" : undefined}
-        className="project-item"
-      >
-        {content}
-      </a>
-    );
-  }
-
-  return <div className="project-item">{content}</div>;
 }
 
 function ProjectsPage() {
-  const { featured, other } = Route.useLoaderData();
+  const { featured, other } = Route.useLoaderData() as {
+    featured: ProjectMeta[];
+    other: ProjectMeta[];
+  };
 
   return (
     <PageLayout>
@@ -120,7 +99,7 @@ function ProjectsPage() {
         <section className="projects-section">
           <h2 className="projects-section-title">2026 Projects</h2>
           <div className="projects-list">
-            {featured.map((project) => (
+            {featured.map((project: ProjectMeta) => (
               <ProjectItem key={project.slug} project={project} />
             ))}
           </div>
@@ -132,7 +111,7 @@ function ProjectsPage() {
         <section className="projects-section">
           <h2 className="projects-section-title">Past Projects & Repositories</h2>
           <div className="projects-list">
-            {other.map((project) => (
+            {other.map((project: ProjectMeta) => (
               <ProjectItem key={project.slug} project={project} />
             ))}
           </div>

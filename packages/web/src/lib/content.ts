@@ -63,10 +63,14 @@ export function formatDate(dateString: string): string {
 export interface ProjectMeta {
   slug: string;
   name: string;
+  tagline: string;
   description: string;
   tech: string[];
   url?: string;
   github?: string;
+  npm?: string;
+  openSource?: boolean;
+  readme?: string;
   featured: boolean;
 }
 

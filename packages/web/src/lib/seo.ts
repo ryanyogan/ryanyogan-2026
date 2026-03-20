@@ -360,6 +360,34 @@ export function getBreadcrumbSchema(
 }
 
 /**
+ * SoftwareSourceCode schema for individual project pages
+ */
+export function getProjectSchema(project: {
+  name: string;
+  tagline: string;
+  description: string;
+  slug: string;
+  tech: string[];
+  url?: string;
+  github?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: project.name,
+    description: project.description,
+    url: `${SITE_URL}/projects/${project.slug}`,
+    codeRepository: project.github,
+    programmingLanguage: project.tech,
+    author: {
+      "@type": "Person",
+      name: AUTHOR_NAME,
+      url: SITE_URL,
+    },
+  };
+}
+
+/**
  * Serialize JSON-LD to a script tag string for injection into head
  */
 export function serializeJsonLd(schema: object | object[]): string {
