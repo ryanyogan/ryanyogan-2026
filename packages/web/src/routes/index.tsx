@@ -15,8 +15,8 @@ import {
 export const Route = createFileRoute("/")({
   component: HomePage,
   loader: async () => {
-    const projects = getFeaturedProjects().slice(0, 6);
-    const posts = getAllPosts().slice(0, 6);
+    const projects = getFeaturedProjects().slice(0, 3);
+    const posts = getAllPosts().slice(0, 3);
     return { projects, posts };
   },
   head: () => ({
