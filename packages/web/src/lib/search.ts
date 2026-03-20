@@ -81,7 +81,7 @@ export async function generateEmbedding(
   });
 
   // The response has a data array with embeddings
-  return (response as { data: number[][] }).data[0];
+  return (response as { data: number[][] }).data[0] ?? [];
 }
 
 /**
@@ -100,7 +100,9 @@ export async function seedVectorize(env: Env): Promise<{ seeded: number }> {
     const chunks = chunkContent(fullText);
 
     for (let i = 0; i < chunks.length; i++) {
-      const embedding = await generateEmbedding(env.AI, chunks[i]);
+      const chunk = chunks[i];
+      if (!chunk) continue;
+      const embedding = await generateEmbedding(env.AI, chunk);
 
       vectors.push({
         id: `${item.id}-chunk-${i}`,

@@ -48,9 +48,9 @@ function AdminExperience() {
     });
   };
 
-  const toInputDate = (date: Date | string) => {
+  const toInputDate = (date: Date | string): string => {
     const d = typeof date === "string" ? new Date(date) : date;
-    return d.toISOString().split("T")[0];
+    return d.toISOString().split("T")[0] ?? "";
   };
 
   const handleOpenCreate = () => {
@@ -64,7 +64,7 @@ function AdminExperience() {
       company: exp.company,
       title: exp.title,
       location: exp.location || "",
-      startDate: toInputDate(exp.startDate),
+      startDate: exp.startDate ? toInputDate(exp.startDate) : "",
       endDate: exp.endDate ? toInputDate(exp.endDate) : "",
       current: exp.current || false,
       description: exp.description || "",
@@ -87,7 +87,8 @@ function AdminExperience() {
     // TODO: Call createExperience or updateExperience server function
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    console.log(editingExperience ? "Update experience:" : "Create experience:", formData);
+    // TODO: Implement actual API call
+    // editingExperience ? updateExperience(formData) : createExperience(formData);
     
     setIsSubmitting(false);
     handleClose();
@@ -98,7 +99,7 @@ function AdminExperience() {
     if (!confirm("Are you sure you want to delete this experience?")) return;
 
     // TODO: Call deleteExperience server function
-    console.log("Delete experience:", experienceId);
+    void experienceId; // Mark as used until API is implemented
     // TODO: router.invalidate() to refresh data
   };
 

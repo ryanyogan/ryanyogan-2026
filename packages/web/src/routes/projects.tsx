@@ -4,26 +4,62 @@ import {
   getFeaturedProjects,
   getOtherProjects,
   getProjectPost,
+  getAllProjects,
   type ProjectMeta,
 } from "~/lib/content";
+import {
+  generateMeta,
+  generateLinks,
+  SITE_URL,
+  getProjectsPageSchema,
+  getBreadcrumbSchema,
+  serializeJsonLd,
+} from "~/lib/seo";
+
+const PROJECTS_DESCRIPTION = "Open source projects and things I've built.";
 
 export const Route = createFileRoute("/projects")({
   component: ProjectsPage,
   loader: async () => {
     const featured = getFeaturedProjects();
     const other = getOtherProjects();
-    return { featured, other };
+    const allProjects = getAllProjects();
+    return { featured, other, allProjects };
   },
-  head: () => ({
-    meta: [
-      { title: "Projects - Ryan Yogan" },
-      {
-        name: "description",
-        content: "Open source projects and things I've built.",
-      },
-      { property: "og:title", content: "Projects - Ryan Yogan" },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const projects = loaderData?.allProjects || [];
+    return {
+      meta: generateMeta({
+        title: "Projects",
+        description: PROJECTS_DESCRIPTION,
+        path: "/projects",
+        ogImage: `${SITE_URL}/og/projects.png`,
+        keywords: [
+          "Ryan Yogan",
+          "projects",
+          "open source",
+          "Elixir",
+          "Phoenix",
+          "React",
+          "TypeScript",
+          "Cloudflare Workers",
+        ],
+      }),
+      links: generateLinks("/projects"),
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: serializeJsonLd([
+            getProjectsPageSchema(projects),
+            getBreadcrumbSchema([
+              { name: "Home", url: "/" },
+              { name: "Projects", url: "/projects" },
+            ]),
+          ]),
+        },
+      ],
+    };
+  },
 });
 
 function ProjectItem({ project }: { project: ProjectMeta }) {

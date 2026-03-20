@@ -1,17 +1,48 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
 import { DocumentIcon } from "~/components/ui/icons";
+import {
+  generateMeta,
+  generateLinks,
+  SITE_URL,
+  getProfilePageSchema,
+  getBreadcrumbSchema,
+  serializeJsonLd,
+} from "~/lib/seo";
+
+const WORK_DESCRIPTION =
+  "Engineering executive with 20 years of experience building and scaling high-performing teams through IPO and beyond.";
 
 export const Route = createFileRoute("/work")({
   component: WorkPage,
   head: () => ({
-    meta: [
-      { title: "Work - Ryan Yogan" },
-      { property: "og:title", content: "Work - Ryan Yogan" },
+    meta: generateMeta({
+      title: "Work Experience",
+      description: WORK_DESCRIPTION,
+      path: "/work",
+      ogImage: `${SITE_URL}/og/work.png`,
+      keywords: [
+        "Ryan Yogan",
+        "work experience",
+        "engineering leader",
+        "resume",
+        "Procore",
+        "CTO",
+        "engineering manager",
+        "IPO",
+      ],
+    }),
+    links: generateLinks("/work"),
+    scripts: [
       {
-        name: "description",
-        content:
-          "Engineering executive with 20 years of experience building and scaling high-performing teams through IPO and beyond.",
+        type: "application/ld+json",
+        children: serializeJsonLd([
+          getProfilePageSchema(),
+          getBreadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Work", url: "/work" },
+          ]),
+        ]),
       },
     ],
   }),

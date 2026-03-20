@@ -6,6 +6,16 @@ import {
   type ProjectMeta,
   type PostMeta,
 } from "~/lib/content";
+import {
+  generateMeta,
+  generateLinks,
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  SITE_URL,
+  getPersonSchema,
+  getWebsiteSchema,
+  serializeJsonLd,
+} from "~/lib/seo";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -15,13 +25,27 @@ export const Route = createFileRoute("/")({
     return { projects, posts };
   },
   head: () => ({
-    meta: [
-      { title: "Ryan Yogan" },
-      { property: "og:title", content: "Ryan Yogan" },
+    meta: generateMeta({
+      title: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      path: "/",
+      ogImage: `${SITE_URL}/og/home.png`,
+      keywords: [
+        "Ryan Yogan",
+        "engineering leader",
+        "software engineer",
+        "Chicago",
+        "React",
+        "TypeScript",
+        "Elixir",
+        "team building",
+      ],
+    }),
+    links: generateLinks("/"),
+    scripts: [
       {
-        name: "description",
-        content:
-          "Engineering leader with 20 years of experience building teams and products. Based in Chicago.",
+        type: "application/ld+json",
+        children: serializeJsonLd([getPersonSchema(), getWebsiteSchema()]),
       },
     ],
   }),

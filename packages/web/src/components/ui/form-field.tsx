@@ -72,7 +72,7 @@ export function Checkbox({ label, id, ...props }: CheckboxProps) {
     <div className="form-group">
       <label className="form-checkbox-group">
         <input id={inputId} type="checkbox" className="form-checkbox" {...props} />
-        <span className="form-label" style={{ marginBottom: 0 }}>{label}</span>
+        <span className="form-label form-label-inline">{label}</span>
       </label>
     </div>
   );

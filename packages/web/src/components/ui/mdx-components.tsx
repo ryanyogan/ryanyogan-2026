@@ -45,12 +45,14 @@ function Pre({
   if (
     children &&
     typeof children === "object" &&
-    "props" in children &&
-    children.props?.className
+    "props" in children
   ) {
-    const match = children.props.className.match(/language-(\w+)/);
-    if (match) {
-      language = match[1];
+    const childProps = children.props as { className?: string } | undefined;
+    if (childProps?.className) {
+      const match = childProps.className.match(/language-(\w+)/);
+      if (match?.[1]) {
+        language = match[1];
+      }
     }
   }
 

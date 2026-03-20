@@ -1,4 +1,16 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ryanyogan.com/sitemap.xml
+# Sitemap location
+Sitemap: https://ryanyogan.com/api/sitemap
+
+# Crawl-delay (optional, be polite to crawlers)
+Crawl-delay: 1
+
+# Block admin and API routes from indexing (except sitemap)
+Disallow: /admin
+Disallow: /api/search
+Disallow: /api/seed-search
+Disallow: /api/seed-vectorize
+Disallow: /api/generate-post
+Disallow: /api/trigger-workflow

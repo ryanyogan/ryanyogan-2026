@@ -19,6 +19,7 @@
   /* Typography - Inter for everything */
   --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+  --font-display: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
 
   /* Layout */
   --max-width: 720px;
@@ -35,6 +36,15 @@
   --color-success: #2d9d5c;
   --color-warning: #e09f3e;
   --color-error: #d64545;
+
+  /* Pastel accent colors for nav logo */
+  --color-accent-pink: #f9a8d4;
+  --color-accent-lavender: #c4b5fd;
+  --color-accent-mint: #86efac;
+  --color-accent-peach: #fcd5ce;
+
+  /* Grid background */
+  --color-grid: #e8e5e0;
 }
 
 /* Dark mode - softer, easier on the eyes */
@@ -47,6 +57,11 @@
   --color-surface: #232323;
   --color-accent: #d4d4d4;
   --color-accent-hover: #b8b8b8;
+  --color-accent-pink: #f472b6;
+  --color-accent-lavender: #a78bfa;
+  --color-accent-mint: #4ade80;
+  --color-accent-peach: #fdba74;
+  --color-grid: #2f2f2f;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -59,6 +74,11 @@
     --color-surface: #232323;
     --color-accent: #d4d4d4;
     --color-accent-hover: #b8b8b8;
+    --color-accent-pink: #f472b6;
+    --color-accent-lavender: #a78bfa;
+    --color-accent-mint: #4ade80;
+    --color-accent-peach: #fdba74;
+    --color-grid: #2f2f2f;
   }
 }
 
@@ -144,18 +164,45 @@ a {
   margin-bottom: 2.5rem;
 }
 
+/* Nav name with decorative pastel dots */
 .nav-name {
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 500;
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-decoration: none;
   color: var(--color-foreground);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
+  padding: 0.25rem 0.5rem;
+  margin: -0.25rem -0.5rem;
+}
+
+/* Decorative dots container */
+.nav-name::before {
+  content: "";
+  position: absolute;
+  inset: -8px -12px;
+  z-index: -1;
+  background-image: 
+    radial-gradient(circle at 10% 20%, var(--color-accent-pink) 3px, transparent 3px),
+    radial-gradient(circle at 85% 30%, var(--color-accent-lavender) 2.5px, transparent 2.5px),
+    radial-gradient(circle at 25% 80%, var(--color-accent-mint) 2px, transparent 2px),
+    radial-gradient(circle at 90% 75%, var(--color-accent-peach) 3px, transparent 3px),
+    radial-gradient(circle at 5% 50%, var(--color-accent-lavender) 2px, transparent 2px),
+    radial-gradient(circle at 70% 10%, var(--color-accent-mint) 2.5px, transparent 2.5px),
+    radial-gradient(circle at 50% 95%, var(--color-accent-pink) 2px, transparent 2px);
+  opacity: 0.7;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-name:hover::before {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 @media (min-width: 640px) {
   .nav-name {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -2138,6 +2185,10 @@ p {
   font-weight: 500;
   color: var(--color-foreground);
   margin-bottom: 0.5rem;
+}
+
+.form-label-inline {
+  margin-bottom: 0;
 }
 
 .form-input,

@@ -62,17 +62,11 @@ export const Route = createFileRoute("/api/generate-post")({
           const github = new GitHubClient(GITHUB_TOKEN);
 
           // Fetch repository data
-          console.log(`Fetching data for ${owner}/${repo}...`);
-
           const [repoData, readme, keyFiles] = await Promise.all([
             github.getRepo(owner, repo),
             github.getReadme(owner, repo),
             github.getKeyFiles(owner, repo),
           ]);
-
-          console.log(`Fetched repo: ${repoData.name}`);
-          console.log(`README length: ${readme.length}`);
-          console.log(`Key files: ${Object.keys(keyFiles).join(", ")}`);
 
           // For now, return the gathered data
           // In a full implementation, we would:

@@ -39,7 +39,8 @@ function createAuth(env?: CloudflareEnv, cf?: IncomingRequestCfProperties) {
               },
             }
           : undefined,
-        kv: env?.CACHE,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        kv: env?.CACHE as any,
       },
       {
         appName: "ryanyogan.com",

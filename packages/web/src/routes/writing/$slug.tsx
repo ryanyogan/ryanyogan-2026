@@ -2,6 +2,14 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
 import { getPostBySlug, formatDate } from "~/lib/content";
 import { mdxComponents } from "~/components/ui/mdx-components";
+import {
+  generateMeta,
+  generateLinks,
+  SITE_URL,
+  getBlogPostSchema,
+  getBreadcrumbSchema,
+  serializeJsonLd,
+} from "~/lib/seo";
 
 // Dynamically import all MDX files at build time using Vite's glob import
 // This automatically picks up any new MDX files without manual imports
@@ -31,13 +39,47 @@ export const Route = createFileRoute("/writing/$slug")({
   },
   head: ({ loaderData }) => {
     const post = loaderData?.post;
+
+    if (!post) {
+      return {
+        meta: [{ title: "Writing - Ryan Yogan" }],
+      };
+    }
+
     return {
-      meta: [
+      meta: generateMeta({
+        title: post.title,
+        description: post.description,
+        path: `/writing/${post.slug}`,
+        ogImage: `${SITE_URL}/og/writing/${post.slug}.png`,
+        type: "article",
+        publishedTime: new Date(post.date).toISOString(),
+        author: post.author,
+        keywords: [
+          "Ryan Yogan",
+          "blog",
+          ...post.title.toLowerCase().split(" ").filter((w) => w.length > 3),
+        ],
+      }),
+      links: generateLinks(`/writing/${post.slug}`),
+      scripts: [
         {
-          title: post ? `${post.title} - Ryan Yogan` : "Writing - Ryan Yogan",
+          type: "application/ld+json",
+          children: serializeJsonLd([
+            getBlogPostSchema({
+              title: post.title,
+              description: post.description,
+              slug: post.slug,
+              date: post.date,
+              author: post.author,
+            }),
+            getBreadcrumbSchema([
+              { name: "Home", url: "/" },
+              { name: "Writing", url: "/writing" },
+              { name: post.title, url: `/writing/${post.slug}` },
+            ]),
+          ]),
         },
-        { property: "og:title", content: post?.title || "Writing" },
-        { name: "description", content: post?.description || "" },
       ],
     };
   },
@@ -66,6 +108,7 @@ function WritingPost() {
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
+          aria-hidden="true"
         >
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>

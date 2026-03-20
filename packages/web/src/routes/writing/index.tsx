@@ -1,16 +1,46 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
 import { getAllPosts } from "~/lib/content";
+import {
+  generateMeta,
+  generateLinks,
+  SITE_URL,
+  getBlogSchema,
+  getBreadcrumbSchema,
+  serializeJsonLd,
+} from "~/lib/seo";
+
+const WRITING_DESCRIPTION = "Thoughts on engineering, leadership, and building things.";
 
 export const Route = createFileRoute("/writing/")({
   component: WritingPage,
   head: () => ({
-    meta: [
-      { title: "Writing - Ryan Yogan" },
-      { property: "og:title", content: "Writing - Ryan Yogan" },
+    meta: generateMeta({
+      title: "Writing",
+      description: WRITING_DESCRIPTION,
+      path: "/writing",
+      ogImage: `${SITE_URL}/og/writing.png`,
+      keywords: [
+        "Ryan Yogan",
+        "blog",
+        "writing",
+        "engineering",
+        "leadership",
+        "software development",
+        "tech",
+      ],
+    }),
+    links: generateLinks("/writing"),
+    scripts: [
       {
-        name: "description",
-        content: "Thoughts on engineering, leadership, and building things.",
+        type: "application/ld+json",
+        children: serializeJsonLd([
+          getBlogSchema(),
+          getBreadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Writing", url: "/writing" },
+          ]),
+        ]),
       },
     ],
   }),

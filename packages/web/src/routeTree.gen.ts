@@ -17,6 +17,7 @@ import { Route as WritingIndexRouteImport } from './routes/writing/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WritingSlugRouteImport } from './routes/writing/$slug'
 import { Route as ApiTriggerWorkflowRouteImport } from './routes/api/trigger-workflow'
+import { Route as ApiSitemapRouteImport } from './routes/api/sitemap'
 import { Route as ApiSeedVectorizeRouteImport } from './routes/api/seed-vectorize'
 import { Route as ApiSeedSearchRouteImport } from './routes/api/seed-search'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
@@ -63,6 +64,11 @@ const WritingSlugRoute = WritingSlugRouteImport.update({
 const ApiTriggerWorkflowRoute = ApiTriggerWorkflowRouteImport.update({
   id: '/api/trigger-workflow',
   path: '/api/trigger-workflow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSitemapRoute = ApiSitemapRouteImport.update({
+  id: '/api/sitemap',
+  path: '/api/sitemap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSeedVectorizeRoute = ApiSeedVectorizeRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
   '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
   '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/api/search': typeof ApiSearchRoute
   '/api/seed-search': typeof ApiSeedSearchRoute
   '/api/seed-vectorize': typeof ApiSeedVectorizeRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/api/trigger-workflow': typeof ApiTriggerWorkflowRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/api/search'
     | '/api/seed-search'
     | '/api/seed-vectorize'
+    | '/api/sitemap'
     | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin/'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/api/search'
     | '/api/seed-search'
     | '/api/seed-vectorize'
+    | '/api/sitemap'
     | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/api/search'
     | '/api/seed-search'
     | '/api/seed-vectorize'
+    | '/api/sitemap'
     | '/api/trigger-workflow'
     | '/writing/$slug'
     | '/admin/'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   ApiSearchRoute: typeof ApiSearchRoute
   ApiSeedSearchRoute: typeof ApiSeedSearchRoute
   ApiSeedVectorizeRoute: typeof ApiSeedVectorizeRoute
+  ApiSitemapRoute: typeof ApiSitemapRoute
   ApiTriggerWorkflowRoute: typeof ApiTriggerWorkflowRoute
   WritingSlugRoute: typeof WritingSlugRoute
   WritingIndexRoute: typeof WritingIndexRoute
@@ -275,6 +288,13 @@ declare module '@tanstack/react-router' {
       path: '/api/trigger-workflow'
       fullPath: '/api/trigger-workflow'
       preLoaderRoute: typeof ApiTriggerWorkflowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sitemap': {
+      id: '/api/sitemap'
+      path: '/api/sitemap'
+      fullPath: '/api/sitemap'
+      preLoaderRoute: typeof ApiSitemapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/seed-vectorize': {
@@ -356,6 +376,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSearchRoute: ApiSearchRoute,
   ApiSeedSearchRoute: ApiSeedSearchRoute,
   ApiSeedVectorizeRoute: ApiSeedVectorizeRoute,
+  ApiSitemapRoute: ApiSitemapRoute,
   ApiTriggerWorkflowRoute: ApiTriggerWorkflowRoute,
   WritingSlugRoute: WritingSlugRoute,
   WritingIndexRoute: WritingIndexRoute,

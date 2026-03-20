@@ -82,7 +82,8 @@ function AdminProjects() {
     // For now, just simulate a delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    console.log(editingProject ? "Update project:" : "Create project:", formData);
+    // TODO: Implement actual API call
+    // editingProject ? updateProject(formData) : createProject(formData);
     
     setIsSubmitting(false);
     handleClose();
@@ -93,7 +94,7 @@ function AdminProjects() {
     if (!confirm("Are you sure you want to delete this project?")) return;
 
     // TODO: Call deleteProject server function
-    console.log("Delete project:", projectId);
+    void projectId; // Mark as used until API is implemented
     // TODO: router.invalidate() to refresh data
   };
 
