@@ -15,8 +15,8 @@ import {
 export const Route = createFileRoute("/")({
   component: HomePage,
   loader: async () => {
-    const projects = getFeaturedProjects();
-    const posts = getAllPosts().slice(0, 3); // Top 3 most recent
+    const projects = getFeaturedProjects().slice(0, 6);
+    const posts = getAllPosts().slice(0, 6);
     return { projects, posts };
   },
   head: () => ({
@@ -103,7 +103,7 @@ function HomePage() {
           <h2 className="section-header">Projects</h2>
         </Link>
         <div className="projects-list-home">
-          {projects.slice(0, 3).map((project) => {
+          {projects.map((project) => {
             const techDisplay = project.tech.slice(0, 3).join(" · ");
             const hasMore = project.tech.length > 3;
             return (

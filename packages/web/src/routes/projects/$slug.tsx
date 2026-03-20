@@ -9,6 +9,74 @@ import {
   getBreadcrumbSchema,
   serializeJsonLd,
 } from "~/lib/seo";
+import { highlight } from "sugar-high";
+
+/**
+ * Simple markdown renderer for README content.
+ * Handles: headers, code blocks, inline code, links, lists, bold, italic, blockquotes, hr
+ */
+function renderMarkdown(markdown: string): string {
+  let html = markdown
+    // Escape HTML first
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    // Code blocks with syntax highlighting (```lang ... ```)
+    .replace(/```(\w+)?\n([\s\S]*?)```/g, (_match, lang, code) => {
+      const trimmedCode = code.trim();
+      const highlighted = highlight(trimmedCode);
+      return `<pre data-language="${lang || ""}"><code class="language-${lang || "text"}">${highlighted}</code></pre>`;
+    })
+    // Inline code
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    // Headers (process from h6 to h1 to avoid conflicts)
+    .replace(/^###### (.+)$/gm, "<h6>$1</h6>")
+    .replace(/^##### (.+)$/gm, "<h5>$1</h5>")
+    .replace(/^#### (.+)$/gm, "<h4>$1</h4>")
+    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+    // Bold and italic
+    .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    // Links
+    .replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    )
+    // Blockquotes
+    .replace(/^&gt; (.+)$/gm, "<blockquote>$1</blockquote>")
+    // Horizontal rules
+    .replace(/^---$/gm, "<hr />")
+    // Unordered lists
+    .replace(/^- (.+)$/gm, "<li>$1</li>")
+    // Paragraphs - wrap non-tagged lines
+    .split("\n\n")
+    .map((block) => {
+      block = block.trim();
+      if (!block) return "";
+      // Don't wrap if already a block element
+      if (
+        block.startsWith("<h") ||
+        block.startsWith("<pre") ||
+        block.startsWith("<blockquote") ||
+        block.startsWith("<hr") ||
+        block.startsWith("<li")
+      ) {
+        // Wrap consecutive <li> in <ul>
+        if (block.includes("<li>")) {
+          return `<ul>${block}</ul>`;
+        }
+        return block;
+      }
+      // Wrap in paragraph
+      return `<p>${block.replace(/\n/g, "<br />")}</p>`;
+    })
+    .join("\n");
+
+  return html;
+}
 
 export const Route = createFileRoute("/projects/$slug")({
   component: ProjectDetailPage,
@@ -157,31 +225,6 @@ function ProjectDetailPage() {
                 npm
               </a>
             )}
-            {project.readme && (
-              <a
-                href={project.readme}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="project-detail-link"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                  <polyline points="10 9 9 9 8 9" />
-                </svg>
-                README
-              </a>
-            )}
           </div>
 
           {relatedPost && (
@@ -204,6 +247,16 @@ function ProjectDetailPage() {
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </Link>
+            </div>
+          )}
+
+          {project.readme && (
+            <div className="project-detail-readme">
+              <h2 className="project-detail-readme-title">README</h2>
+              <div
+                className="prose"
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(project.readme) }}
+              />
             </div>
           )}
         </div>
