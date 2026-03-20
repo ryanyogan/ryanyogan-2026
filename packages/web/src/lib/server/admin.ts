@@ -1,8 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { drizzle } from "drizzle-orm/d1";
-import { eq, desc } from "drizzle-orm";
-import * as schema from "@ryanyogan/db/schema";
+import type * as schema from "@ryanyogan/db/schema";
 import { nanoid } from "nanoid";
+
+// These imports will be used when D1 middleware is set up
+// import { drizzle } from "drizzle-orm/d1";
+// import { eq, desc } from "drizzle-orm";
 
 // TODO: This needs middleware to access Cloudflare bindings
 // For now, we'll use fallback implementations
@@ -32,14 +34,14 @@ export const createPost = createServerFn({ method: "POST" })
 
 export const updatePost = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string } & Partial<schema.NewPost>) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data: _data }) => {
     // TODO: Update D1 when middleware is set up
     return { success: true };
   });
 
 export const deletePost = createServerFn({ method: "POST" })
   .inputValidator((id: string) => id)
-  .handler(async ({ data: id }) => {
+  .handler(async ({ data: _id }) => {
     // TODO: Delete from D1 when middleware is set up
     return { success: true };
   });
@@ -69,14 +71,14 @@ export const createProject = createServerFn({ method: "POST" })
 
 export const updateProject = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string } & Partial<schema.NewProject>) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data: _data }) => {
     // TODO: Update D1 when middleware is set up
     return { success: true };
   });
 
 export const deleteProject = createServerFn({ method: "POST" })
   .inputValidator((id: string) => id)
-  .handler(async ({ data: id }) => {
+  .handler(async ({ data: _id }) => {
     // TODO: Delete from D1 when middleware is set up
     return { success: true };
   });
@@ -103,38 +105,15 @@ export const createExperience = createServerFn({ method: "POST" })
 
 export const updateExperience = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string } & Partial<schema.NewExperience>) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data: _data }) => {
     // TODO: Update D1 when middleware is set up
     return { success: true };
   });
 
 export const deleteExperience = createServerFn({ method: "POST" })
   .inputValidator((id: string) => id)
-  .handler(async ({ data: id }) => {
+  .handler(async ({ data: _id }) => {
     // TODO: Delete from D1 when middleware is set up
-    return { success: true };
-  });
-
-// ============================================================================
-// AI Content Management
-// ============================================================================
-
-export const getAllAIContent = createServerFn({ method: "GET" }).handler(async () => {
-  // TODO: Query from D1 when middleware is set up
-  return [];
-});
-
-export const approveAIContent = createServerFn({ method: "POST" })
-  .inputValidator((data: { id: string; approvedBy: string }) => data)
-  .handler(async ({ data }) => {
-    // TODO: Update D1 when middleware is set up
-    return { success: true };
-  });
-
-export const rejectAIContent = createServerFn({ method: "POST" })
-  .inputValidator((id: string) => id)
-  .handler(async ({ data: id }) => {
-    // TODO: Update D1 when middleware is set up
     return { success: true };
   });
 
@@ -160,14 +139,14 @@ export const createSkill = createServerFn({ method: "POST" })
 
 export const updateSkill = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string } & Partial<schema.NewSkill>) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data: _data }) => {
     // TODO: Update D1 when middleware is set up
     return { success: true };
   });
 
 export const deleteSkill = createServerFn({ method: "POST" })
   .inputValidator((id: string) => id)
-  .handler(async ({ data: id }) => {
+  .handler(async ({ data: _id }) => {
     // TODO: Delete from D1 when middleware is set up
     return { success: true };
   });

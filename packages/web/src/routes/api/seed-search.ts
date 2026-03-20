@@ -16,8 +16,7 @@ export const Route = createFileRoute("/api/seed-search")({
         // Simple security check - only allow from localhost in dev
         // In production, you'd want to add proper auth
         const url = new URL(request.url);
-        const isLocal =
-          url.hostname === "localhost" || url.hostname === "127.0.0.1";
+        const isLocal = url.hostname === "localhost" || url.hostname === "127.0.0.1";
 
         // Get authorization header for non-local requests
         const authHeader = request.headers.get("Authorization");
@@ -46,10 +45,7 @@ export const Route = createFileRoute("/api/seed-search")({
           });
         } catch (error) {
           console.error("Error preparing seed:", error);
-          return Response.json(
-            { error: "Failed to prepare seed data" },
-            { status: 500 }
-          );
+          return Response.json({ error: "Failed to prepare seed data" }, { status: 500 });
         }
       },
     },

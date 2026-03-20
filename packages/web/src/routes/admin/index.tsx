@@ -5,10 +5,7 @@ import { getAllPosts } from "~/lib/content";
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
   loader: async () => {
-    const [projects, experiences] = await Promise.all([
-      getProjects(),
-      getExperiences(),
-    ]);
+    const [projects, experiences] = await Promise.all([getProjects(), getExperiences()]);
     // Posts are now static MDX files
     const posts = getAllPosts();
     return { posts, projects, experiences };
@@ -20,20 +17,20 @@ function AdminDashboard() {
   const navigate = useNavigate();
 
   const stats = [
-    { 
-      label: "Posts (MDX)", 
-      value: posts.length, 
-      change: `${posts.filter(p => p.featured).length} featured` 
+    {
+      label: "Posts (MDX)",
+      value: posts.length,
+      change: `${posts.filter((p) => p.featured).length} featured`,
     },
-    { 
-      label: "Projects", 
-      value: projects.length, 
-      change: `${projects.filter(p => p.featured).length} featured` 
+    {
+      label: "Projects",
+      value: projects.length,
+      change: `${projects.filter((p) => p.featured).length} featured`,
     },
-    { 
-      label: "Experience", 
-      value: experiences.length, 
-      change: `${experiences.length} roles` 
+    {
+      label: "Experience",
+      value: experiences.length,
+      change: `${experiences.length} roles`,
     },
   ];
 
@@ -42,9 +39,7 @@ function AdminDashboard() {
       <header className="admin-page-header">
         <div>
           <h1 className="admin-page-title">Dashboard</h1>
-          <p className="admin-page-description">
-            Overview of your site's content and activity.
-          </p>
+          <p className="admin-page-description">Overview of your site's content and activity.</p>
         </div>
       </header>
 
@@ -78,9 +73,7 @@ function AdminDashboard() {
                 <span className="admin-activity-action">{post.slug}.mdx</span>
                 <span className="admin-activity-title">{post.title}</span>
               </div>
-              <div className="admin-activity-time">
-                {new Date(post.date).toLocaleDateString()}
-              </div>
+              <div className="admin-activity-time">{new Date(post.date).toLocaleDateString()}</div>
             </div>
           ))}
         </div>
@@ -90,25 +83,19 @@ function AdminDashboard() {
       <section className="admin-section">
         <h2 className="admin-section-title">Quick Actions</h2>
         <div className="admin-actions-grid">
-          <button 
-            className="admin-action-btn"
-            onClick={() => navigate({ to: "/admin/projects" })}
-          >
+          <button className="admin-action-btn" onClick={() => navigate({ to: "/admin/projects" })}>
             Manage Projects
           </button>
-          <button 
+          <button
             className="admin-action-btn"
             onClick={() => navigate({ to: "/admin/experience" })}
           >
             Manage Experience
           </button>
-          <button 
-            className="admin-action-btn"
-            onClick={() => navigate({ to: "/admin/content" })}
-          >
+          <button className="admin-action-btn" onClick={() => navigate({ to: "/admin/content" })}>
             AI Content
           </button>
-          <button 
+          <button
             className="admin-action-btn"
             onClick={() => window.open("https://github.com/ryanyogan", "_blank")}
           >

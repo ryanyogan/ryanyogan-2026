@@ -520,7 +520,7 @@ Claude returns structured predictions that get broadcast to all viewers instantl
 
 ### Why Elixir + AI Is Amazing
 
-After 8 years with Elixir, I have to say: AI models seem to *understand* Elixir idioms remarkably well. When I ask Claude to help with a GenServer, it produces proper OTP patterns. LiveView code comes out with correct assigns, handle_info callbacks, and PubSub subscriptions.
+After 8 years with Elixir, I have to say: AI models seem to _understand_ Elixir idioms remarkably well. When I ask Claude to help with a GenServer, it produces proper OTP patterns. LiveView code comes out with correct assigns, handle_info callbacks, and PubSub subscriptions.
 
 I think this is because:
 
@@ -769,15 +769,15 @@ Nodes find each other automatically. PubSub works across regions. Cache replicat
 
 I had a Next.js version of this app before. Here's how they compare:
 
-| Metric | Next.js (ISR) | Phoenix + LiveView |
-|--------|---------------|-------------------|
-| Initial page load | ~800ms | ~200ms |
-| Update latency | Revalidation (seconds) | PubSub (~50ms) |
-| Memory per connection | ~50KB | ~2KB |
-| Connections on 512MB | ~10K | ~250K |
-| Cache lookup | ~1-5ms (Redis) | ~1μs (ETS) |
-| Cold start | ~2-3s | ~500ms |
-| Bundle size | 200KB+ JS | 30KB (LiveView JS) |
+| Metric                | Next.js (ISR)          | Phoenix + LiveView |
+| --------------------- | ---------------------- | ------------------ |
+| Initial page load     | ~800ms                 | ~200ms             |
+| Update latency        | Revalidation (seconds) | PubSub (~50ms)     |
+| Memory per connection | ~50KB                  | ~2KB               |
+| Connections on 512MB  | ~10K                   | ~250K              |
+| Cache lookup          | ~1-5ms (Redis)         | ~1μs (ETS)         |
+| Cold start            | ~2-3s                  | ~500ms             |
+| Bundle size           | 200KB+ JS              | 30KB (LiveView JS) |
 
 The difference is architectural:
 
@@ -832,9 +832,10 @@ defmodule YoganHockey.Cache do
 end
 ```
 
-`read_concurrency: true` optimizes for many concurrent readers - exactly our pattern. Lookups are measured in *microseconds*, not milliseconds.
+`read_concurrency: true` optimizes for many concurrent readers - exactly our pattern. Lookups are measured in _microseconds_, not milliseconds.
 
 Compare to Redis:
+
 - Network round-trip: ~1ms
 - Serialization: ~100μs
 - Deserialization: ~100μs
@@ -902,12 +903,12 @@ Building Yogan Hockey with Claude assistance was genuinely fun. The suggestions 
 
 Running this app costs almost nothing:
 
-| Service | Cost |
-|---------|------|
-| Fly.io (512MB shared-cpu) | ~$5/month |
-| Anthropic API (predictions) | ~$2/month |
-| Domain | $12/year |
-| **Total** | **~$8/month** |
+| Service                     | Cost          |
+| --------------------------- | ------------- |
+| Fly.io (512MB shared-cpu)   | ~$5/month     |
+| Anthropic API (predictions) | ~$2/month     |
+| Domain                      | $12/year      |
+| **Total**                   | **~$8/month** |
 
 Try running a real-time sports app with AI predictions, multi-region deployment, and persistent WebSocket connections for $8/month on anything else. I'll wait.
 
@@ -965,4 +966,4 @@ The code is on [GitHub](https://github.com/ryanyogan/yogan_hockey). Feel free to
 
 ---
 
-*Building something with Elixir or Phoenix? I'd love to chat - reach out on [GitHub](https://github.com/ryanyogan) or [email](mailto:ryan@ryanyogan.com).*
+_Building something with Elixir or Phoenix? I'd love to chat - reach out on [GitHub](https://github.com/ryanyogan) or [email](mailto:ryan@ryanyogan.com)._

@@ -1,18 +1,8 @@
-import {
-  HeadContent,
-  Outlet,
-  Scripts,
-  createRootRoute,
-} from "@tanstack/react-router";
+import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { CommandPalette } from "~/components/ui/command-palette";
 import appCss from "~/styles/app.css?url";
-import {
-  SITE_NAME,
-  SITE_URL,
-  SITE_DESCRIPTION,
-  TWITTER_HANDLE,
-} from "~/lib/seo";
+import { SITE_NAME, SITE_URL, SITE_DESCRIPTION, TWITTER_HANDLE } from "~/lib/seo";
 
 // Fonts
 import "@fontsource-variable/inter";
@@ -36,7 +26,10 @@ export const Route = createRootRoute({
       { name: "description", content: SITE_DESCRIPTION },
       { name: "author", content: SITE_NAME },
       { name: "robots", content: "index, follow" },
-      { name: "googlebot", content: "index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1" },
+      {
+        name: "googlebot",
+        content: "index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1",
+      },
 
       // Open Graph defaults
       { property: "og:type", content: "website" },

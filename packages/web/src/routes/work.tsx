@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
-import { DocumentIcon } from "~/components/ui/icons";
 import {
   generateMeta,
   generateLinks,
@@ -298,12 +297,7 @@ const workHistory: WorkExperience[] = [
         location: "Chicago, Illinois",
         description:
           "Built reactive interfaces for high-frequency trading platforms where milliseconds matter. Introduced Backbone.js (later Ember.js) to the organization.",
-        skills: [
-          "Ruby on Rails",
-          "JavaScript",
-          "C++",
-          "High-Frequency Trading",
-        ],
+        skills: ["Ruby on Rails", "JavaScript", "C++", "High-Frequency Trading"],
       },
     ],
   },
@@ -360,30 +354,28 @@ function WorkPage() {
         <h2 className="section-title">Leadership</h2>
         <div className="skills-list">
           <p>
-            <strong>Organizational Growth:</strong> Scaled teams from 8 to 65+
-            engineers · Managed engineering managers · IPO preparation · $2M+
-            budget ownership
+            <strong>Organizational Growth:</strong> Scaled teams from 8 to 65+ engineers · Managed
+            engineering managers · IPO preparation · $2M+ budget ownership
           </p>
           <p>
-            <strong>People Development:</strong> Career ladder design · Created
-            Technical Lead Manager role · Promoted ICs to Principal Architect ·
-            Founded Developer Academy
+            <strong>People Development:</strong> Career ladder design · Created Technical Lead
+            Manager role · Promoted ICs to Principal Architect · Founded Developer Academy
           </p>
           <p>
-            <strong>Hiring:</strong> 700+ interviews · 50+ hires · Hiring
-            process design · Employer branding
+            <strong>Hiring:</strong> 700+ interviews · 50+ hires · Hiring process design · Employer
+            branding
           </p>
           <p>
-            <strong>Strategic:</strong> OKR/KPI design · Roadmap planning ·
-            Executive communication · Investor presentations · Vendor management
+            <strong>Strategic:</strong> OKR/KPI design · Roadmap planning · Executive communication
+            · Investor presentations · Vendor management
           </p>
           <p>
-            <strong>Operations:</strong> Incident management · SRE partnership ·
-            On-call processes · Observability (RUM/APM dashboards)
+            <strong>Operations:</strong> Incident management · SRE partnership · On-call processes ·
+            Observability (RUM/APM dashboards)
           </p>
           <p>
-            <strong>Culture:</strong> Psychological safety · Empathy Driven
-            Development · Knowledge-first culture · Team restructuring
+            <strong>Culture:</strong> Psychological safety · Empathy Driven Development ·
+            Knowledge-first culture · Team restructuring
           </p>
         </div>
       </section>
@@ -392,24 +384,23 @@ function WorkPage() {
         <h2 className="section-title">Technical</h2>
         <div className="skills-list">
           <p>
-            <strong>Languages:</strong> TypeScript, JavaScript, Elixir, GoLang,
-            Rust, C++, Ruby, Python
+            <strong>Languages:</strong> TypeScript, JavaScript, Elixir, GoLang, Rust, C++, Ruby,
+            Python
           </p>
           <p>
-            <strong>Frontend:</strong> React, Mobile (React Native/iOS/Android),
-            CSS, Figma, Design Systems, Three.js, A11y, Edge Performance
+            <strong>Frontend:</strong> React, Mobile (React Native/iOS/Android), CSS, Figma, Design
+            Systems, Three.js, A11y, Edge Performance
           </p>
           <p>
-            <strong>Backend:</strong> Node.js, Phoenix, Rails, Event-Driven
-            Architecture, CQRS
+            <strong>Backend:</strong> Node.js, Phoenix, Rails, Event-Driven Architecture, CQRS
           </p>
           <p>
-            <strong>Infrastructure:</strong> Cloud Ops, AWS/GCP/Azure,
-            Cloudflare, Kubernetes, Docker, CI/CD
+            <strong>Infrastructure:</strong> Cloud Ops, AWS/GCP/Azure, Cloudflare, Kubernetes,
+            Docker, CI/CD
           </p>
           <p>
-            <strong>AI/ML:</strong> LLM Integration & Fine-tuning, Vector
-            Databases, Computer Vision, Agentic Development (MCP, Custom Agents)
+            <strong>AI/ML:</strong> LLM Integration & Fine-tuning, Vector Databases, Computer
+            Vision, Agentic Development (MCP, Custom Agents)
           </p>
         </div>
       </section>
@@ -435,11 +426,7 @@ function WorkPage() {
                 >
                   <div className="work-position-header">
                     <h4 className="work-position-title">{position.title}</h4>
-                    {position.type && (
-                      <span className="work-position-type">
-                        {position.type}
-                      </span>
-                    )}
+                    {position.type && <span className="work-position-type">{position.type}</span>}
                   </div>
                   <div className="work-position-meta">
                     <span className="work-period">{position.period}</span>

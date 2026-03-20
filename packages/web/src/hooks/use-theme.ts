@@ -6,9 +6,7 @@ const STORAGE_KEY = "ryanyogan-theme";
 
 function getSystemTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function getStoredTheme(): Theme {
@@ -22,20 +20,17 @@ function getStoredTheme(): Theme {
 
 function applyTheme(theme: Theme) {
   if (typeof window === "undefined") return;
-  
+
   const root = document.documentElement;
   const effectiveTheme = theme === "system" ? getSystemTheme() : theme;
-  
+
   root.classList.remove("light", "dark");
   root.classList.add(effectiveTheme);
-  
+
   // Update meta theme-color for mobile browsers
   const metaThemeColor = document.querySelector('meta[name="theme-color"]');
   if (metaThemeColor) {
-    metaThemeColor.setAttribute(
-      "content",
-      effectiveTheme === "dark" ? "#09090b" : "#fafafa"
-    );
+    metaThemeColor.setAttribute("content", effectiveTheme === "dark" ? "#09090b" : "#fafafa");
   }
 }
 

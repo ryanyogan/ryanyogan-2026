@@ -15,7 +15,10 @@ import {
 // This automatically picks up any new MDX files without manual imports
 const mdxModules = import.meta.glob("../../../content/writing/*.mdx", {
   eager: true,
-}) as Record<string, { default: React.ComponentType<{ components?: Record<string, React.ComponentType<unknown>> }> }>;
+}) as Record<
+  string,
+  { default: React.ComponentType<{ components?: Record<string, React.ComponentType<unknown>> }> }
+>;
 
 // Create slug -> component map from the glob imports
 const mdxPosts: Record<
@@ -58,7 +61,10 @@ export const Route = createFileRoute("/writing/$slug")({
         keywords: [
           "Ryan Yogan",
           "blog",
-          ...post.title.toLowerCase().split(" ").filter((w) => w.length > 3),
+          ...post.title
+            .toLowerCase()
+            .split(" ")
+            .filter((w) => w.length > 3),
         ],
       }),
       links: generateLinks(`/writing/${post.slug}`),

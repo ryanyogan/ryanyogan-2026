@@ -1,7 +1,7 @@
 /**
  * Database seed script for ryanyogan.com
  * Run with: npx tsx src/seed.ts
- * 
+ *
  * Note: This requires the D1 database to be created and the environment
  * variables to be set. For local development, you can use wrangler d1 execute.
  */
@@ -18,7 +18,8 @@ export const experiencesSeed = [
     startDate: new Date("2019-06-01"),
     endDate: new Date("2024-03-01"),
     current: false,
-    description: "Led merchant platform initiatives. Built real-time inventory systems serving millions of merchants. Grew and mentored engineering teams.",
+    description:
+      "Led merchant platform initiatives. Built real-time inventory systems serving millions of merchants. Grew and mentored engineering teams.",
     highlights: [
       "Architected real-time inventory sync system handling 10M+ events/day",
       "Led team of 8 engineers building merchant dashboard",
@@ -36,7 +37,8 @@ export const experiencesSeed = [
     startDate: new Date("2016-01-01"),
     endDate: new Date("2019-06-01"),
     current: false,
-    description: "Data infrastructure and streaming pipelines. Recommendation systems handling billions of events. Cross-functional collaboration at scale.",
+    description:
+      "Data infrastructure and streaming pipelines. Recommendation systems handling billions of events. Cross-functional collaboration at scale.",
     highlights: [
       "Built data pipelines processing 500B+ events daily",
       "Contributed to recommendation engine improvements",
@@ -53,7 +55,8 @@ export const experiencesSeed = [
     startDate: new Date("2008-01-01"),
     endDate: new Date("2016-01-01"),
     current: false,
-    description: "Three successful acquisitions. Built products from zero to scale. Grew teams from 5 to 40+ engineers. Full-stack development across web and mobile.",
+    description:
+      "Three successful acquisitions. Built products from zero to scale. Grew teams from 5 to 40+ engineers. Full-stack development across web and mobile.",
     highlights: [
       "Led engineering through 3 successful acquisitions",
       "Grew engineering team from 5 to 40+ engineers",
@@ -70,8 +73,10 @@ export const projectsSeed = [
     id: nanoid(),
     name: "Yogan Hockey",
     slug: "yogan-hockey",
-    description: "Real-time NHL stats app built with Phoenix LiveView. Uses ETS for incremental static regeneration, outperforming Next.js in speed tests.",
-    longDescription: "A comprehensive NHL statistics application featuring real-time game updates, player stats, and team standings. Built to demonstrate the power of Elixir and Phoenix LiveView for real-time web applications.",
+    description:
+      "Real-time NHL stats app built with Phoenix LiveView. Uses ETS for incremental static regeneration, outperforming Next.js in speed tests.",
+    longDescription:
+      "A comprehensive NHL statistics application featuring real-time game updates, player stats, and team standings. Built to demonstrate the power of Elixir and Phoenix LiveView for real-time web applications.",
     url: "https://yogan-hockey.fly.dev",
     githubUrl: "https://github.com/ryanyogan/yogan-hockey",
     featured: true,
@@ -86,8 +91,10 @@ export const projectsSeed = [
     id: nanoid(),
     name: "10.yogan.dev",
     slug: "10-yogan-dev",
-    description: "Westworld-themed Valentine's Day experience with immersive animations, custom cursors, and cinematic transitions.",
-    longDescription: "A creative web experience celebrating 10 years with stunning visual design inspired by HBO's Westworld. Features custom cursor interactions, parallax scrolling, and GSAP-powered animations.",
+    description:
+      "Westworld-themed Valentine's Day experience with immersive animations, custom cursors, and cinematic transitions.",
+    longDescription:
+      "A creative web experience celebrating 10 years with stunning visual design inspired by HBO's Westworld. Features custom cursor interactions, parallax scrolling, and GSAP-powered animations.",
     url: "https://10.yogan.dev",
     githubUrl: "https://github.com/ryanyogan/10-year",
     featured: true,
@@ -102,8 +109,10 @@ export const projectsSeed = [
     id: nanoid(),
     name: "Ice Yeti",
     slug: "ice-yeti",
-    description: "Hockey social network for players, coaches, and fans. Team management, game scheduling, and stats tracking.",
-    longDescription: "A full-featured social platform for the hockey community. Includes team management, game scheduling, player statistics, and social features for connecting players and fans.",
+    description:
+      "Hockey social network for players, coaches, and fans. Team management, game scheduling, and stats tracking.",
+    longDescription:
+      "A full-featured social platform for the hockey community. Includes team management, game scheduling, player statistics, and social features for connecting players and fans.",
     url: "https://slax.yogan.dev",
     githubUrl: null,
     featured: true,
@@ -119,7 +128,8 @@ export const projectsSeed = [
     name: "ryanyogan.com",
     slug: "ryanyogan-com",
     description: "AI-powered personal website with TanStack Start on Cloudflare Workers.",
-    longDescription: "This site! Built with TanStack Start, Cloudflare Workers, D1, and Workers AI. Features AI-generated content, automatic GitHub sync, and a custom CMS.",
+    longDescription:
+      "This site! Built with TanStack Start, Cloudflare Workers, D1, and Workers AI. Features AI-generated content, automatic GitHub sync, and a custom CMS.",
     url: "https://ryanyogan.com",
     githubUrl: "https://github.com/ryanyogan/ryanyogan.com",
     featured: false,
@@ -134,8 +144,10 @@ export const projectsSeed = [
     id: nanoid(),
     name: "Embedded Training System",
     slug: "embedded-training",
-    description: "Ice training equipment with embedded sensors. Hardware meets software for athlete performance tracking.",
-    longDescription: "Custom embedded system for ice hockey training equipment. Combines Rust firmware with sensor integration for real-time performance tracking and analysis.",
+    description:
+      "Ice training equipment with embedded sensors. Hardware meets software for athlete performance tracking.",
+    longDescription:
+      "Custom embedded system for ice hockey training equipment. Combines Rust firmware with sensor integration for real-time performance tracking and analysis.",
     url: null,
     githubUrl: null,
     featured: false,
@@ -151,40 +163,208 @@ export const projectsSeed = [
 // Seed data for skills
 export const skillsSeed = [
   // Languages
-  { id: nanoid(), name: "TypeScript", category: "language" as const, proficiency: 95, yearsExperience: 8, featured: true },
-  { id: nanoid(), name: "Elixir", category: "language" as const, proficiency: 85, yearsExperience: 4, featured: true },
-  { id: nanoid(), name: "Go", category: "language" as const, proficiency: 75, yearsExperience: 5, featured: true },
-  { id: nanoid(), name: "Ruby", category: "language" as const, proficiency: 90, yearsExperience: 12, featured: false },
-  { id: nanoid(), name: "Rust", category: "language" as const, proficiency: 60, yearsExperience: 2, featured: true },
-  { id: nanoid(), name: "Python", category: "language" as const, proficiency: 80, yearsExperience: 10, featured: false },
-  
+  {
+    id: nanoid(),
+    name: "TypeScript",
+    category: "language" as const,
+    proficiency: 95,
+    yearsExperience: 8,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Elixir",
+    category: "language" as const,
+    proficiency: 85,
+    yearsExperience: 4,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Go",
+    category: "language" as const,
+    proficiency: 75,
+    yearsExperience: 5,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Ruby",
+    category: "language" as const,
+    proficiency: 90,
+    yearsExperience: 12,
+    featured: false,
+  },
+  {
+    id: nanoid(),
+    name: "Rust",
+    category: "language" as const,
+    proficiency: 60,
+    yearsExperience: 2,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Python",
+    category: "language" as const,
+    proficiency: 80,
+    yearsExperience: 10,
+    featured: false,
+  },
+
   // Frontend
-  { id: nanoid(), name: "React", category: "frontend" as const, proficiency: 95, yearsExperience: 8, featured: true },
-  { id: nanoid(), name: "TanStack", category: "frontend" as const, proficiency: 85, yearsExperience: 2, featured: true },
-  { id: nanoid(), name: "Next.js", category: "frontend" as const, proficiency: 90, yearsExperience: 5, featured: false },
-  { id: nanoid(), name: "Phoenix LiveView", category: "frontend" as const, proficiency: 85, yearsExperience: 3, featured: true },
-  
+  {
+    id: nanoid(),
+    name: "React",
+    category: "frontend" as const,
+    proficiency: 95,
+    yearsExperience: 8,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "TanStack",
+    category: "frontend" as const,
+    proficiency: 85,
+    yearsExperience: 2,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Next.js",
+    category: "frontend" as const,
+    proficiency: 90,
+    yearsExperience: 5,
+    featured: false,
+  },
+  {
+    id: nanoid(),
+    name: "Phoenix LiveView",
+    category: "frontend" as const,
+    proficiency: 85,
+    yearsExperience: 3,
+    featured: true,
+  },
+
   // Backend
-  { id: nanoid(), name: "Node.js", category: "backend" as const, proficiency: 90, yearsExperience: 10, featured: true },
-  { id: nanoid(), name: "Phoenix", category: "backend" as const, proficiency: 85, yearsExperience: 4, featured: true },
-  { id: nanoid(), name: "Rails", category: "backend" as const, proficiency: 90, yearsExperience: 12, featured: false },
-  { id: nanoid(), name: "GraphQL", category: "backend" as const, proficiency: 85, yearsExperience: 6, featured: true },
-  
+  {
+    id: nanoid(),
+    name: "Node.js",
+    category: "backend" as const,
+    proficiency: 90,
+    yearsExperience: 10,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Phoenix",
+    category: "backend" as const,
+    proficiency: 85,
+    yearsExperience: 4,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Rails",
+    category: "backend" as const,
+    proficiency: 90,
+    yearsExperience: 12,
+    featured: false,
+  },
+  {
+    id: nanoid(),
+    name: "GraphQL",
+    category: "backend" as const,
+    proficiency: 85,
+    yearsExperience: 6,
+    featured: true,
+  },
+
   // Database
-  { id: nanoid(), name: "PostgreSQL", category: "database" as const, proficiency: 90, yearsExperience: 12, featured: true },
-  { id: nanoid(), name: "Redis", category: "database" as const, proficiency: 85, yearsExperience: 8, featured: false },
-  { id: nanoid(), name: "SQLite/D1", category: "database" as const, proficiency: 80, yearsExperience: 3, featured: true },
-  
+  {
+    id: nanoid(),
+    name: "PostgreSQL",
+    category: "database" as const,
+    proficiency: 90,
+    yearsExperience: 12,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Redis",
+    category: "database" as const,
+    proficiency: 85,
+    yearsExperience: 8,
+    featured: false,
+  },
+  {
+    id: nanoid(),
+    name: "SQLite/D1",
+    category: "database" as const,
+    proficiency: 80,
+    yearsExperience: 3,
+    featured: true,
+  },
+
   // DevOps
-  { id: nanoid(), name: "Cloudflare", category: "devops" as const, proficiency: 85, yearsExperience: 3, featured: true },
-  { id: nanoid(), name: "AWS", category: "devops" as const, proficiency: 80, yearsExperience: 10, featured: false },
-  { id: nanoid(), name: "Docker", category: "devops" as const, proficiency: 85, yearsExperience: 8, featured: false },
-  { id: nanoid(), name: "Kubernetes", category: "devops" as const, proficiency: 70, yearsExperience: 5, featured: false },
-  
+  {
+    id: nanoid(),
+    name: "Cloudflare",
+    category: "devops" as const,
+    proficiency: 85,
+    yearsExperience: 3,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "AWS",
+    category: "devops" as const,
+    proficiency: 80,
+    yearsExperience: 10,
+    featured: false,
+  },
+  {
+    id: nanoid(),
+    name: "Docker",
+    category: "devops" as const,
+    proficiency: 85,
+    yearsExperience: 8,
+    featured: false,
+  },
+  {
+    id: nanoid(),
+    name: "Kubernetes",
+    category: "devops" as const,
+    proficiency: 70,
+    yearsExperience: 5,
+    featured: false,
+  },
+
   // Leadership
-  { id: nanoid(), name: "Team Building", category: "leadership" as const, proficiency: 90, yearsExperience: 10, featured: true },
-  { id: nanoid(), name: "Architecture", category: "leadership" as const, proficiency: 90, yearsExperience: 12, featured: true },
-  { id: nanoid(), name: "Mentoring", category: "leadership" as const, proficiency: 85, yearsExperience: 8, featured: false },
+  {
+    id: nanoid(),
+    name: "Team Building",
+    category: "leadership" as const,
+    proficiency: 90,
+    yearsExperience: 10,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Architecture",
+    category: "leadership" as const,
+    proficiency: 90,
+    yearsExperience: 12,
+    featured: true,
+  },
+  {
+    id: nanoid(),
+    name: "Mentoring",
+    category: "leadership" as const,
+    proficiency: 85,
+    yearsExperience: 8,
+    featured: false,
+  },
 ];
 
 // Seed data for posts
@@ -193,7 +373,8 @@ export const postsSeed = [
     id: nanoid(),
     slug: "the-rule-of-three",
     title: "The Rule of Three",
-    excerpt: "Comparing React Router v7, TanStack Start, and Next.js. What I learned building the same app three times.",
+    excerpt:
+      "Comparing React Router v7, TanStack Start, and Next.js. What I learned building the same app three times.",
     content: `# The Rule of Three
 
 When evaluating new frameworks, I like to build the same application three different ways. It's the only way to truly understand the trade-offs.
@@ -240,7 +421,8 @@ Each has its place. For new projects in 2025, I'd reach for TanStack Start.
     id: nanoid(),
     slug: "prisma-in-2025",
     title: "Why I Still Choose Prisma",
-    excerpt: "Despite the alternatives, Prisma remains my go-to ORM. Here's why type safety and DX still win.",
+    excerpt:
+      "Despite the alternatives, Prisma remains my go-to ORM. Here's why type safety and DX still win.",
     content: `# Why I Still Choose Prisma
 
 Every few months, someone asks me why I still use Prisma when Drizzle exists.
@@ -275,7 +457,8 @@ Both are excellent. Prisma's DX still edges it out for me.
     id: nanoid(),
     slug: "scaling-teams",
     title: "Scaling Engineering Teams",
-    excerpt: "Lessons from growing an engineering organization from 5 to 40+ people. What worked, what didn't.",
+    excerpt:
+      "Lessons from growing an engineering organization from 5 to 40+ people. What worked, what didn't.",
     content: `# Scaling Engineering Teams
 
 Growing a team from 5 to 40 engineers taught me hard lessons.
@@ -318,7 +501,8 @@ Scaling is about systems, not heroics.
     id: nanoid(),
     slug: "ai-coding-assistants",
     title: "Living with AI Coding Assistants",
-    excerpt: "How I use Cursor, Claude, and Copilot in my daily workflow. The good, the bad, and the surprising.",
+    excerpt:
+      "How I use Cursor, Claude, and Copilot in my daily workflow. The good, the bad, and the surprising.",
     content: `# Living with AI Coding Assistants
 
 AI has fundamentally changed how I write code.
@@ -362,10 +546,38 @@ AI makes good developers great. It doesn't make non-developers into developers.
 
 // Seed data for site stats
 export const siteStatsSeed = [
-  { id: nanoid(), type: "total_posts", value: 4, label: "Total Posts", description: "Published blog posts", updatedAt: new Date() },
-  { id: nanoid(), type: "total_projects", value: 5, label: "Projects", description: "Featured projects", updatedAt: new Date() },
-  { id: nanoid(), type: "github_stars", value: 41, label: "GitHub Stars", description: "Across all repositories", updatedAt: new Date() },
-  { id: nanoid(), type: "years_experience", value: 15, label: "Years Experience", description: "Professional software development", updatedAt: new Date() },
+  {
+    id: nanoid(),
+    type: "total_posts",
+    value: 4,
+    label: "Total Posts",
+    description: "Published blog posts",
+    updatedAt: new Date(),
+  },
+  {
+    id: nanoid(),
+    type: "total_projects",
+    value: 5,
+    label: "Projects",
+    description: "Featured projects",
+    updatedAt: new Date(),
+  },
+  {
+    id: nanoid(),
+    type: "github_stars",
+    value: 41,
+    label: "GitHub Stars",
+    description: "Across all repositories",
+    updatedAt: new Date(),
+  },
+  {
+    id: nanoid(),
+    type: "years_experience",
+    value: 15,
+    label: "Years Experience",
+    description: "Professional software development",
+    updatedAt: new Date(),
+  },
 ];
 
 console.log("Seed data ready for export.");

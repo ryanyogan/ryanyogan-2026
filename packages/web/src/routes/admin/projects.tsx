@@ -46,7 +46,7 @@ function AdminProjects() {
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (project: typeof projects[0]) => {
+  const handleOpenEdit = (project: (typeof projects)[0]) => {
     setEditingProject({
       name: project.name,
       slug: project.slug,
@@ -84,7 +84,7 @@ function AdminProjects() {
 
     // TODO: Implement actual API call
     // editingProject ? updateProject(formData) : createProject(formData);
-    
+
     setIsSubmitting(false);
     handleClose();
     // TODO: router.invalidate() to refresh data
@@ -119,9 +119,7 @@ function AdminProjects() {
       <header className="admin-page-header">
         <div className="admin-page-header-content">
           <h1 className="admin-page-title">Projects</h1>
-          <p className="admin-page-description">
-            Manage your portfolio projects.
-          </p>
+          <p className="admin-page-description">Manage your portfolio projects.</p>
         </div>
         <button className="btn btn-primary" onClick={handleOpenCreate}>
           <ProjectIcon size={16} />
@@ -136,9 +134,7 @@ function AdminProjects() {
               <ProjectIcon size={32} />
             </div>
             <p className="admin-empty-title">No projects yet</p>
-            <p className="admin-empty-description">
-              Add your first project to get started.
-            </p>
+            <p className="admin-empty-description">Add your first project to get started.</p>
           </div>
         </div>
       ) : (

@@ -1,4 +1,9 @@
-import type { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode } from "react";
+import type {
+  InputHTMLAttributes,
+  TextareaHTMLAttributes,
+  SelectHTMLAttributes,
+  ReactNode,
+} from "react";
 
 interface BaseFieldProps {
   label: string;
@@ -6,11 +11,12 @@ interface BaseFieldProps {
   error?: string;
 }
 
-interface InputProps extends BaseFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {}
+interface InputProps
+  extends BaseFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {}
 
 export function Input({ label, hint, error, id, ...props }: InputProps) {
   const inputId = id || label.toLowerCase().replace(/\s+/g, "-");
-  
+
   return (
     <div className="form-group">
       <label htmlFor={inputId} className="form-label">
@@ -23,11 +29,12 @@ export function Input({ label, hint, error, id, ...props }: InputProps) {
   );
 }
 
-interface TextareaProps extends BaseFieldProps, Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "className"> {}
+interface TextareaProps
+  extends BaseFieldProps, Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "className"> {}
 
 export function Textarea({ label, hint, error, id, ...props }: TextareaProps) {
   const inputId = id || label.toLowerCase().replace(/\s+/g, "-");
-  
+
   return (
     <div className="form-group">
       <label htmlFor={inputId} className="form-label">
@@ -40,13 +47,14 @@ export function Textarea({ label, hint, error, id, ...props }: TextareaProps) {
   );
 }
 
-interface SelectProps extends BaseFieldProps, Omit<SelectHTMLAttributes<HTMLSelectElement>, "className"> {
+interface SelectProps
+  extends BaseFieldProps, Omit<SelectHTMLAttributes<HTMLSelectElement>, "className"> {
   children: ReactNode;
 }
 
 export function Select({ label, hint, error, id, children, ...props }: SelectProps) {
   const inputId = id || label.toLowerCase().replace(/\s+/g, "-");
-  
+
   return (
     <div className="form-group">
       <label htmlFor={inputId} className="form-label">
@@ -67,7 +75,7 @@ interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "typ
 
 export function Checkbox({ label, id, ...props }: CheckboxProps) {
   const inputId = id || label.toLowerCase().replace(/\s+/g, "-");
-  
+
   return (
     <div className="form-group">
       <label className="form-checkbox-group">

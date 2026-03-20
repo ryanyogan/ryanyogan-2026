@@ -53,17 +53,14 @@ export function generateId(): string {
 /**
  * Deep merge objects
  */
-export function deepMerge<T extends Record<string, unknown>>(
-  target: T,
-  source: Partial<T>
-): T {
+export function deepMerge<T extends Record<string, unknown>>(target: T, source: Partial<T>): T {
   const output = { ...target };
-  
+
   for (const key in source) {
     if (Object.prototype.hasOwnProperty.call(source, key)) {
       const sourceValue = source[key];
       const targetValue = target[key];
-      
+
       if (
         sourceValue &&
         typeof sourceValue === "object" &&
@@ -81,6 +78,6 @@ export function deepMerge<T extends Record<string, unknown>>(
       }
     }
   }
-  
+
   return output;
 }

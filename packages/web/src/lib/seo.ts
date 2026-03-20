@@ -38,8 +38,7 @@ export interface PageMeta {
  * Generate complete meta tags array for a page
  */
 export function generateMeta(page: PageMeta) {
-  const fullTitle =
-    page.title === SITE_NAME ? SITE_NAME : `${page.title} - ${SITE_NAME}`;
+  const fullTitle = page.title === SITE_NAME ? SITE_NAME : `${page.title} - ${SITE_NAME}`;
   const canonicalUrl = `${SITE_URL}${page.path}`;
   const ogImage = page.ogImage || `${SITE_URL}/og/default.png`;
   const type = page.type || "website";
@@ -257,8 +256,7 @@ export function getProfilePageSchema() {
           "@type": "Occupation",
           name: "Principal Architect & Engineering Lead",
           occupationalCategory: "15-1252.00",
-          description:
-            "Led front-end architecture transformation at fintech company",
+          description: "Led front-end architecture transformation at fintech company",
           occupationLocation: {
             "@type": "City",
             name: "Chicago, Illinois",
@@ -344,9 +342,7 @@ export function getProjectsPageSchema(
 /**
  * BreadcrumbList schema helper
  */
-export function getBreadcrumbSchema(
-  items: Array<{ name: string; url: string }>
-) {
+export function getBreadcrumbSchema(items: Array<{ name: string; url: string }>) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

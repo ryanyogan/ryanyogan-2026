@@ -404,20 +404,17 @@ async function generateAllOGImages() {
     {
       filename: "default.png",
       title: "Ryan Yogan",
-      subtitle:
-        "Engineering leader with 20 years of experience building teams and products",
+      subtitle: "Engineering leader with 20 years of experience building teams and products",
     },
     {
       filename: "home.png",
       title: "Ryan Yogan",
-      subtitle:
-        "Engineering leader with 20 years of experience building teams and products",
+      subtitle: "Engineering leader with 20 years of experience building teams and products",
     },
     {
       filename: "work.png",
       title: "Work Experience",
-      subtitle:
-        "20 years building and scaling engineering teams through IPO and beyond",
+      subtitle: "20 years building and scaling engineering teams through IPO and beyond",
     },
     {
       filename: "projects.png",
@@ -475,8 +472,7 @@ async function generateManifest() {
   const manifest = {
     name: SITE_NAME,
     short_name: "RY",
-    description:
-      "Engineering leader with 20 years of experience building teams and products",
+    description: "Engineering leader with 20 years of experience building teams and products",
     start_url: "/",
     display: "standalone",
     background_color: "#FAFAFA",
@@ -501,10 +497,7 @@ async function generateManifest() {
     ],
   };
 
-  await fs.writeFile(
-    path.join(PUBLIC_DIR, "site.webmanifest"),
-    JSON.stringify(manifest, null, 2)
-  );
+  await fs.writeFile(path.join(PUBLIC_DIR, "site.webmanifest"), JSON.stringify(manifest, null, 2));
   console.log("  - site.webmanifest");
 }
 

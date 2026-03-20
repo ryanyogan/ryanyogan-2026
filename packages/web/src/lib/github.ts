@@ -75,14 +75,12 @@ export class GitHubClient {
    * Get a file's content (decoded from base64)
    */
   async getFileContent(owner: string, repo: string, path: string): Promise<string> {
-    const content = await this.fetch<GitHubContent>(
-      `/repos/${owner}/${repo}/contents/${path}`
-    );
-    
+    const content = await this.fetch<GitHubContent>(`/repos/${owner}/${repo}/contents/${path}`);
+
     if (content.content && content.encoding === "base64") {
       return atob(content.content.replace(/\n/g, ""));
     }
-    
+
     throw new Error(`Unable to decode file content for ${path}`);
   }
 
@@ -91,14 +89,12 @@ export class GitHubClient {
    */
   async getReadme(owner: string, repo: string): Promise<string> {
     try {
-      const readme = await this.fetch<GitHubReadme>(
-        `/repos/${owner}/${repo}/readme`
-      );
-      
+      const readme = await this.fetch<GitHubReadme>(`/repos/${owner}/${repo}/readme`);
+
       if (readme.content && readme.encoding === "base64") {
         return atob(readme.content.replace(/\n/g, ""));
       }
-      
+
       return "";
     } catch {
       return "";
@@ -110,7 +106,7 @@ export class GitHubClient {
    */
   async getKeyFiles(owner: string, repo: string): Promise<Record<string, string>> {
     const keyFiles: Record<string, string> = {};
-    
+
     // List of files that are typically useful for understanding a project
     const filesToFetch = [
       "README.md",
@@ -124,7 +120,7 @@ export class GitHubClient {
     ];
 
     const contents = await this.getContents(owner, repo);
-    const fileNames = contents.filter(c => c.type === "file").map(c => c.name);
+    const fileNames = contents.filter((c) => c.type === "file").map((c) => c.name);
 
     for (const file of filesToFetch) {
       if (fileNames.includes(file)) {
@@ -185,24 +181,21 @@ export class GitHubClient {
       sha?: string; // Required for updates
     }
   ): Promise<{ commit: { sha: string } }> {
-    const response = await fetch(
-      `${this.baseUrl}/repos/${owner}/${repo}/contents/${path}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `token ${this.token}`,
-          Accept: "application/vnd.github.v3+json",
-          "Content-Type": "application/json",
-          "User-Agent": "ryanyogan-web",
-        },
-        body: JSON.stringify({
-          message: options.message,
-          content: btoa(options.content),
-          branch: options.branch,
-          sha: options.sha,
-        }),
-      }
-    );
+    const response = await fetch(`${this.baseUrl}/repos/${owner}/${repo}/contents/${path}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `token ${this.token}`,
+        Accept: "application/vnd.github.v3+json",
+        "Content-Type": "application/json",
+        "User-Agent": "ryanyogan-web",
+      },
+      body: JSON.stringify({
+        message: options.message,
+        content: btoa(options.content),
+        branch: options.branch,
+        sha: options.sha,
+      }),
+    });
 
     if (!response.ok) {
       const error = await response.text();
@@ -255,10 +248,7 @@ export class GitHubClient {
  */
 export function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
   // Handle various GitHub URL formats
-  const patterns = [
-    /github\.com\/([^/]+)\/([^/]+?)(?:\.git)?(?:\/.*)?$/,
-    /^([^/]+)\/([^/]+)$/,
-  ];
+  const patterns = [/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?(?:\/.*)?$/, /^([^/]+)\/([^/]+)$/];
 
   for (const pattern of patterns) {
     const match = url.match(pattern);

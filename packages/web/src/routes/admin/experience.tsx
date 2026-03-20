@@ -59,7 +59,7 @@ function AdminExperience() {
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (exp: typeof experiences[0]) => {
+  const handleOpenEdit = (exp: (typeof experiences)[0]) => {
     const data: ExperienceFormData = {
       company: exp.company,
       title: exp.title,
@@ -89,7 +89,7 @@ function AdminExperience() {
 
     // TODO: Implement actual API call
     // editingExperience ? updateExperience(formData) : createExperience(formData);
-    
+
     setIsSubmitting(false);
     handleClose();
     // TODO: router.invalidate() to refresh data
@@ -103,7 +103,10 @@ function AdminExperience() {
     // TODO: router.invalidate() to refresh data
   };
 
-  const updateField = <K extends keyof ExperienceFormData>(field: K, value: ExperienceFormData[K]) => {
+  const updateField = <K extends keyof ExperienceFormData>(
+    field: K,
+    value: ExperienceFormData[K]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -112,9 +115,7 @@ function AdminExperience() {
       <header className="admin-page-header">
         <div className="admin-page-header-content">
           <h1 className="admin-page-title">Experience</h1>
-          <p className="admin-page-description">
-            Manage your work history and experience.
-          </p>
+          <p className="admin-page-description">Manage your work history and experience.</p>
         </div>
         <button className="btn btn-primary" onClick={handleOpenCreate}>
           <UserIcon size={16} />
@@ -150,22 +151,18 @@ function AdminExperience() {
                 <tr key={exp.id}>
                   <td>
                     <div className="admin-table-title">{exp.company}</div>
-                    {exp.location && (
-                      <div className="admin-table-subtitle">{exp.location}</div>
-                    )}
+                    {exp.location && <div className="admin-table-subtitle">{exp.location}</div>}
                   </td>
                   <td>
                     <div className="admin-table-subtitle">{exp.title}</div>
                   </td>
                   <td className="admin-table-date">
-                    {formatDate(exp.startDate)} — {exp.current ? "Present" : exp.endDate ? formatDate(exp.endDate) : ""}
+                    {formatDate(exp.startDate)} —{" "}
+                    {exp.current ? "Present" : exp.endDate ? formatDate(exp.endDate) : ""}
                   </td>
                   <td>
                     <div className="admin-table-actions">
-                      <button
-                        className="admin-table-action"
-                        onClick={() => handleOpenEdit(exp)}
-                      >
+                      <button className="admin-table-action" onClick={() => handleOpenEdit(exp)}>
                         Edit
                       </button>
                       <button

@@ -1,9 +1,8 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-oxc";
 import { defineConfig, type Plugin } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import mdx from "@mdx-js/rollup";
 import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
@@ -44,14 +43,9 @@ function contentPlugin(): Plugin {
         const writingDir = path.join(contentDir, "writing");
         const posts: unknown[] = [];
         if (fs.existsSync(writingDir)) {
-          const mdxFiles = fs
-            .readdirSync(writingDir)
-            .filter((f) => f.endsWith(".mdx"));
+          const mdxFiles = fs.readdirSync(writingDir).filter((f) => f.endsWith(".mdx"));
           for (const file of mdxFiles) {
-            const fileContent = fs.readFileSync(
-              path.join(writingDir, file),
-              "utf-8"
-            );
+            const fileContent = fs.readFileSync(path.join(writingDir, file), "utf-8");
             const { data, content: bodyContent } = matter(fileContent);
             posts.push({
               slug: file.replace(".mdx", ""),
@@ -90,7 +84,9 @@ export default defineConfig({
     tanstackStart(),
     // React for JSX
     react(),
-    // TypeScript path aliases
-    tsconfigPaths(),
   ],
+  resolve: {
+    // Native TypeScript path alias support (Vite 8+)
+    tsconfigPaths: true,
+  },
 });

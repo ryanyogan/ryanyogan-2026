@@ -8,312 +8,312 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as WorkRouteImport } from './routes/work'
-import { Route as AdminRouteRouteImport } from './routes/admin/route'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as WritingIndexRouteImport } from './routes/writing/index'
-import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as WritingSlugRouteImport } from './routes/writing/$slug'
-import { Route as ProjectsSlugRouteImport } from './routes/projects/$slug'
-import { Route as ApiSitemapRouteImport } from './routes/api/sitemap'
-import { Route as ApiSeedSearchRouteImport } from './routes/api/seed-search'
-import { Route as ApiSearchRouteImport } from './routes/api/search'
-import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
-import { Route as AdminExperienceRouteImport } from './routes/admin/experience'
-import { Route as AdminContentRouteImport } from './routes/admin/content'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as WorkRouteImport } from "./routes/work";
+import { Route as AdminRouteRouteImport } from "./routes/admin/route";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as WritingIndexRouteImport } from "./routes/writing/index";
+import { Route as ProjectsIndexRouteImport } from "./routes/projects/index";
+import { Route as AdminIndexRouteImport } from "./routes/admin/index";
+import { Route as WritingSlugRouteImport } from "./routes/writing/$slug";
+import { Route as ProjectsSlugRouteImport } from "./routes/projects/$slug";
+import { Route as ApiSitemapRouteImport } from "./routes/api/sitemap";
+import { Route as ApiSeedSearchRouteImport } from "./routes/api/seed-search";
+import { Route as ApiSearchRouteImport } from "./routes/api/search";
+import { Route as AdminProjectsRouteImport } from "./routes/admin/projects";
+import { Route as AdminExperienceRouteImport } from "./routes/admin/experience";
+import { Route as AdminContentRouteImport } from "./routes/admin/content";
 
 const WorkRoute = WorkRouteImport.update({
-  id: '/work',
-  path: '/work',
+  id: "/work",
+  path: "/work",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AdminRouteRoute = AdminRouteRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+  id: "/admin",
+  path: "/admin",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const WritingIndexRoute = WritingIndexRouteImport.update({
-  id: '/writing/',
-  path: '/writing/',
+  id: "/writing/",
+  path: "/writing/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
-  id: '/projects/',
-  path: '/projects/',
+  id: "/projects/",
+  path: "/projects/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any);
 const WritingSlugRoute = WritingSlugRouteImport.update({
-  id: '/writing/$slug',
-  path: '/writing/$slug',
+  id: "/writing/$slug",
+  path: "/writing/$slug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
-  id: '/projects/$slug',
-  path: '/projects/$slug',
+  id: "/projects/$slug",
+  path: "/projects/$slug",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiSitemapRoute = ApiSitemapRouteImport.update({
-  id: '/api/sitemap',
-  path: '/api/sitemap',
+  id: "/api/sitemap",
+  path: "/api/sitemap",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiSeedSearchRoute = ApiSeedSearchRouteImport.update({
-  id: '/api/seed-search',
-  path: '/api/seed-search',
+  id: "/api/seed-search",
+  path: "/api/seed-search",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ApiSearchRoute = ApiSearchRouteImport.update({
-  id: '/api/search',
-  path: '/api/search',
+  id: "/api/search",
+  path: "/api/search",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
+  id: "/projects",
+  path: "/projects",
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any);
 const AdminExperienceRoute = AdminExperienceRouteImport.update({
-  id: '/experience',
-  path: '/experience',
+  id: "/experience",
+  path: "/experience",
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any);
 const AdminContentRoute = AdminContentRouteImport.update({
-  id: '/content',
-  path: '/content',
+  id: "/content",
+  path: "/content",
   getParentRoute: () => AdminRouteRoute,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRouteWithChildren
-  '/work': typeof WorkRoute
-  '/admin/content': typeof AdminContentRoute
-  '/admin/experience': typeof AdminExperienceRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/api/search': typeof ApiSearchRoute
-  '/api/seed-search': typeof ApiSeedSearchRoute
-  '/api/sitemap': typeof ApiSitemapRoute
-  '/projects/$slug': typeof ProjectsSlugRoute
-  '/writing/$slug': typeof WritingSlugRoute
-  '/admin/': typeof AdminIndexRoute
-  '/projects/': typeof ProjectsIndexRoute
-  '/writing/': typeof WritingIndexRoute
+  "/": typeof IndexRoute;
+  "/admin": typeof AdminRouteRouteWithChildren;
+  "/work": typeof WorkRoute;
+  "/admin/content": typeof AdminContentRoute;
+  "/admin/experience": typeof AdminExperienceRoute;
+  "/admin/projects": typeof AdminProjectsRoute;
+  "/api/search": typeof ApiSearchRoute;
+  "/api/seed-search": typeof ApiSeedSearchRoute;
+  "/api/sitemap": typeof ApiSitemapRoute;
+  "/projects/$slug": typeof ProjectsSlugRoute;
+  "/writing/$slug": typeof WritingSlugRoute;
+  "/admin/": typeof AdminIndexRoute;
+  "/projects/": typeof ProjectsIndexRoute;
+  "/writing/": typeof WritingIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/work': typeof WorkRoute
-  '/admin/content': typeof AdminContentRoute
-  '/admin/experience': typeof AdminExperienceRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/api/search': typeof ApiSearchRoute
-  '/api/seed-search': typeof ApiSeedSearchRoute
-  '/api/sitemap': typeof ApiSitemapRoute
-  '/projects/$slug': typeof ProjectsSlugRoute
-  '/writing/$slug': typeof WritingSlugRoute
-  '/admin': typeof AdminIndexRoute
-  '/projects': typeof ProjectsIndexRoute
-  '/writing': typeof WritingIndexRoute
+  "/": typeof IndexRoute;
+  "/work": typeof WorkRoute;
+  "/admin/content": typeof AdminContentRoute;
+  "/admin/experience": typeof AdminExperienceRoute;
+  "/admin/projects": typeof AdminProjectsRoute;
+  "/api/search": typeof ApiSearchRoute;
+  "/api/seed-search": typeof ApiSeedSearchRoute;
+  "/api/sitemap": typeof ApiSitemapRoute;
+  "/projects/$slug": typeof ProjectsSlugRoute;
+  "/writing/$slug": typeof WritingSlugRoute;
+  "/admin": typeof AdminIndexRoute;
+  "/projects": typeof ProjectsIndexRoute;
+  "/writing": typeof WritingIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRouteWithChildren
-  '/work': typeof WorkRoute
-  '/admin/content': typeof AdminContentRoute
-  '/admin/experience': typeof AdminExperienceRoute
-  '/admin/projects': typeof AdminProjectsRoute
-  '/api/search': typeof ApiSearchRoute
-  '/api/seed-search': typeof ApiSeedSearchRoute
-  '/api/sitemap': typeof ApiSitemapRoute
-  '/projects/$slug': typeof ProjectsSlugRoute
-  '/writing/$slug': typeof WritingSlugRoute
-  '/admin/': typeof AdminIndexRoute
-  '/projects/': typeof ProjectsIndexRoute
-  '/writing/': typeof WritingIndexRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/admin": typeof AdminRouteRouteWithChildren;
+  "/work": typeof WorkRoute;
+  "/admin/content": typeof AdminContentRoute;
+  "/admin/experience": typeof AdminExperienceRoute;
+  "/admin/projects": typeof AdminProjectsRoute;
+  "/api/search": typeof ApiSearchRoute;
+  "/api/seed-search": typeof ApiSeedSearchRoute;
+  "/api/sitemap": typeof ApiSitemapRoute;
+  "/projects/$slug": typeof ProjectsSlugRoute;
+  "/writing/$slug": typeof WritingSlugRoute;
+  "/admin/": typeof AdminIndexRoute;
+  "/projects/": typeof ProjectsIndexRoute;
+  "/writing/": typeof WritingIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/admin'
-    | '/work'
-    | '/admin/content'
-    | '/admin/experience'
-    | '/admin/projects'
-    | '/api/search'
-    | '/api/seed-search'
-    | '/api/sitemap'
-    | '/projects/$slug'
-    | '/writing/$slug'
-    | '/admin/'
-    | '/projects/'
-    | '/writing/'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/admin"
+    | "/work"
+    | "/admin/content"
+    | "/admin/experience"
+    | "/admin/projects"
+    | "/api/search"
+    | "/api/seed-search"
+    | "/api/sitemap"
+    | "/projects/$slug"
+    | "/writing/$slug"
+    | "/admin/"
+    | "/projects/"
+    | "/writing/";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/work'
-    | '/admin/content'
-    | '/admin/experience'
-    | '/admin/projects'
-    | '/api/search'
-    | '/api/seed-search'
-    | '/api/sitemap'
-    | '/projects/$slug'
-    | '/writing/$slug'
-    | '/admin'
-    | '/projects'
-    | '/writing'
+    | "/"
+    | "/work"
+    | "/admin/content"
+    | "/admin/experience"
+    | "/admin/projects"
+    | "/api/search"
+    | "/api/seed-search"
+    | "/api/sitemap"
+    | "/projects/$slug"
+    | "/writing/$slug"
+    | "/admin"
+    | "/projects"
+    | "/writing";
   id:
-    | '__root__'
-    | '/'
-    | '/admin'
-    | '/work'
-    | '/admin/content'
-    | '/admin/experience'
-    | '/admin/projects'
-    | '/api/search'
-    | '/api/seed-search'
-    | '/api/sitemap'
-    | '/projects/$slug'
-    | '/writing/$slug'
-    | '/admin/'
-    | '/projects/'
-    | '/writing/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/admin"
+    | "/work"
+    | "/admin/content"
+    | "/admin/experience"
+    | "/admin/projects"
+    | "/api/search"
+    | "/api/seed-search"
+    | "/api/sitemap"
+    | "/projects/$slug"
+    | "/writing/$slug"
+    | "/admin/"
+    | "/projects/"
+    | "/writing/";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AdminRouteRoute: typeof AdminRouteRouteWithChildren
-  WorkRoute: typeof WorkRoute
-  ApiSearchRoute: typeof ApiSearchRoute
-  ApiSeedSearchRoute: typeof ApiSeedSearchRoute
-  ApiSitemapRoute: typeof ApiSitemapRoute
-  ProjectsSlugRoute: typeof ProjectsSlugRoute
-  WritingSlugRoute: typeof WritingSlugRoute
-  ProjectsIndexRoute: typeof ProjectsIndexRoute
-  WritingIndexRoute: typeof WritingIndexRoute
+  IndexRoute: typeof IndexRoute;
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren;
+  WorkRoute: typeof WorkRoute;
+  ApiSearchRoute: typeof ApiSearchRoute;
+  ApiSeedSearchRoute: typeof ApiSeedSearchRoute;
+  ApiSitemapRoute: typeof ApiSitemapRoute;
+  ProjectsSlugRoute: typeof ProjectsSlugRoute;
+  WritingSlugRoute: typeof WritingSlugRoute;
+  ProjectsIndexRoute: typeof ProjectsIndexRoute;
+  WritingIndexRoute: typeof WritingIndexRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/work': {
-      id: '/work'
-      path: '/work'
-      fullPath: '/work'
-      preLoaderRoute: typeof WorkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/writing/': {
-      id: '/writing/'
-      path: '/writing'
-      fullPath: '/writing/'
-      preLoaderRoute: typeof WritingIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects/': {
-      id: '/projects/'
-      path: '/projects'
-      fullPath: '/projects/'
-      preLoaderRoute: typeof ProjectsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/writing/$slug': {
-      id: '/writing/$slug'
-      path: '/writing/$slug'
-      fullPath: '/writing/$slug'
-      preLoaderRoute: typeof WritingSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects/$slug': {
-      id: '/projects/$slug'
-      path: '/projects/$slug'
-      fullPath: '/projects/$slug'
-      preLoaderRoute: typeof ProjectsSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/sitemap': {
-      id: '/api/sitemap'
-      path: '/api/sitemap'
-      fullPath: '/api/sitemap'
-      preLoaderRoute: typeof ApiSitemapRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/seed-search': {
-      id: '/api/seed-search'
-      path: '/api/seed-search'
-      fullPath: '/api/seed-search'
-      preLoaderRoute: typeof ApiSeedSearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/search': {
-      id: '/api/search'
-      path: '/api/search'
-      fullPath: '/api/search'
-      preLoaderRoute: typeof ApiSearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/projects': {
-      id: '/admin/projects'
-      path: '/projects'
-      fullPath: '/admin/projects'
-      preLoaderRoute: typeof AdminProjectsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/experience': {
-      id: '/admin/experience'
-      path: '/experience'
-      fullPath: '/admin/experience'
-      preLoaderRoute: typeof AdminExperienceRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/content': {
-      id: '/admin/content'
-      path: '/content'
-      fullPath: '/admin/content'
-      preLoaderRoute: typeof AdminContentRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
+    "/work": {
+      id: "/work";
+      path: "/work";
+      fullPath: "/work";
+      preLoaderRoute: typeof WorkRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin": {
+      id: "/admin";
+      path: "/admin";
+      fullPath: "/admin";
+      preLoaderRoute: typeof AdminRouteRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/writing/": {
+      id: "/writing/";
+      path: "/writing";
+      fullPath: "/writing/";
+      preLoaderRoute: typeof WritingIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/projects/": {
+      id: "/projects/";
+      path: "/projects";
+      fullPath: "/projects/";
+      preLoaderRoute: typeof ProjectsIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin/": {
+      id: "/admin/";
+      path: "/";
+      fullPath: "/admin/";
+      preLoaderRoute: typeof AdminIndexRouteImport;
+      parentRoute: typeof AdminRouteRoute;
+    };
+    "/writing/$slug": {
+      id: "/writing/$slug";
+      path: "/writing/$slug";
+      fullPath: "/writing/$slug";
+      preLoaderRoute: typeof WritingSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/projects/$slug": {
+      id: "/projects/$slug";
+      path: "/projects/$slug";
+      fullPath: "/projects/$slug";
+      preLoaderRoute: typeof ProjectsSlugRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/sitemap": {
+      id: "/api/sitemap";
+      path: "/api/sitemap";
+      fullPath: "/api/sitemap";
+      preLoaderRoute: typeof ApiSitemapRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/seed-search": {
+      id: "/api/seed-search";
+      path: "/api/seed-search";
+      fullPath: "/api/seed-search";
+      preLoaderRoute: typeof ApiSeedSearchRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/api/search": {
+      id: "/api/search";
+      path: "/api/search";
+      fullPath: "/api/search";
+      preLoaderRoute: typeof ApiSearchRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/admin/projects": {
+      id: "/admin/projects";
+      path: "/projects";
+      fullPath: "/admin/projects";
+      preLoaderRoute: typeof AdminProjectsRouteImport;
+      parentRoute: typeof AdminRouteRoute;
+    };
+    "/admin/experience": {
+      id: "/admin/experience";
+      path: "/experience";
+      fullPath: "/admin/experience";
+      preLoaderRoute: typeof AdminExperienceRouteImport;
+      parentRoute: typeof AdminRouteRoute;
+    };
+    "/admin/content": {
+      id: "/admin/content";
+      path: "/content";
+      fullPath: "/admin/content";
+      preLoaderRoute: typeof AdminContentRouteImport;
+      parentRoute: typeof AdminRouteRoute;
+    };
   }
 }
 
 interface AdminRouteRouteChildren {
-  AdminContentRoute: typeof AdminContentRoute
-  AdminExperienceRoute: typeof AdminExperienceRoute
-  AdminProjectsRoute: typeof AdminProjectsRoute
-  AdminIndexRoute: typeof AdminIndexRoute
+  AdminContentRoute: typeof AdminContentRoute;
+  AdminExperienceRoute: typeof AdminExperienceRoute;
+  AdminProjectsRoute: typeof AdminProjectsRoute;
+  AdminIndexRoute: typeof AdminIndexRoute;
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -321,11 +321,9 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminExperienceRoute: AdminExperienceRoute,
   AdminProjectsRoute: AdminProjectsRoute,
   AdminIndexRoute: AdminIndexRoute,
-}
+};
 
-const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
-  AdminRouteRouteChildren,
-)
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(AdminRouteRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -338,16 +336,16 @@ const rootRouteChildren: RootRouteChildren = {
   WritingSlugRoute: WritingSlugRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   WritingIndexRoute: WritingIndexRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { createStart } from "@tanstack/react-start";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }

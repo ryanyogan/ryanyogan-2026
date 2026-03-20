@@ -39,18 +39,10 @@ export function Modal({ isOpen, onClose, title, children, size = "md" }: ModalPr
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div
-        className={`modal-container ${sizeClasses[size]}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={`modal-container ${sizeClasses[size]}`} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>
-          <button
-            type="button"
-            className="modal-close"
-            onClick={onClose}
-            aria-label="Close"
-          >
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
             <svg
               width="20"
               height="20"

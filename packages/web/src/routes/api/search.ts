@@ -1,8 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  getAllSearchableContent,
-  type SearchableContent,
-} from "~/lib/content";
+import { getAllSearchableContent, type SearchableContent } from "~/lib/content";
 
 export type SearchResult = {
   id: string;
@@ -56,10 +53,7 @@ export const Route = createFileRoute("/api/search")({
 /**
  * Simple text-based search as fallback when Vectorize isn't available
  */
-function searchWithTextMatching(
-  query: string,
-  content: SearchableContent[]
-): SearchResult[] {
+function searchWithTextMatching(query: string, content: SearchableContent[]): SearchResult[] {
   const queryLower = query.toLowerCase();
   const queryTerms = queryLower.split(/\s+/).filter(Boolean);
 

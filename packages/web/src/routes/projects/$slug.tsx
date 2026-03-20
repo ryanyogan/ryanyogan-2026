@@ -35,12 +35,7 @@ export const Route = createFileRoute("/projects/$slug")({
         description: project.tagline,
         path: `/projects/${project.slug}`,
         ogImage: `${SITE_URL}/og/projects.png`,
-        keywords: [
-          "Ryan Yogan",
-          "project",
-          project.name,
-          ...project.tech,
-        ],
+        keywords: ["Ryan Yogan", "project", project.name, ...project.tech],
       }),
       links: generateLinks(`/projects/${project.slug}`),
       scripts: [
@@ -90,9 +85,7 @@ function ProjectDetailPage() {
         </header>
 
         <div className="project-detail-content">
-          {project.openSource && (
-            <span className="project-detail-badge">Open Source</span>
-          )}
+          {project.openSource && <span className="project-detail-badge">Open Source</span>}
 
           <p className="project-detail-description">{project.description}</p>
 

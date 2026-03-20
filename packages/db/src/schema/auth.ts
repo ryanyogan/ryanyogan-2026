@@ -18,9 +18,7 @@ export const users = sqliteTable(
     // Custom fields for admin
     role: text("role", { enum: ["user", "admin"] }).default("user"),
   },
-  (table) => [
-    index("users_email_idx").on(table.email),
-  ]
+  (table) => [index("users_email_idx").on(table.email)]
 );
 
 export const sessions = sqliteTable(
@@ -62,9 +60,7 @@ export const accounts = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
   },
-  (table) => [
-    index("accounts_user_id_idx").on(table.userId),
-  ]
+  (table) => [index("accounts_user_id_idx").on(table.userId)]
 );
 
 export const verifications = sqliteTable(
@@ -77,9 +73,7 @@ export const verifications = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
   },
-  (table) => [
-    index("verifications_identifier_idx").on(table.identifier),
-  ]
+  (table) => [index("verifications_identifier_idx").on(table.identifier)]
 );
 
 export type User = typeof users.$inferSelect;

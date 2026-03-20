@@ -46,7 +46,7 @@ function createAuth(env?: CloudflareEnv, cf?: IncomingRequestCfProperties) {
         appName: "ryanyogan.com",
         baseURL: env?.BETTER_AUTH_URL || "http://localhost:5173",
         secret: env?.BETTER_AUTH_SECRET || "dev-secret-change-in-production",
-        
+
         // GitHub OAuth for admin access
         socialProviders: {
           github: {

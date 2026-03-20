@@ -84,26 +84,6 @@ export type SkillCategory =
   | "leadership"
   | "other";
 
-export interface AIGeneratedContent {
-  id: string;
-  type: AIContentType;
-  content: string;
-  metadata: Record<string, unknown>;
-  status: AIContentStatus;
-  createdAt: Date;
-  approvedAt: Date | null;
-  approvedBy: string | null;
-}
-
-export type AIContentType =
-  | "weekly_digest"
-  | "about_update"
-  | "project_summary"
-  | "resume_update"
-  | "stats_update";
-
-export type AIContentStatus = "pending" | "approved" | "rejected";
-
 export interface GithubActivity {
   id: string;
   eventType: string;

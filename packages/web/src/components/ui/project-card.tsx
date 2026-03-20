@@ -27,11 +27,7 @@ export function ProjectCard({
       href={href}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noopener noreferrer" : undefined}
-      className={cn(
-        "project-card group",
-        featured && "project-card-featured",
-        className
-      )}
+      className={cn("project-card group", featured && "project-card-featured", className)}
     >
       {image && (
         <div className="project-card-image">
@@ -42,12 +38,7 @@ export function ProjectCard({
         <div className="project-card-header">
           <h3 className="project-card-title">
             {title}
-            {isExternal && (
-              <ExternalLinkIcon
-                size={14}
-                className="project-card-external-icon"
-              />
-            )}
+            {isExternal && <ExternalLinkIcon size={14} className="project-card-external-icon" />}
           </h3>
         </div>
         <p className="project-card-description">{description}</p>

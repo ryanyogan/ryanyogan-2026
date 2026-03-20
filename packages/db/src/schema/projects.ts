@@ -36,9 +36,7 @@ export const githubActivity = sqliteTable(
     repoUrl: text("repo_url").notNull(),
     description: text("description").notNull(),
     timestamp: integer("timestamp", { mode: "timestamp" }).notNull(),
-    metadata: text("metadata", { mode: "json" })
-      .$type<Record<string, unknown>>()
-      .default({}),
+    metadata: text("metadata", { mode: "json" }).$type<Record<string, unknown>>().default({}),
   },
   (table) => [
     index("github_activity_timestamp_idx").on(table.timestamp),

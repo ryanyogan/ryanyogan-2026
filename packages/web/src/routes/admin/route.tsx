@@ -1,10 +1,5 @@
 import { createFileRoute, Outlet, Link, redirect } from "@tanstack/react-router";
-import {
-  HomeIcon,
-  ProjectIcon,
-  UserIcon,
-  TerminalIcon,
-} from "~/components/ui/icons";
+import { HomeIcon, ProjectIcon, UserIcon, TerminalIcon } from "~/components/ui/icons";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -35,7 +30,7 @@ function AdminLayout() {
             <span className="admin-logo-text">Admin</span>
           </Link>
         </div>
-        
+
         <nav className="admin-nav">
           {sidebarLinks.map((link) => (
             <Link

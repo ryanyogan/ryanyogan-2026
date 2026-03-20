@@ -18,7 +18,8 @@
     "noImplicitOverride": true,
     "declaration": true,
     "declarationMap": true,
-    "composite": true
+    "composite": true,
+    "types": ["vitest/globals"]
   },
-  "exclude": ["node_modules", "dist", ".output", ".turbo"]
+  "exclude": ["node_modules", "dist", ".output", ".vite-task", "coverage"]
 }

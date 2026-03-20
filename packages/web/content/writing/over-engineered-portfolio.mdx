@@ -129,7 +129,7 @@ const triggerResponse = await workflowService.fetch(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ projectsToProcess }),
-  }),
+  })
 );
 ```
 
@@ -271,7 +271,7 @@ The workflow also generates embeddings and updates the Vectorize index for seman
 ```typescript
 const embedding = await generateEmbedding(
   env.AI,
-  `${analysis.title}. ${analysis.description}. ${analysis.mainPurpose}.`,
+  `${analysis.title}. ${analysis.description}. ${analysis.mainPurpose}.`
 );
 
 await env.VECTORIZE.upsert([
@@ -332,9 +332,7 @@ function contentPlugin(): Plugin {
         const { data } = matter(projectsFile);
 
         // Load posts from writing/*.mdx
-        const mdxFiles = fs
-          .readdirSync(writingDir)
-          .filter((f) => f.endsWith(".mdx"));
+        const mdxFiles = fs.readdirSync(writingDir).filter((f) => f.endsWith(".mdx"));
         const posts = mdxFiles.map((file) => {
           const content = fs.readFileSync(path.join(writingDir, file), "utf-8");
           const { data } = matter(content);
@@ -372,7 +370,7 @@ const githubData = await step.do(
   },
   async () => {
     // Fetch all files from GitHub
-  },
+  }
 );
 ```
 

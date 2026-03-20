@@ -2,11 +2,7 @@ import { highlight } from "sugar-high";
 import type { ComponentPropsWithoutRef } from "react";
 
 // Code block with syntax highlighting
-function Code({
-  children,
-  className,
-  ...props
-}: ComponentPropsWithoutRef<"code">) {
+function Code({ children, className, ...props }: ComponentPropsWithoutRef<"code">) {
   const codeString = typeof children === "string" ? children : "";
 
   // Check if this is an inline code or a code block
@@ -25,28 +21,15 @@ function Code({
   // Code block - apply syntax highlighting
   const html = highlight(codeString);
 
-  return (
-    <code
-      className={className}
-      dangerouslySetInnerHTML={{ __html: html }}
-      {...props}
-    />
-  );
+  return <code className={className} dangerouslySetInnerHTML={{ __html: html }} {...props} />;
 }
 
 // Pre block for code blocks - extracts language for display
-function Pre({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"pre">) {
+function Pre({ children, ...props }: ComponentPropsWithoutRef<"pre">) {
   // Try to extract language from the code child's className
   let language: string | undefined;
 
-  if (
-    children &&
-    typeof children === "object" &&
-    "props" in children
-  ) {
+  if (children && typeof children === "object" && "props" in children) {
     const childProps = children.props as { className?: string } | undefined;
     if (childProps?.className) {
       const match = childProps.className.match(/language-(\w+)/);
@@ -64,11 +47,7 @@ function Pre({
 }
 
 // Anchor with external link handling
-function Anchor({
-  href,
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"a">) {
+function Anchor({ href, children, ...props }: ComponentPropsWithoutRef<"a">) {
   const isExternal = href?.startsWith("http");
 
   return (
@@ -84,10 +63,7 @@ function Anchor({
 }
 
 // Table wrapper for horizontal scroll on small screens
-function Table({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"table">) {
+function Table({ children, ...props }: ComponentPropsWithoutRef<"table">) {
   return (
     <div className="table-wrapper">
       <table {...props}>{children}</table>
@@ -96,26 +72,17 @@ function Table({
 }
 
 // Table header cell
-function Th({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"th">) {
+function Th({ children, ...props }: ComponentPropsWithoutRef<"th">) {
   return <th {...props}>{children}</th>;
 }
 
 // Table data cell
-function Td({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"td">) {
+function Td({ children, ...props }: ComponentPropsWithoutRef<"td">) {
   return <td {...props}>{children}</td>;
 }
 
 // Blockquote styling
-function Blockquote({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"blockquote">) {
+function Blockquote({ children, ...props }: ComponentPropsWithoutRef<"blockquote">) {
   return <blockquote {...props}>{children}</blockquote>;
 }
 
@@ -125,34 +92,22 @@ function Hr(props: ComponentPropsWithoutRef<"hr">) {
 }
 
 // Image with lazy loading
-function Img({
-  alt,
-  ...props
-}: ComponentPropsWithoutRef<"img">) {
+function Img({ alt, ...props }: ComponentPropsWithoutRef<"img">) {
   return <img alt={alt || ""} loading="lazy" {...props} />;
 }
 
 // Unordered list
-function Ul({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"ul">) {
+function Ul({ children, ...props }: ComponentPropsWithoutRef<"ul">) {
   return <ul {...props}>{children}</ul>;
 }
 
 // Ordered list
-function Ol({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"ol">) {
+function Ol({ children, ...props }: ComponentPropsWithoutRef<"ol">) {
   return <ol {...props}>{children}</ol>;
 }
 
 // List item
-function Li({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"li">) {
+function Li({ children, ...props }: ComponentPropsWithoutRef<"li">) {
   return <li {...props}>{children}</li>;
 }
 
@@ -160,16 +115,15 @@ function Li({
 function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
   const Tag = `h${level}` as const;
 
-  return function Heading({
-    children,
-    id,
-    ...props
-  }: ComponentPropsWithoutRef<typeof Tag>) {
+  return function Heading({ children, id, ...props }: ComponentPropsWithoutRef<typeof Tag>) {
     // Generate id from children text if not provided
     const headingId =
       id ||
       (typeof children === "string"
-        ? children.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "")
+        ? children
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]/g, "")
         : undefined);
 
     return (
@@ -181,17 +135,11 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
 }
 
 // Details/Summary for collapsible content
-function Details({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"details">) {
+function Details({ children, ...props }: ComponentPropsWithoutRef<"details">) {
   return <details {...props}>{children}</details>;
 }
 
-function Summary({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"summary">) {
+function Summary({ children, ...props }: ComponentPropsWithoutRef<"summary">) {
   return <summary {...props}>{children}</summary>;
 }
 

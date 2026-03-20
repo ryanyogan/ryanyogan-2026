@@ -183,7 +183,7 @@ a {
   position: absolute;
   inset: -10px -16px;
   z-index: -1;
-  background-image: 
+  background-image:
     radial-gradient(circle at 10% 20%, var(--color-accent-pink) 3px, transparent 3px),
     radial-gradient(circle at 85% 30%, var(--color-accent-lavender) 2.5px, transparent 2.5px),
     radial-gradient(circle at 25% 80%, var(--color-accent-mint) 2px, transparent 2px),
@@ -202,17 +202,18 @@ a {
 
 /* Very subtle floating animation - barely noticeable */
 @keyframes float-dots {
-  0%, 100% { 
-    transform: translate(0, 0) scale(1); 
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
   }
-  25% { 
-    transform: translate(0.5px, -1px) scale(1.01); 
+  25% {
+    transform: translate(0.5px, -1px) scale(1.01);
   }
-  50% { 
-    transform: translate(0, -1.5px) scale(1); 
+  50% {
+    transform: translate(0, -1.5px) scale(1);
   }
-  75% { 
-    transform: translate(-0.5px, -0.5px) scale(1.01); 
+  75% {
+    transform: translate(-0.5px, -0.5px) scale(1.01);
   }
 }
 
@@ -220,7 +221,7 @@ a {
   .nav-name {
     font-size: 1.625rem;
   }
-  
+
   .nav-name::before {
     inset: -12px -20px;
   }
@@ -250,7 +251,12 @@ a {
    Typography
    ========================================================================== */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: -0.025em;
@@ -531,11 +537,7 @@ p {
   left: 0;
   width: 50%;
   height: 1px;
-  background: linear-gradient(
-    to right,
-    var(--color-border) 0%,
-    transparent 100%
-  );
+  background: linear-gradient(to right, var(--color-border) 0%, transparent 100%);
 }
 
 /* Section header as link */
@@ -1831,8 +1833,13 @@ p {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .command-kbd {
@@ -2304,49 +2311,125 @@ p {
 }
 
 /* Dark mode token colors - softer, muted palette */
-.sh__identifier { color: #d4d4d4; }
-.sh__keyword { color: #c792ea; }           /* soft purple - keywords */
-.sh__string { color: #c3e88d; }            /* soft green - strings */
-.sh__comment { color: #676e95; font-style: italic; }
-.sh__class { color: #ffcb6b; }             /* soft gold - class names, types */
-.sh__sign { color: #89ddff; }              /* soft cyan - operators, punctuation */
-.sh__property { color: #82aaff; }          /* soft blue - object properties */
-.sh__entity { color: #f78c6c; }            /* soft orange - entities, attributes */
-.sh__jsxliterals { color: #89ddff; }
+.sh__identifier {
+  color: #d4d4d4;
+}
+.sh__keyword {
+  color: #c792ea;
+} /* soft purple - keywords */
+.sh__string {
+  color: #c3e88d;
+} /* soft green - strings */
+.sh__comment {
+  color: #676e95;
+  font-style: italic;
+}
+.sh__class {
+  color: #ffcb6b;
+} /* soft gold - class names, types */
+.sh__sign {
+  color: #89ddff;
+} /* soft cyan - operators, punctuation */
+.sh__property {
+  color: #82aaff;
+} /* soft blue - object properties */
+.sh__entity {
+  color: #f78c6c;
+} /* soft orange - entities, attributes */
+.sh__jsxliterals {
+  color: #89ddff;
+}
 
 /* Additional token types - dark mode */
-.sh__break { color: #c792ea; }             /* soft purple - break, continue, return */
-.sh__number { color: #f78c6c; }            /* soft orange - numeric literals */
-.sh__func { color: #82aaff; }              /* soft blue - function names */
-.sh__space { }                              /* whitespace */
+.sh__break {
+  color: #c792ea;
+} /* soft purple - break, continue, return */
+.sh__number {
+  color: #f78c6c;
+} /* soft orange - numeric literals */
+.sh__func {
+  color: #82aaff;
+} /* soft blue - function names */
+.sh__space {
+} /* whitespace */
 
 /* Light mode overrides - softer, warmer colors */
-:root:not(.dark) .sh__identifier { color: #37352f; }
-:root:not(.dark) .sh__keyword { color: #8b5cf6; }   /* muted purple */
-:root:not(.dark) .sh__string { color: #059669; }    /* muted green */
-:root:not(.dark) .sh__comment { color: #9ca3af; font-style: italic; }
-:root:not(.dark) .sh__class { color: #d97706; }     /* warm amber */
-:root:not(.dark) .sh__sign { color: #6b7280; }      /* gray */
-:root:not(.dark) .sh__property { color: #2563eb; }  /* muted blue */
-:root:not(.dark) .sh__entity { color: #ea580c; }    /* muted orange */
-:root:not(.dark) .sh__jsxliterals { color: #6b7280; }
-:root:not(.dark) .sh__break { color: #8b5cf6; }     /* muted purple */
-:root:not(.dark) .sh__number { color: #ea580c; }    /* muted orange */
-:root:not(.dark) .sh__func { color: #2563eb; }      /* muted blue */
+:root:not(.dark) .sh__identifier {
+  color: #37352f;
+}
+:root:not(.dark) .sh__keyword {
+  color: #8b5cf6;
+} /* muted purple */
+:root:not(.dark) .sh__string {
+  color: #059669;
+} /* muted green */
+:root:not(.dark) .sh__comment {
+  color: #9ca3af;
+  font-style: italic;
+}
+:root:not(.dark) .sh__class {
+  color: #d97706;
+} /* warm amber */
+:root:not(.dark) .sh__sign {
+  color: #6b7280;
+} /* gray */
+:root:not(.dark) .sh__property {
+  color: #2563eb;
+} /* muted blue */
+:root:not(.dark) .sh__entity {
+  color: #ea580c;
+} /* muted orange */
+:root:not(.dark) .sh__jsxliterals {
+  color: #6b7280;
+}
+:root:not(.dark) .sh__break {
+  color: #8b5cf6;
+} /* muted purple */
+:root:not(.dark) .sh__number {
+  color: #ea580c;
+} /* muted orange */
+:root:not(.dark) .sh__func {
+  color: #2563eb;
+} /* muted blue */
 
 @media (prefers-color-scheme: dark) {
-  :root:not(.light) .sh__identifier { color: #d4d4d4; }
-  :root:not(.light) .sh__keyword { color: #c792ea; }
-  :root:not(.light) .sh__string { color: #c3e88d; }
-  :root:not(.light) .sh__comment { color: #676e95; font-style: italic; }
-  :root:not(.light) .sh__class { color: #ffcb6b; }
-  :root:not(.light) .sh__sign { color: #89ddff; }
-  :root:not(.light) .sh__property { color: #82aaff; }
-  :root:not(.light) .sh__entity { color: #f78c6c; }
-  :root:not(.light) .sh__jsxliterals { color: #89ddff; }
-  :root:not(.light) .sh__break { color: #c792ea; }
-  :root:not(.light) .sh__number { color: #f78c6c; }
-  :root:not(.light) .sh__func { color: #82aaff; }
+  :root:not(.light) .sh__identifier {
+    color: #d4d4d4;
+  }
+  :root:not(.light) .sh__keyword {
+    color: #c792ea;
+  }
+  :root:not(.light) .sh__string {
+    color: #c3e88d;
+  }
+  :root:not(.light) .sh__comment {
+    color: #676e95;
+    font-style: italic;
+  }
+  :root:not(.light) .sh__class {
+    color: #ffcb6b;
+  }
+  :root:not(.light) .sh__sign {
+    color: #89ddff;
+  }
+  :root:not(.light) .sh__property {
+    color: #82aaff;
+  }
+  :root:not(.light) .sh__entity {
+    color: #f78c6c;
+  }
+  :root:not(.light) .sh__jsxliterals {
+    color: #89ddff;
+  }
+  :root:not(.light) .sh__break {
+    color: #c792ea;
+  }
+  :root:not(.light) .sh__number {
+    color: #f78c6c;
+  }
+  :root:not(.light) .sh__func {
+    color: #82aaff;
+  }
 }
 
 /* ==========================================================================

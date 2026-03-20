@@ -6,7 +6,7 @@ on:
     paths:
       - "packages/**"
       - "pnpm-lock.yaml"
-      - "turbo.json"
+      - "vite.config.ts"
   workflow_dispatch:
 
 jobs:
@@ -18,20 +18,20 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "pnpm"
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
 
       - name: Install dependencies
-        run: pnpm install
+        run: vp install
+
+      - name: Check (lint, format, typecheck)
+        run: vp check
+
+      - name: Run tests
+        run: vp test --run
 
       - name: Build
-        run: pnpm build
+        run: vp build
 
       # Deploy workflows first (web depends on it via service binding)
       - name: Deploy Workflows Worker

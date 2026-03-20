@@ -1,11 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageLayout } from "~/components/layout";
-import {
-  getFeaturedProjects,
-  getAllPosts,
-  type ProjectMeta,
-  type PostMeta,
-} from "~/lib/content";
+import { getFeaturedProjects, getAllPosts, type ProjectMeta, type PostMeta } from "~/lib/content";
 import {
   generateMeta,
   generateLinks,
@@ -62,22 +57,20 @@ function HomePage() {
       {/* Bio - three-tier typography hierarchy */}
       <section className="bio-section">
         <p className="bio-tagline">
-          Engineering leader with <strong>20 years</strong> of experience
-          building teams and products.{" "}
+          Engineering leader with <strong>20 years</strong> of experience building teams and
+          products.{" "}
           <Link to="/work" className="text-link">
             Work history <span aria-hidden="true">→</span>
           </Link>
         </p>
         <p className="bio-description">
-          I'm passionate about building <strong>AI</strong>,{" "}
-          <strong>embedded systems</strong>, and <strong>robotics</strong> —
-          building software that controls hardware.
+          I'm passionate about building <strong>AI</strong>, <strong>embedded systems</strong>, and{" "}
+          <strong>robotics</strong> — building software that controls hardware.
         </p>
         <p className="bio-aside">
-          When I'm not coding, you'll find me watching our boy play hockey,
-          pretending like I can still skate, out in the snow with my better
-          half, working on robotics with our other kiddo, or half-finishing
-          side projects.
+          When I'm not coding, you'll find me watching our boy play hockey, pretending like I can
+          still skate, out in the snow with my better half, working on robotics with our other
+          kiddo, or half-finishing side projects.
         </p>
         <button
           className="keyboard-hint"
@@ -91,7 +84,8 @@ function HomePage() {
           }}
           aria-label="Open command palette"
         >
-          <kbd>⌘</kbd><kbd>K</kbd> <span className="keyboard-hint-text">to search</span>
+          <kbd>⌘</kbd>
+          <kbd>K</kbd> <span className="keyboard-hint-text">to search</span>
         </button>
       </section>
 
@@ -109,9 +103,7 @@ function HomePage() {
               className="writing-item"
             >
               <span className="writing-title">{post.title}</span>
-              <span className="writing-date">
-                {new Date(post.date).getFullYear()}
-              </span>
+              <span className="writing-date">{new Date(post.date).getFullYear()}</span>
             </Link>
           ))}
         </div>

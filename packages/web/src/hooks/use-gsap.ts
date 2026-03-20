@@ -8,8 +8,7 @@ if (typeof window !== "undefined") {
 }
 
 // Use useLayoutEffect on client, useEffect on server
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 /**
  * Custom hook for GSAP animations with automatic cleanup
@@ -49,17 +48,11 @@ export function useFadeUp<T extends Element = HTMLDivElement>(
     trigger?: string;
   } = {}
 ) {
-  const {
-    delay = 0,
-    duration = 0.8,
-    y = 40,
-    stagger = 0.1,
-    trigger,
-  } = options;
+  const { delay = 0, duration = 0.8, y = 40, stagger = 0.1, trigger } = options;
 
   return useGSAP<T>((ctx, element) => {
     const targets = element.querySelectorAll("[data-animate]");
-    
+
     if (targets.length === 0) {
       // Animate the element itself
       gsap.from(element, {
@@ -68,11 +61,13 @@ export function useFadeUp<T extends Element = HTMLDivElement>(
         duration,
         delay,
         ease: "power3.out",
-        scrollTrigger: trigger ? {
-          trigger: trigger,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        } : undefined,
+        scrollTrigger: trigger
+          ? {
+              trigger: trigger,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            }
+          : undefined,
       });
     } else {
       // Animate children with data-animate
@@ -83,11 +78,13 @@ export function useFadeUp<T extends Element = HTMLDivElement>(
         delay,
         stagger,
         ease: "power3.out",
-        scrollTrigger: trigger ? {
-          trigger: trigger,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        } : undefined,
+        scrollTrigger: trigger
+          ? {
+              trigger: trigger,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            }
+          : undefined,
       });
     }
   });
@@ -109,7 +106,7 @@ export function useTextReveal<T extends Element = HTMLDivElement>(
     // Split text into spans for each character
     const text = element.textContent || "";
     const words = text.split(" ");
-    
+
     element.innerHTML = words
       .map(
         (word) =>
@@ -133,9 +130,7 @@ export function useTextReveal<T extends Element = HTMLDivElement>(
 /**
  * Hook for magnetic hover effect
  */
-export function useMagnetic<T extends HTMLElement = HTMLDivElement>(
-  strength: number = 0.3
-) {
+export function useMagnetic<T extends HTMLElement = HTMLDivElement>(strength: number = 0.3) {
   const elementRef = useRef<T>(null);
 
   useEffect(() => {
@@ -179,9 +174,7 @@ export function useMagnetic<T extends HTMLElement = HTMLDivElement>(
 /**
  * Hook for parallax scroll effect
  */
-export function useParallax<T extends Element = HTMLDivElement>(
-  speed: number = 0.5
-) {
+export function useParallax<T extends Element = HTMLDivElement>(speed: number = 0.5) {
   return useGSAP<T>((ctx, element) => {
     gsap.to(element, {
       y: () => window.innerHeight * speed * -1,

@@ -4,24 +4,25 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "preview": "turbo preview",
-    "deploy": "turbo deploy",
-    "lint": "turbo lint",
-    "typecheck": "turbo typecheck",
-    "db:generate": "turbo db:generate",
-    "db:migrate": "turbo db:migrate",
-    "db:studio": "pnpm --filter @ryanyogan/db studio",
-    "clean": "turbo clean && rm -rf node_modules"
+    "dev": "pnpm --filter @ryanyogan/web dev",
+    "build": "pnpm --filter @ryanyogan/web build",
+    "preview": "pnpm --filter @ryanyogan/web preview",
+    "deploy": "pnpm --filter @ryanyogan/web deploy",
+    "check": "vp check",
+    "check:fix": "vp check --fix",
+    "typecheck": "pnpm --filter @ryanyogan/web typecheck",
+    "db:generate": "pnpm --filter @ryanyogan/db db:generate",
+    "db:migrate": "pnpm --filter @ryanyogan/db db:migrate",
+    "db:studio": "pnpm --filter @ryanyogan/db db:studio",
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist packages/*/.output"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
-    "turbo": "^2.4.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vite-plus": "latest"
   },
-  "packageManager": "pnpm@9.15.0",
   "engines": {
     "node": ">=20.0.0"
-  }
+  },
+  "packageManager": "pnpm@9.15.0"
 }

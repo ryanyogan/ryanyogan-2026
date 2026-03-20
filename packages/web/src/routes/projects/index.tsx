@@ -63,11 +63,7 @@ export const Route = createFileRoute("/projects/")({
 
 function ProjectItem({ project }: { project: ProjectMeta }) {
   return (
-    <Link
-      to="/projects/$slug"
-      params={{ slug: project.slug }}
-      className="project-item"
-    >
+    <Link to="/projects/$slug" params={{ slug: project.slug }} className="project-item">
       <div className="project-item-content">
         <div className="project-item-header">
           <span className="project-name">{project.name}</span>

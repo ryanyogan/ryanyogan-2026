@@ -21,8 +21,9 @@ dist/
 *.swo
 .DS_Store
 
-# Turborepo
-.turbo/
+# Vite+ / Vite Task cache
+.vite/
+.vite-task/
 
 # Testing
 coverage/

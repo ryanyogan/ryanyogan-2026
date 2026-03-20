@@ -52,13 +52,13 @@ export function CommandPalette() {
   // Open with CMD+K
   useCommandK(
     useCallback(() => setOpen(true), []),
-    !open,
+    !open
   );
 
   // Close with Escape
   useEscape(
     useCallback(() => setOpen(false), []),
-    open,
+    open
   );
 
   // Fetch search results when debounced search changes
@@ -71,9 +71,7 @@ export function CommandPalette() {
     const fetchResults = async () => {
       setIsSearching(true);
       try {
-        const response = await fetch(
-          `/api/search?q=${encodeURIComponent(debouncedSearch)}`,
-        );
+        const response = await fetch(`/api/search?q=${encodeURIComponent(debouncedSearch)}`);
         if (response.ok) {
           const data: SearchResponse = await response.json();
           setSearchResults(data.results);
@@ -196,7 +194,7 @@ export function CommandPalette() {
         group: "social",
       },
     ],
-    [theme, toggleTheme, navigate, copyEmail],
+    [theme, toggleTheme, navigate, copyEmail]
   );
 
   // Group commands
@@ -214,7 +212,7 @@ export function CommandPalette() {
       }
       setOpen(false);
     },
-    [navigate],
+    [navigate]
   );
 
   if (!open) return null;
@@ -224,15 +222,8 @@ export function CommandPalette() {
 
   return (
     <div className="command-palette-overlay" onClick={() => setOpen(false)}>
-      <div
-        className="command-palette-container"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Command
-          className="command-palette"
-          shouldFilter={!showSearchResults}
-          loop
-        >
+      <div className="command-palette-container" onClick={(e) => e.stopPropagation()}>
+        <Command className="command-palette" shouldFilter={!showSearchResults} loop>
           <div className="command-input-wrapper">
             <SearchIcon size={16} className="command-search-icon" />
             <Command.Input
@@ -242,9 +233,7 @@ export function CommandPalette() {
               className="command-input"
               autoFocus
             />
-            {isSearching && (
-              <span className="command-loading">Searching...</span>
-            )}
+            {isSearching && <span className="command-loading">Searching...</span>}
             <kbd className="command-kbd">esc</kbd>
           </div>
 
