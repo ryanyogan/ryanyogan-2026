@@ -13,6 +13,7 @@ import { Route as WorkRouteImport } from './routes/work'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WritingIndexRouteImport } from './routes/writing/index'
+import { Route as TutorialsIndexRouteImport } from './routes/tutorials/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WritingSlugRouteImport } from './routes/writing/$slug'
@@ -23,6 +24,10 @@ import { Route as ApiSearchRouteImport } from './routes/api/search'
 import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
 import { Route as AdminExperienceRouteImport } from './routes/admin/experience'
 import { Route as AdminContentRouteImport } from './routes/admin/content'
+import { Route as TutorialsCourseSlugIndexRouteImport } from './routes/tutorials/$courseSlug/index'
+import { Route as AdminTutorialsIndexRouteImport } from './routes/admin/tutorials/index'
+import { Route as TutorialsCourseSlugLessonSlugRouteImport } from './routes/tutorials/$courseSlug/$lessonSlug'
+import { Route as AdminTutorialsCourseIdRouteImport } from './routes/admin/tutorials/$courseId'
 
 const WorkRoute = WorkRouteImport.update({
   id: '/work',
@@ -42,6 +47,11 @@ const IndexRoute = IndexRouteImport.update({
 const WritingIndexRoute = WritingIndexRouteImport.update({
   id: '/writing/',
   path: '/writing/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TutorialsIndexRoute = TutorialsIndexRouteImport.update({
+  id: '/tutorials/',
+  path: '/tutorials/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
@@ -94,6 +104,28 @@ const AdminContentRoute = AdminContentRouteImport.update({
   path: '/content',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const TutorialsCourseSlugIndexRoute =
+  TutorialsCourseSlugIndexRouteImport.update({
+    id: '/tutorials/$courseSlug/',
+    path: '/tutorials/$courseSlug/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminTutorialsIndexRoute = AdminTutorialsIndexRouteImport.update({
+  id: '/tutorials/',
+  path: '/tutorials/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const TutorialsCourseSlugLessonSlugRoute =
+  TutorialsCourseSlugLessonSlugRouteImport.update({
+    id: '/tutorials/$courseSlug/$lessonSlug',
+    path: '/tutorials/$courseSlug/$lessonSlug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminTutorialsCourseIdRoute = AdminTutorialsCourseIdRouteImport.update({
+  id: '/tutorials/$courseId',
+  path: '/tutorials/$courseId',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,7 +141,12 @@ export interface FileRoutesByFullPath {
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/tutorials/': typeof TutorialsIndexRoute
   '/writing/': typeof WritingIndexRoute
+  '/admin/tutorials/$courseId': typeof AdminTutorialsCourseIdRoute
+  '/tutorials/$courseSlug/$lessonSlug': typeof TutorialsCourseSlugLessonSlugRoute
+  '/admin/tutorials/': typeof AdminTutorialsIndexRoute
+  '/tutorials/$courseSlug/': typeof TutorialsCourseSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,7 +161,12 @@ export interface FileRoutesByTo {
   '/writing/$slug': typeof WritingSlugRoute
   '/admin': typeof AdminIndexRoute
   '/projects': typeof ProjectsIndexRoute
+  '/tutorials': typeof TutorialsIndexRoute
   '/writing': typeof WritingIndexRoute
+  '/admin/tutorials/$courseId': typeof AdminTutorialsCourseIdRoute
+  '/tutorials/$courseSlug/$lessonSlug': typeof TutorialsCourseSlugLessonSlugRoute
+  '/admin/tutorials': typeof AdminTutorialsIndexRoute
+  '/tutorials/$courseSlug': typeof TutorialsCourseSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,7 +183,12 @@ export interface FileRoutesById {
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/tutorials/': typeof TutorialsIndexRoute
   '/writing/': typeof WritingIndexRoute
+  '/admin/tutorials/$courseId': typeof AdminTutorialsCourseIdRoute
+  '/tutorials/$courseSlug/$lessonSlug': typeof TutorialsCourseSlugLessonSlugRoute
+  '/admin/tutorials/': typeof AdminTutorialsIndexRoute
+  '/tutorials/$courseSlug/': typeof TutorialsCourseSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -159,7 +206,12 @@ export interface FileRouteTypes {
     | '/writing/$slug'
     | '/admin/'
     | '/projects/'
+    | '/tutorials/'
     | '/writing/'
+    | '/admin/tutorials/$courseId'
+    | '/tutorials/$courseSlug/$lessonSlug'
+    | '/admin/tutorials/'
+    | '/tutorials/$courseSlug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -174,7 +226,12 @@ export interface FileRouteTypes {
     | '/writing/$slug'
     | '/admin'
     | '/projects'
+    | '/tutorials'
     | '/writing'
+    | '/admin/tutorials/$courseId'
+    | '/tutorials/$courseSlug/$lessonSlug'
+    | '/admin/tutorials'
+    | '/tutorials/$courseSlug'
   id:
     | '__root__'
     | '/'
@@ -190,7 +247,12 @@ export interface FileRouteTypes {
     | '/writing/$slug'
     | '/admin/'
     | '/projects/'
+    | '/tutorials/'
     | '/writing/'
+    | '/admin/tutorials/$courseId'
+    | '/tutorials/$courseSlug/$lessonSlug'
+    | '/admin/tutorials/'
+    | '/tutorials/$courseSlug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -203,7 +265,10 @@ export interface RootRouteChildren {
   ProjectsSlugRoute: typeof ProjectsSlugRoute
   WritingSlugRoute: typeof WritingSlugRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
+  TutorialsIndexRoute: typeof TutorialsIndexRoute
   WritingIndexRoute: typeof WritingIndexRoute
+  TutorialsCourseSlugLessonSlugRoute: typeof TutorialsCourseSlugLessonSlugRoute
+  TutorialsCourseSlugIndexRoute: typeof TutorialsCourseSlugIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -234,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/writing'
       fullPath: '/writing/'
       preLoaderRoute: typeof WritingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tutorials/': {
+      id: '/tutorials/'
+      path: '/tutorials'
+      fullPath: '/tutorials/'
+      preLoaderRoute: typeof TutorialsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects/': {
@@ -306,6 +378,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContentRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/tutorials/$courseSlug/': {
+      id: '/tutorials/$courseSlug/'
+      path: '/tutorials/$courseSlug'
+      fullPath: '/tutorials/$courseSlug/'
+      preLoaderRoute: typeof TutorialsCourseSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/tutorials/': {
+      id: '/admin/tutorials/'
+      path: '/tutorials'
+      fullPath: '/admin/tutorials/'
+      preLoaderRoute: typeof AdminTutorialsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/tutorials/$courseSlug/$lessonSlug': {
+      id: '/tutorials/$courseSlug/$lessonSlug'
+      path: '/tutorials/$courseSlug/$lessonSlug'
+      fullPath: '/tutorials/$courseSlug/$lessonSlug'
+      preLoaderRoute: typeof TutorialsCourseSlugLessonSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/tutorials/$courseId': {
+      id: '/admin/tutorials/$courseId'
+      path: '/tutorials/$courseId'
+      fullPath: '/admin/tutorials/$courseId'
+      preLoaderRoute: typeof AdminTutorialsCourseIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
   }
 }
 
@@ -314,6 +414,8 @@ interface AdminRouteRouteChildren {
   AdminExperienceRoute: typeof AdminExperienceRoute
   AdminProjectsRoute: typeof AdminProjectsRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminTutorialsCourseIdRoute: typeof AdminTutorialsCourseIdRoute
+  AdminTutorialsIndexRoute: typeof AdminTutorialsIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -321,6 +423,8 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminExperienceRoute: AdminExperienceRoute,
   AdminProjectsRoute: AdminProjectsRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminTutorialsCourseIdRoute: AdminTutorialsCourseIdRoute,
+  AdminTutorialsIndexRoute: AdminTutorialsIndexRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
@@ -337,7 +441,10 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsSlugRoute: ProjectsSlugRoute,
   WritingSlugRoute: WritingSlugRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
+  TutorialsIndexRoute: TutorialsIndexRoute,
   WritingIndexRoute: WritingIndexRoute,
+  TutorialsCourseSlugLessonSlugRoute: TutorialsCourseSlugLessonSlugRoute,
+  TutorialsCourseSlugIndexRoute: TutorialsCourseSlugIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

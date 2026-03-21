@@ -12,12 +12,30 @@ import {
   serializeJsonLd,
 } from "~/lib/seo";
 
+interface FeaturedCourse {
+  slug: string;
+  title: string;
+  description: string;
+  lessonCount: number;
+}
+
+// TODO: Replace with database query
+function getFeaturedCourse(): FeaturedCourse | null {
+  return {
+    slug: "phoenix-liveview-fundamentals",
+    title: "Phoenix LiveView Fundamentals",
+    description: "Learn to build real-time web applications with Phoenix LiveView.",
+    lessonCount: 12,
+  };
+}
+
 export const Route = createFileRoute("/")({
   component: HomePage,
   loader: async () => {
     const projects = getFeaturedProjects().slice(0, 3);
     const posts = getAllPosts().slice(0, 3);
-    return { projects, posts };
+    const featuredCourse = getFeaturedCourse();
+    return { projects, posts, featuredCourse };
   },
   head: () => ({
     meta: generateMeta({
@@ -47,9 +65,10 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const { projects, posts } = Route.useLoaderData() as {
+  const { projects, posts, featuredCourse } = Route.useLoaderData() as {
     projects: ProjectMeta[];
     posts: PostMeta[];
+    featuredCourse: FeaturedCourse | null;
   };
 
   return (
@@ -96,6 +115,32 @@ function HomePage() {
           all writing
         </Link>
       </section>
+
+      {/* Tutorials - Featured course */}
+      {featuredCourse && (
+        <section className="section">
+          <Link to="/tutorials" className="section-header-link">
+            <h2 className="section-header">Tutorials</h2>
+          </Link>
+          <Link
+            to="/tutorials/$courseSlug"
+            params={{ courseSlug: featuredCourse.slug }}
+            className="featured-course"
+          >
+            <div className="featured-course-content">
+              <span className="featured-course-badge">Featured Course</span>
+              <h3 className="featured-course-title">{featuredCourse.title}</h3>
+              <p className="featured-course-description">{featuredCourse.description}</p>
+              <span className="featured-course-meta">
+                {featuredCourse.lessonCount} lessons
+              </span>
+            </div>
+          </Link>
+          <Link to="/tutorials" className="section-link">
+            all tutorials
+          </Link>
+        </section>
+      )}
 
       {/* Projects */}
       <section className="section">

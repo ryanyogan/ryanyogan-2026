@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, redirect } from "@tanstack/react-router";
-import { HomeIcon, ProjectIcon, UserIcon, TerminalIcon } from "~/components/ui/icons";
+import { HomeIcon, ProjectIcon, UserIcon, TerminalIcon, TutorialIcon } from "~/components/ui/icons";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/admin")({
 // See /writing for blog posts - no admin UI needed
 const sidebarLinks = [
   { label: "Dashboard", href: "/admin", icon: HomeIcon },
+  { label: "Tutorials", href: "/admin/tutorials", icon: TutorialIcon },
   { label: "Projects", href: "/admin/projects", icon: ProjectIcon },
   { label: "Experience", href: "/admin/experience", icon: UserIcon },
   { label: "AI Content", href: "/admin/content", icon: TerminalIcon },

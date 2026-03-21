@@ -10,6 +10,31 @@ Comprehensive overhaul of ryanyogan.com to improve UI consistency, code quality,
 
 ---
 
+## Progress Tracker
+
+| Phase | Status | Details |
+|-------|--------|---------|
+| Phase 1: Testing | DONE | Vitest set up, 60 tests passing |
+| Phase 2: Code Cleanup | DONE | Removed unused code, centralized constants |
+| Phase 3: Design System | DONE | Added spacing, typography, layout tokens |
+| Phase 4: Database Schema | DONE | Tutorial tables created in Drizzle |
+| Phase 5: YouTube API | DONE | Client + utilities with 32 tests |
+| Phase 6: Tutorial Components | DONE | 8 components created |
+| Phase 7: Tutorial Routes | DONE | /tutorials, course, lesson pages |
+| Phase 8: Admin Interface | DONE | Course + lesson management UI |
+| Phase 9: DB Integration | TODO | Wire up actual database queries |
+| Phase 10: YouTube Import | TODO | Import lessons from playlists |
+
+### Files Created This Session
+- `packages/db/src/schema/tutorials.ts` - Tutorial database schema
+- `packages/web/src/lib/youtube.ts` - YouTube API client
+- `packages/web/src/lib/youtube.test.ts` - YouTube tests (32 tests)
+- `packages/web/src/components/tutorials/*.tsx` - 8 tutorial components
+- `packages/web/src/routes/tutorials/*.tsx` - Tutorial routes
+- `packages/web/src/routes/admin/tutorials/*.tsx` - Admin routes
+
+---
+
 ## Current Tech Stack
 
 - **Framework:** TanStack Start (v1.159.0) - Full-stack React meta-framework

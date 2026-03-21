@@ -30,6 +30,14 @@ import {
   CommandLineIcon as CommandLineIconOutline,
   XMarkIcon as XMarkIconOutline,
   ChevronRightIcon as ChevronRightIconOutline,
+  ChevronDownIcon as ChevronDownIconOutline,
+  ChevronUpIcon as ChevronUpIconOutline,
+  ChevronLeftIcon as ChevronLeftIconOutline,
+  PlayIcon as PlayIconOutline,
+  PlayCircleIcon as PlayCircleIconOutline,
+  AcademicCapIcon as AcademicCapIconOutline,
+  VideoCameraIcon as VideoCameraIconOutline,
+  PlusIcon as PlusIconOutline,
 } from "@heroicons/react/24/outline";
 
 // Re-export with consistent sizing (16px default)
@@ -59,6 +67,14 @@ export const LocationIcon = withSize(MapPinIconOutline);
 export const TerminalIcon = withSize(CommandLineIconOutline);
 export const CloseIcon = withSize(XMarkIconOutline);
 export const ChevronRightIcon = withSize(ChevronRightIconOutline);
+export const ChevronDownIcon = withSize(ChevronDownIconOutline);
+export const ChevronUpIcon = withSize(ChevronUpIconOutline);
+export const ChevronLeftIcon = withSize(ChevronLeftIconOutline);
+export const PlayIcon = withSize(PlayIconOutline);
+export const PlayCircleIcon = withSize(PlayCircleIconOutline);
+export const TutorialIcon = withSize(AcademicCapIconOutline);
+export const VideoIcon = withSize(VideoCameraIconOutline);
+export const PlusIcon = withSize(PlusIconOutline);
 
 // Solid variants
 export const HomeIconFilled = withSize(HomeIconSolid);

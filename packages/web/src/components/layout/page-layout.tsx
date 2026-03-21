@@ -2,17 +2,31 @@ import type { ReactNode } from "react";
 import { Nav } from "./nav";
 import { Footer } from "./footer";
 
+type ContainerWidth = "narrow" | "default" | "wide" | "full";
+
 interface PageLayoutProps {
   children: ReactNode;
   showNav?: boolean;
+  containerWidth?: ContainerWidth;
 }
 
-export function PageLayout({ children, showNav = true }: PageLayoutProps) {
+const containerClasses: Record<ContainerWidth, string> = {
+  narrow: "container container-narrow",
+  default: "container",
+  wide: "container container-wide",
+  full: "container container-full",
+};
+
+export function PageLayout({
+  children,
+  showNav = true,
+  containerWidth = "default",
+}: PageLayoutProps) {
   return (
     <div className="page">
-      <div className="container">
+      <div className={containerClasses[containerWidth]}>
         {showNav && <Nav />}
-        {children}
+        <main className="page-content">{children}</main>
         <Footer />
       </div>
     </div>

@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import { Command } from "cmdk";
 import { useNavigate } from "@tanstack/react-router";
-import { useTheme } from "~/hooks/use-theme";
+import { useTheme, useDebounce } from "~/hooks";
 import { useCommandK, useEscape } from "~/hooks/use-keyboard-shortcut";
 import {
   HomeIcon,
@@ -27,18 +27,6 @@ type CommandItem = {
   action: () => void;
   group: "navigation" | "actions" | "social";
 };
-
-// Debounce hook
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-
-  return debouncedValue;
-}
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
