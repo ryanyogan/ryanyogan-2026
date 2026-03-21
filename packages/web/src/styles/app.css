@@ -574,6 +574,26 @@ p {
   font-weight: 500;
 }
 
+.bio-description .text-link {
+  font-weight: 500;
+  color: var(--color-accent);
+  white-space: nowrap;
+  transition: color var(--transition-fast);
+}
+
+.bio-description .text-link:hover {
+  color: var(--color-accent-hover);
+}
+
+.bio-description .text-link span {
+  display: inline-block;
+  transition: transform var(--transition-fast);
+}
+
+.bio-description .text-link:hover span {
+  transform: translateX(3px);
+}
+
 /* Aside - smallest, most muted, personal touch */
 .bio-aside {
   font-size: var(--text-md);
