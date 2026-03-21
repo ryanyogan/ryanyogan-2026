@@ -84,7 +84,10 @@ function HomePage() {
         </p>
         <p className="bio-description">
           I'm passionate about building <strong>AI</strong>, <strong>embedded systems</strong>, and{" "}
-          <strong>robotics</strong> — building software that controls hardware.
+          <strong>robotics</strong> — building software that controls hardware.{" "}
+          <Link to="/hire" className="text-link">
+            Hire me <span aria-hidden="true">→</span>
+          </Link>
         </p>
         <p className="bio-aside">
           When I'm not coding, you'll find me watching our boy play hockey, pretending like I can
