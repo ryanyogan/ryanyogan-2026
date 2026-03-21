@@ -38,6 +38,7 @@ import {
   AcademicCapIcon as AcademicCapIconOutline,
   VideoCameraIcon as VideoCameraIconOutline,
   PlusIcon as PlusIconOutline,
+  Bars3Icon as Bars3IconOutline,
 } from "@heroicons/react/24/outline";
 
 // Re-export with consistent sizing (16px default)
@@ -75,6 +76,7 @@ export const PlayCircleIcon = withSize(PlayCircleIconOutline);
 export const TutorialIcon = withSize(AcademicCapIconOutline);
 export const VideoIcon = withSize(VideoCameraIconOutline);
 export const PlusIcon = withSize(PlusIconOutline);
+export const MenuIcon = withSize(Bars3IconOutline);
 
 // Solid variants
 export const HomeIconFilled = withSize(HomeIconSolid);
