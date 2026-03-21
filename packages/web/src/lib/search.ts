@@ -21,7 +21,14 @@ export function searchWithTextMatching(
   query: string,
   content: SearchableContent[]
 ): SearchResult[] {
-  const queryLower = query.toLowerCase();
+  const trimmedQuery = query.trim();
+
+  // Return empty array for empty queries
+  if (!trimmedQuery) {
+    return [];
+  }
+
+  const queryLower = trimmedQuery.toLowerCase();
   const queryTerms = queryLower.split(/\s+/).filter(Boolean);
 
   const scored = content.map((item) => {

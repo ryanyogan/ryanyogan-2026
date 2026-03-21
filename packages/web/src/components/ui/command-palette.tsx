@@ -16,7 +16,9 @@ import {
   TwitterIcon,
   LinkedInIcon,
 } from "./icons";
-import type { SearchResponse, SearchResult } from "~/routes/api/search";
+import type { SearchResponse } from "~/routes/api/search";
+import type { SearchResult } from "~/lib/search";
+import { SOCIAL_LINKS, CONTACT } from "~/lib/constants";
 
 type CommandItem = {
   id: string;
@@ -97,7 +99,7 @@ export function CommandPalette() {
 
   // Copy email to clipboard
   const copyEmail = useCallback(async () => {
-    await navigator.clipboard.writeText("ryan@ryanyogan.com");
+    await navigator.clipboard.writeText(CONTACT.email);
     setOpen(false);
   }, []);
 
@@ -168,7 +170,7 @@ export function CommandPalette() {
         label: "GitHub",
         icon: <GitHubIcon size={16} />,
         action: () => {
-          window.open("https://github.com/ryanyogan", "_blank");
+          window.open(SOCIAL_LINKS.github, "_blank");
           setOpen(false);
         },
         group: "social",
@@ -178,7 +180,7 @@ export function CommandPalette() {
         label: "Twitter",
         icon: <TwitterIcon size={16} />,
         action: () => {
-          window.open("https://twitter.com/ryanyogan", "_blank");
+          window.open(SOCIAL_LINKS.twitter, "_blank");
           setOpen(false);
         },
         group: "social",
@@ -188,7 +190,7 @@ export function CommandPalette() {
         label: "LinkedIn",
         icon: <LinkedInIcon size={16} />,
         action: () => {
-          window.open("https://linkedin.com/in/ryanyogan", "_blank");
+          window.open(SOCIAL_LINKS.linkedin, "_blank");
           setOpen(false);
         },
         group: "social",

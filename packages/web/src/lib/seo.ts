@@ -7,16 +7,25 @@
  * - JSON-LD structured data generators
  */
 
+import { SITE, SOCIAL_LINKS } from "./constants";
+
 // =============================================================================
-// Site Constants
+// Site Constants (re-exported for backwards compatibility)
 // =============================================================================
 
-export const SITE_URL = "https://ryanyogan.com";
-export const SITE_NAME = "Ryan Yogan";
-export const SITE_DESCRIPTION =
-  "Engineering leader with 20 years of experience building teams and products. Based in Chicago.";
-export const TWITTER_HANDLE = "@ryanyogan";
-export const AUTHOR_NAME = "Ryan Yogan";
+export const SITE_URL = SITE.url;
+export const SITE_NAME = SITE.name;
+export const SITE_DESCRIPTION = SITE.description;
+export const TWITTER_HANDLE = SITE.twitterHandle;
+export const AUTHOR_NAME = SITE.author;
+
+// Social links as array for JSON-LD sameAs
+const SAME_AS_LINKS = [
+  SOCIAL_LINKS.twitter,
+  SOCIAL_LINKS.github,
+  SOCIAL_LINKS.linkedin,
+  SOCIAL_LINKS.youtube,
+];
 
 // =============================================================================
 // Meta Tag Helpers
@@ -114,11 +123,7 @@ export function getPersonSchema() {
     name: AUTHOR_NAME,
     url: SITE_URL,
     image: `${SITE_URL}/android-chrome-512x512.png`,
-    sameAs: [
-      "https://twitter.com/ryanyogan",
-      "https://github.com/ryanyogan",
-      "https://linkedin.com/in/ryanyogan",
-    ],
+    sameAs: SAME_AS_LINKS,
     jobTitle: "Engineering Leader",
     worksFor: {
       "@type": "Organization",
@@ -246,11 +251,7 @@ export function getProfilePageSchema() {
       url: SITE_URL,
       image: `${SITE_URL}/android-chrome-512x512.png`,
       description: SITE_DESCRIPTION,
-      sameAs: [
-        "https://twitter.com/ryanyogan",
-        "https://github.com/ryanyogan",
-        "https://linkedin.com/in/ryanyogan",
-      ],
+      sameAs: SAME_AS_LINKS,
       hasOccupation: [
         {
           "@type": "Occupation",
