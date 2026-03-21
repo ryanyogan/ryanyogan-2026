@@ -7,19 +7,19 @@
     "dev": "pnpm --filter @ryanyogan/web dev",
     "build": "pnpm --filter @ryanyogan/web build",
     "preview": "pnpm --filter @ryanyogan/web preview",
-    "deploy": "pnpm --filter @ryanyogan/web deploy",
-    "check": "vp check",
-    "check:fix": "vp check --fix",
+    "test": "pnpm --filter @ryanyogan/web test",
     "typecheck": "pnpm --filter @ryanyogan/web typecheck",
+    "deploy": "pnpm run typecheck && pnpm run test -- --run && pnpm run build && pnpm --filter @ryanyogan/web wrangler deploy",
+    "deploy:quick": "pnpm --filter @ryanyogan/web build && pnpm --filter @ryanyogan/web wrangler deploy",
     "db:generate": "pnpm --filter @ryanyogan/db db:generate",
     "db:migrate": "pnpm --filter @ryanyogan/db db:migrate",
+    "db:migrate:local": "pnpm --filter @ryanyogan/db db:migrate:local",
     "db:studio": "pnpm --filter @ryanyogan/db db:studio",
     "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist packages/*/.output"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
-    "typescript": "^5.7.0",
-    "vite-plus": "latest"
+    "typescript": "^5.7.0"
   },
   "engines": {
     "node": ">=20.0.0"
