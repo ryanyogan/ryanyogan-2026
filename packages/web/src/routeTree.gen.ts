@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkRouteImport } from './routes/work'
+import { Route as HireRouteImport } from './routes/hire'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WritingIndexRouteImport } from './routes/writing/index'
@@ -32,6 +33,11 @@ import { Route as AdminTutorialsCourseIdRouteImport } from './routes/admin/tutor
 const WorkRoute = WorkRouteImport.update({
   id: '/work',
   path: '/work',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HireRoute = HireRouteImport.update({
+  id: '/hire',
+  path: '/hire',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -130,6 +136,7 @@ const AdminTutorialsCourseIdRoute = AdminTutorialsCourseIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/hire': typeof HireRoute
   '/work': typeof WorkRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/experience': typeof AdminExperienceRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/hire': typeof HireRoute
   '/work': typeof WorkRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/experience': typeof AdminExperienceRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/hire': typeof HireRoute
   '/work': typeof WorkRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/experience': typeof AdminExperienceRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/hire'
     | '/work'
     | '/admin/content'
     | '/admin/experience'
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/hire'
     | '/work'
     | '/admin/content'
     | '/admin/experience'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/hire'
     | '/work'
     | '/admin/content'
     | '/admin/experience'
@@ -258,6 +270,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  HireRoute: typeof HireRoute
   WorkRoute: typeof WorkRoute
   ApiSearchRoute: typeof ApiSearchRoute
   ApiSeedSearchRoute: typeof ApiSeedSearchRoute
@@ -278,6 +291,13 @@ declare module '@tanstack/react-router' {
       path: '/work'
       fullPath: '/work'
       preLoaderRoute: typeof WorkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hire': {
+      id: '/hire'
+      path: '/hire'
+      fullPath: '/hire'
+      preLoaderRoute: typeof HireRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -434,6 +454,7 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  HireRoute: HireRoute,
   WorkRoute: WorkRoute,
   ApiSearchRoute: ApiSearchRoute,
   ApiSeedSearchRoute: ApiSeedSearchRoute,

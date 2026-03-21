@@ -21,7 +21,8 @@ export const SITE = {
 // =============================================================================
 
 export const CONTACT = {
-  email: "ryan@ryanyogan.com",
+  email: "ryan.yogan@hey.com",
+  calendar: "https://cal.com/ryanyogan",
   location: "Chicago, IL",
 } as const;
 
@@ -47,6 +48,7 @@ export const NAV_LINKS = {
     { label: "Projects", href: "/projects" },
     { label: "Work", href: "/work" },
     { label: "Tutorials", href: "/tutorials" },
+    { label: "Hire", href: "/hire" },
   ],
   external: [
     { label: "GitHub", href: SOCIAL_LINKS.github },

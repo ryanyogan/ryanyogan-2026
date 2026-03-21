@@ -426,6 +426,11 @@ async function generateAllOGImages() {
       title: "Writing",
       subtitle: "Thoughts on engineering, leadership, and building things",
     },
+    {
+      filename: "hire.png",
+      title: "Hire Me",
+      subtitle: "Available for consulting, contract work, and full-time opportunities",
+    },
   ];
 
   for (const page of staticPages) {

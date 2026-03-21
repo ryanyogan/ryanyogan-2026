@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { to: "/projects", label: "Projects" },
   { to: "/tutorials", label: "Tutorials" },
   { to: "/work", label: "Work" },
+  { to: "/hire", label: "Hire" },
 ] as const;
 
 function SearchButton() {

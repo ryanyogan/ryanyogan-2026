@@ -1,5 +1,116 @@
 ---
 projects:
+  - slug: nexus-mcp
+    name: Nexus MCP
+    tagline: AI documentation hub and memory system
+    github: https://github.com/ryanyogan/nexus-mcp
+    openSource: true
+    featured: true
+    readme: |
+      # Nexus MCP
+
+      **AI Documentation Hub & Memory System**
+
+      A Model Context Protocol server that gives AI assistants access to library documentation, project memory, and development knowledge.
+
+      ## Features
+
+      - **Library Documentation** - Semantic search across popular library docs (React, Next.js, Hono, Drizzle, etc.)
+      - **Project Memory** - Store and retrieve context, decisions, and lessons learned across sessions
+      - **MCP Server Discovery** - Find and configure MCP servers for your AI workflow
+      - **Stack Prompts** - Pre-built prompts for common development stacks
+
+      ## Quick Start
+
+      ```json
+      {
+        "mcpServers": {
+          "nexus": {
+            "command": "npx",
+            "args": ["-y", "nexus-mcp"]
+          }
+        }
+      }
+      ```
+
+      ## Available Tools
+
+      - `resolve-library` - Find library IDs for documentation
+      - `query-docs` - Semantic search of library documentation
+      - `save-memory` / `recall-memories` - Persistent project context
+      - `discover-servers` - Find MCP servers by capability
+      - `get-stack` - Load stack-specific prompts and conventions
+
+      ## Use Cases
+
+      - Get up-to-date documentation without leaving your AI chat
+      - Maintain project context across coding sessions
+      - Discover new MCP tools for your workflow
+      - Bootstrap projects with stack-specific knowledge
+
+      ## License
+
+      MIT
+    description: MCP server providing AI assistants with library documentation, project memory, and development knowledge. Supports semantic search, persistent context, and stack-specific prompts.
+    tech:
+      - TypeScript
+      - MCP
+      - Cloudflare Workers
+      - D1
+      - Vectorize
+
+  - slug: level-up
+    name: Level Up
+    tagline: AI-powered job application assistant
+    github: https://github.com/ryanyogan/levelup
+    url: https://levelup.yogan.dev
+    openSource: true
+    featured: true
+    readme: |
+      # Level Up
+
+      **AI-Powered Job Application Assistant**
+
+      Analyze any job posting instantly. Verify legitimacy, understand compensation, and get actionable insights to land the role.
+
+      ## Features
+
+      - **Scam Detection** - AI-powered verification to spot fake postings
+      - **Red Flag Analysis** - Identify warning signs and positive signals
+      - **Salary Intelligence** - Market-rate estimates and transparency scoring
+      - **Resume Builder** - Drag-and-drop editor with 20+ templates
+      - **One-Click Tailoring** - AI rewrites your resume for each job
+      - **Cover Letters** - Personalized cover letter generation
+      - **Interview Prep** - AI-generated questions based on the role
+      - **Gap Analysis** - Know exactly what skills to develop
+
+      ## How It Works
+
+      1. Paste any job posting URL or text
+      2. Optionally upload your resume for personalized analysis
+      3. Get instant insights: legitimacy score, salary range, required skills
+      4. Generate tailored resume, cover letter, and interview prep
+
+      ## Built By Someone Who Actually Hires
+
+      Created by Ryan Yogan, a tech executive with 20+ years experience, 700+ interviews conducted, and 100+ engineers hired.
+
+      ## Tech Stack
+
+      - TanStack Start
+      - Cloudflare Workers & D1
+      - Claude API for AI analysis
+
+      ## License
+
+      MIT
+    description: AI job application assistant with scam detection, resume tailoring, cover letter generation, and interview prep. Built by someone who has conducted 700+ interviews.
+    tech:
+      - TanStack Start
+      - Cloudflare Workers
+      - D1
+      - Claude API
+
   - slug: fizzy-do-mcp
     name: Fizzy Do MCP
     tagline: AI-native task management via MCP
